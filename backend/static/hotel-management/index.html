@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="hms-api-base" content="">
+    <meta name="hms-api-base" content="">
+    <title>Hotel Management System — Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="/static/hotel-management/css/app.css" />
+</head>
+
+<body>
+
+    <!-- ===== LOGIN ===== -->
+    <div id="loginPage" class="login-page" role="main" aria-label="Kirish sahifasi">
+        <div class="login-card" role="form" aria-label="Kirish formasi">
+            <div class="logo text-center">
+                <div
+                    style="font-size:3.5rem;margin-bottom:0.4rem;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                    <i class="fas fa-hotel"></i>
+                </div>
+                <h2>HMS</h2>
+                <p style="color:var(--text-muted);font-size:0.8rem;">Hotel Management System</p>
+            </div>
+            <form id="loginForm" novalidate autocomplete="off">
+                <div class="mb-3">
+                    <label class="form-label" for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" class="form-control" value="admin" autocomplete="off">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" value="admin123" autocomplete="off">
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="loginRemember">
+                    <label class="form-check-label" for="loginRemember">Remember me</label>
+                </div>
+                <button type="submit" class="btn-glass btn-glass-primary w-100">Login</button>
+                <div class="text-center mt-2">
+                    <button type="button" class="reset-password-btn" id="resetPasswordBtn">
+                        <i class="fas fa-undo-alt me-1"></i> Parolni default holatga qaytarish (admin123)
+                    </button>
+                </div>
+                <div class="text-center mt-1">
+                    <button type="button" class="clear-storage-btn" id="clearStorageBtn">
+                        <i class="fas fa-trash-alt me-1"></i> Ma'lumotlarni tozalash
+                    </button>
+                </div>
+            </form>
+            <div class="mt-3 text-center text-muted" style="font-size:0.7rem;opacity:0.6;">
+                Default: admin / admin123
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== APP ===== -->
+    <div id="app" style="display:none;">
+        <div class="sidebar-overlay" id="sidebarOverlay" role="button" aria-label="Yopish" tabindex="0"></div>
+
+        <nav class="sidebar" id="sidebar" role="navigation" aria-label="Asosiy navigatsiya">
+            <div class="sidebar-inner">
+                <div class="logo-area">
+                    <div>
+                        <h4 style="margin:0;"><i class="fas fa-hotel me-2"></i>HMS</h4>
+                        <small class="brand-text" style="font-size:0.65rem;opacity:0.5;letter-spacing:2px;">Hotel
+                            Management</small>
+                    </div>
+                    <button class="sidebar-close-btn d-lg-none" id="sidebarCloseBtn" aria-label="Yopish">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <ul class="nav flex-column">
+                    <li class="nav-item"><button class="nav-link active" data-page="dashboard" aria-label="Boshqaruv"><i
+                                class="fas fa-chart-pie"></i><span>Boshqaruv</span></button></li>
+                    <li class="nav-item"><button class="nav-link" data-page="rooms" aria-label="Xonalar"><i
+                                class="fas fa-door-open"></i><span>Xonalar</span></button></li>
+                    <li class="nav-item"><button class="nav-link" data-page="customers" aria-label="Mijozlar"><i
+                                class="fas fa-users"></i><span>Mijozlar</span></button></li>
+                    <li class="nav-item"><button class="nav-link" data-page="bookings" aria-label="Bronlar"><i
+                                class="fas fa-calendar-check"></i><span>Bronlar</span></button></li>
+                    <li class="nav-item"><button class="nav-link" data-page="payments" aria-label="To'lovlar"><i
+                                class="fas fa-credit-card"></i><span>To'lovlar</span></button></li>
+                    <li class="nav-item"><button class="nav-link" data-page="reports" aria-label="Hisobotlar"><i
+                                class="fas fa-file-alt"></i><span>Hisobotlar</span></button></li>
+                    <li class="nav-item"><button class="nav-link" data-page="profile" aria-label="Profil"><i
+                                class="fas fa-user-cog"></i><span>Profil</span></button></li>
+                    <li class="nav-item"><button class="nav-link" data-page="settings" aria-label="Sozlamalar"><i
+                                class="fas fa-sliders-h"></i><span>Sozlamalar</span></button></li>
+                                        <li class="nav-item" style="margin-top:8px;border-top:1px solid var(--card-border);padding-top:8px;">
+                        <a class="nav-link" href="/static/public.html" target="_blank" rel="noopener">
+                            <i class="fas fa-globe"></i><span>Public sayt</span>
+                        </a>
+                    </li>
+                </ul>
+
+
+
+
+
+                <div class="sidebar-footer mt-3 px-2">
+                    <select id="langSelect" class="form-select"
+                        style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--input-text);border-radius:var(--radius-full);min-height:var(--btn-height);font-size:0.85rem;">
+                        <option value="uz">O'zbek</option>
+                        <option value="en">English</option>
+                        <option value="ru">Русский</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+
+        <div class="main-content" id="mainContent">
+            <!-- ===== NAVBAR ===== -->
+            <div class="navbar-glass d-flex justify-content-between align-items-center mb-3">
+                <div class="page-title-icon" id="pageTitle" aria-label="Joriy sahifa">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+
+                <div class="nav-actions">
+                                        <button id="refreshDataBtn" class="btn-glass btn-glass-sm" aria-label="Ma'lumotlarni yangilash" title="Yangilash">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="notif-bell" id="notifBell" aria-label="Bildirishnomalar">
+                        <i class="fas fa-bell"></i>
+                        <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+                    </button>
+                    <button id="themeToggle" class="btn-glass btn-glass-sm" aria-label="Tema almashtirish"><i
+                            class="fas fa-moon"></i></button>
+                    <button id="sidebarToggle" class="btn-glass btn-glass-sm d-lg-none"
+                        aria-label="Navigatsiyani ochish"><i class="fas fa-bars"></i></button>
+                </div>
+            </div>
+
+            <!-- ===== NOTIFICATION DROPDOWN ===== -->
+            <div class="notif-dropdown" id="notifDropdown" role="dialog" aria-modal="true"
+                aria-label="Bildirishnomalar">
+                <div class="notif-header">
+                    <span class="title"><i class="fas fa-bell"></i> Xabarlar</span>
+                    <div class="actions">
+                        <button id="notifMarkAllRead"><i class="fas fa-check-double"></i> Hammasini o'qish</button>
+                        <button id="notifClearAll"><i class="fas fa-trash"></i> Tozalash</button>
+                    </div>
+                </div>
+                <div class="notif-filters" id="notifFilters">
+                    <button class="filter-btn active" data-filter="all"><i class="fas fa-list"></i> Barcha</button>
+                    <button class="filter-btn" data-filter="unread"><i class="fas fa-envelope"></i> O'qilmagan</button>
+                    <button class="filter-btn" data-filter="public_booking"><i class="fas fa-globe"></i>
+                        Yangi bronlar</button>
+                    <button class="filter-btn" data-filter="public_booking"><i class="fas fa-globe"></i>
+                        Yangi bronlar</button>
+                    <button class="filter-btn" data-filter="booking"><i class="fas fa-calendar-check"></i>
+                        Bronlar</button>
+                    <button class="filter-btn" data-filter="payment"><i class="fas fa-credit-card"></i>
+                        To'lovlar</button>
+                    <button class="filter-btn" data-filter="customer"><i class="fas fa-user"></i> Mijozlar</button>
+                    <button class="filter-btn" data-filter="system"><i class="fas fa-cog"></i> Tizim</button>
+                </div>
+                <div class="notif-search">
+                    <input type="text" id="notifSearch" placeholder="Xabarlarni qidirish..."
+                        aria-label="Bildirishnomalarni qidirish">
+                </div>
+                <div class="notif-list" id="notifList" role="list" aria-label="Bildirishnomalar ro'yxati">
+                    <div class="notif-empty"><i class="fas fa-bell-slash"></i>
+                        <div>Xabarlar yo'q</div>
+                    </div>
+                </div>
+                <div class="notif-load-more" id="notifLoadMore" style="display:none;">
+                    <button id="loadMoreBtn">Yana yuklash...</button>
+                </div>
+            </div>
+
+            <!-- ===== PAGE SECTIONS ===== -->
+            <div id="page-dashboard" class="page-section active-page" role="region" aria-label="Boshqaruv paneli"></div>
+            <div id="page-rooms" class="page-section" role="region" aria-label="Xonalar"></div>
+            <div id="page-customers" class="page-section" role="region" aria-label="Mijozlar"></div>
+            <div id="page-bookings" class="page-section" role="region" aria-label="Bronlar"></div>
+            <div id="page-payments" class="page-section" role="region" aria-label="To'lovlar"></div>
+            <div id="page-reports" class="page-section" role="region" aria-label="Hisobotlar"></div>
+            <div id="page-profile" class="page-section" role="region" aria-label="Profil"></div>
+            <div id="page-settings" class="page-section" role="region" aria-label="Sozlamalar"></div>
+        </div>
+
+<!--        &lt;!&ndash; ===== FLOATING BOTTOM NAV ===== &ndash;&gt;-->
+<!--        <nav class="mobile-bottom-nav" id="mobileBottomNav" role="navigation" aria-label="Asosiy navigatsiya">-->
+<!--            <button class="mob-nav-item active" data-page="dashboard" aria-label="Boshqaruv" role="button" tabindex="0">-->
+<!--                <i class="fas fa-chart-pie"></i>-->
+<!--            </button>-->
+<!--            <button class="mob-nav-item" data-page="rooms" aria-label="Xonalar" role="button" tabindex="0">-->
+<!--                <i class="fas fa-door-open"></i>-->
+<!--            </button>-->
+<!--            <button class="mob-nav-item" data-page="bookings" aria-label="Bronlar" role="button" tabindex="0">-->
+<!--                <i class="fas fa-calendar-check"></i>-->
+<!--            </button>-->
+<!--            <button class="mob-nav-item" data-page="payments" aria-label="To'lovlar" role="button" tabindex="0">-->
+<!--                <i class="fas fa-credit-card"></i>-->
+<!--            </button>-->
+<!--            <button class="mob-nav-item" data-page="profile" aria-label="Profil" role="button" tabindex="0">-->
+<!--                <i class="fas fa-user-cog"></i>-->
+<!--            </button>-->
+<!--        </nav>-->
+    </div>
+
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+    <div id="modal-container"></div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="/static/hotel-management/js/api.js"></script>
+    <script src="/static/hotel-management/js/auth.js"></script>
+    <script src="/static/hotel-management/js/app.js"></script>
+    <script src="/static/hotel-management/js/admin.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            App.init();
+        });
+    </script>
+</body>
+</html>

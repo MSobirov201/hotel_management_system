@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduCRM Pro - O'quv Markazi Boshqaruvi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #64748b;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --primary-bg: #eef2ff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --surface: #ffffff;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 260px;
+        }
+        [data-theme="dark"] {
+            --gray-50: #0f172a;
+            --gray-100: #16213a;
+            --gray-200: #263349;
+            --gray-300: #3a4863;
+            --gray-400: #64748b;
+            --gray-500: #94a3b8;
+            --gray-600: #cbd5e1;
+            --gray-700: #e2e8f0;
+            --gray-800: #f1f5f9;
+            --gray-900: #f8fafc;
+            --surface: #1a2235;
+            --primary-bg: rgba(99,102,241,0.15);
+            --shadow: 0 1px 3px rgba(0,0,0,0.4);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:var(--gray-50); color:var(--gray-900); line-height:1.6; overflow-x:hidden; transition:background .3s ease, color .3s ease; }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:var(--gray-100); }
+        ::-webkit-scrollbar-thumb { background:var(--gray-300); border-radius:10px; }
+        ::-webkit-scrollbar-thumb:hover { background:var(--gray-400); }
+        :focus-visible { outline:2px solid var(--primary); outline-offset:2px; }
+
+        .login-page { min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%); padding:20px; position:relative; overflow:hidden; }
+        .login-page::before { content:''; position:absolute; width:500px; height:500px; background:radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%); top:-150px; right:-150px; border-radius:50%; }
+        .login-page::after { content:''; position:absolute; width:400px; height:400px; background:radial-gradient(circle, rgba(236,72,153,0.08) 0%, transparent 70%); bottom:-120px; left:-100px; border-radius:50%; }
+        .login-container { background:rgba(255,255,255,0.05); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1); border-radius:24px; padding:40px; width:100%; max-width:400px; box-shadow:0 30px 80px rgba(0,0,0,0.5); animation:slideUp .6s ease-out; position:relative; z-index:1; }
+        @keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+        .login-logo { text-align:center; margin-bottom:32px; }
+        .login-logo .icon-box { width:72px; height:72px; background:linear-gradient(135deg,var(--primary),var(--primary-light)); border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; box-shadow:0 8px 30px rgba(99,102,241,.3); }
+        .login-logo .icon-box i { font-size:32px; color:#fff; }
+        .login-logo h1 { font-family:'Manrope',sans-serif; font-size:28px; font-weight:800; color:#fff; }
+        .login-logo p { color:var(--gray-400); font-size:14px; }
+        .login-form .form-group { margin-bottom:16px; }
+        .login-form label { display:block; font-size:13px; font-weight:600; color:var(--gray-300); margin-bottom:6px; }
+        .login-form .input-wrapper { position:relative; }
+        .login-form .input-wrapper i { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--gray-500); }
+        .login-form .input-wrapper input { width:100%; padding:12px 16px 12px 44px; background:rgba(255,255,255,.06); border:2px solid rgba(255,255,255,.08); border-radius:var(--radius-sm); font-size:14px; color:#fff; transition:var(--transition); font-family:'Inter',sans-serif; }
+        .login-form .input-wrapper input::placeholder { color:var(--gray-500); }
+        .login-form .input-wrapper input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 4px rgba(99,102,241,.1); }
+        .login-form .input-wrapper .toggle-password { position:absolute; right:14px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--gray-500); cursor:pointer; }
+        .login-options { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+        .login-options label { color:var(--gray-400); font-size:14px; display:flex; align-items:center; gap:8px; cursor:pointer; }
+        .login-options label input[type="checkbox"] { width:16px; height:16px; accent-color:var(--primary); }
+        .login-options a { color:var(--primary-light); text-decoration:none; font-size:14px; }
+        .login-options a:hover { color:var(--primary); }
+        .btn-login { width:100%; padding:14px; background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:#fff; border:none; border-radius:var(--radius-sm); font-size:16px; font-weight:600; cursor:pointer; transition:var(--transition); font-family:'Inter',sans-serif; box-shadow:0 8px 30px rgba(99,102,241,.3); }
+        .btn-login:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(99,102,241,.5); }
+        .btn-login:disabled { opacity:.7; cursor:not-allowed; transform:none; }
+        .login-demo { text-align:center; margin-top:16px; font-size:12px; color:var(--gray-500); }
+        .login-demo code { background:rgba(255,255,255,.05); padding:2px 10px; border-radius:4px; color:var(--gray-300); }
+        .login-error { display:none; background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); color:#fca5a5; padding:10px 14px; border-radius:var(--radius-sm); font-size:13px; margin-bottom:16px; }
+        .login-error.show { display:block; }
+
+        .app-container { display:none; min-height:100vh; background:var(--gray-50); }
+        .app-container.active { display:flex; }
+
+        .sidebar { width:var(--sidebar-width); min-width:var(--sidebar-width); background:var(--surface); border-right:1px solid var(--gray-200); height:100vh; position:fixed; top:0; left:0; display:flex; flex-direction:column; overflow-y:auto; z-index:100; box-shadow:2px 0 12px rgba(0,0,0,.04); transition:transform .3s ease, background .3s ease, border-color .3s ease; }
+        .sidebar-brand { padding:20px 20px 16px; border-bottom:1px solid var(--gray-100); display:flex; align-items:center; gap:12px; flex-shrink:0; }
+        .sidebar-brand .brand-icon { width:40px; height:40px; background:linear-gradient(135deg,var(--primary),var(--primary-light)); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; box-shadow:0 4px 12px rgba(99,102,241,.3); }
+        .sidebar-brand h2 { font-family:'Manrope',sans-serif; font-size:20px; font-weight:800; color:var(--gray-900); }
+        .sidebar-nav { flex:1; padding:12px; overflow-y:auto; }
+        .sidebar-nav .nav-label { font-size:11px; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:.8px; padding:12px 14px 6px; }
+        .sidebar-nav .nav-item { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:var(--radius-sm); color:var(--gray-600); text-decoration:none; font-size:14px; font-weight:500; transition:var(--transition); cursor:pointer; margin-bottom:2px; position:relative; }
+        .sidebar-nav .nav-item:hover { background:var(--gray-50); color:var(--gray-900); }
+        .sidebar-nav .nav-item.active { background:var(--primary-bg); color:var(--primary); font-weight:600; }
+        .sidebar-nav .nav-item.active::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:4px; height:28px; background:var(--primary); border-radius:0 4px 4px 0; }
+        .sidebar-nav .nav-item i { width:18px; text-align:center; font-size:15px; }
+        .sidebar-nav .nav-item .badge-nav { margin-left:auto; padding:1px 10px; background:var(--primary-bg); color:var(--primary); border-radius:50px; font-size:11px; font-weight:600; }
+        .sidebar-footer { padding:14px 16px; border-top:1px solid var(--gray-100); flex-shrink:0; }
+        .sidebar-footer .user-info { display:flex; align-items:center; gap:12px; }
+        .sidebar-footer .user-avatar { width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--primary-light)); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:14px; flex-shrink:0; }
+        .sidebar-footer .user-details { flex:1; min-width:0; }
+        .sidebar-footer .user-details .name { font-size:14px; font-weight:600; color:var(--gray-900); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .sidebar-footer .user-details .role { font-size:12px; color:var(--gray-500); }
+        .sidebar-footer .logout-btn { background:none; border:none; color:var(--gray-400); cursor:pointer; font-size:18px; transition:var(--transition); padding:6px; border-radius:50%; }
+        .sidebar-footer .logout-btn:hover { color:var(--danger); background:rgba(239,68,68,.1); }
+
+        .main-content { flex:1; margin-left:var(--sidebar-width); min-height:100vh; display:flex; flex-direction:column; }
+        .topbar { background:var(--surface); border-bottom:1px solid var(--gray-200); padding:0 28px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; flex-shrink:0; transition:background .3s ease, border-color .3s ease; }
+        .topbar-left { display:flex; align-items:center; gap:16px; }
+        .topbar-left .toggle-sidebar { display:none; background:none; border:none; font-size:20px; color:var(--gray-600); cursor:pointer; padding:6px; border-radius:var(--radius-sm); }
+        .topbar-left .toggle-sidebar:hover { background:var(--gray-100); }
+        .topbar-left .page-title h1 { font-family:'Manrope',sans-serif; font-size:20px; font-weight:800; color:var(--gray-900); }
+        .topbar-left .page-title p { font-size:13px; color:var(--gray-500); margin-top:-2px; }
+        .topbar-right { display:flex; align-items:center; gap:8px; }
+        .topbar-right .icon-btn { width:38px; height:38px; border-radius:50%; border:none; background:var(--gray-100); color:var(--gray-600); cursor:pointer; transition:var(--transition); font-size:16px; position:relative; }
+        .topbar-right .icon-btn:hover { background:var(--gray-200); }
+        .topbar-right .icon-btn .badge-dot { position:absolute; top:8px; right:8px; width:7px; height:7px; background:var(--danger); border-radius:50%; border:2px solid var(--surface); }
+        .topbar-right .divider { width:1px; height:28px; background:var(--gray-200); margin:0 8px; }
+        .topbar-right .profile-btn { display:flex; align-items:center; gap:10px; padding:4px 12px 4px 4px; border:none; background:none; cursor:pointer; border-radius:50px; transition:var(--transition); }
+        .topbar-right .profile-btn:hover { background:var(--gray-100); }
+        .topbar-right .profile-btn .avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--primary-light)); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:13px; }
+        .topbar-right .profile-btn .name { font-size:14px; font-weight:600; color:var(--gray-700); }
+
+        .page-content { padding:24px 28px; flex:1; }
+        .page-section { display:none; animation:fadeIn .4s ease-out; }
+        .page-section.active { display:block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:24px; }
+        .stat-card { background:var(--surface); border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow); border:1px solid var(--gray-200); transition:var(--transition); }
+        .stat-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+        .stat-card .stat-top { display:flex; justify-content:space-between; align-items:flex-start; }
+        .stat-card .stat-icon { width:44px; height:44px; border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+        .stat-card .stat-icon.blue { background:#dbeafe; color:#3b82f6; }
+        .stat-card .stat-icon.green { background:#d1fae5; color:#22c55e; }
+        .stat-card .stat-icon.purple { background:#ede9fe; color:#8b5cf6; }
+        .stat-card .stat-icon.orange { background:#fed7aa; color:#f59e0b; }
+        .stat-card .stat-icon.emerald { background:#a7f3d0; color:#059669; }
+        .stat-card .stat-icon.rose { background:#fce4ec; color:#ef4444; }
+        .stat-card .stat-value { font-family:'Manrope',sans-serif; font-size:28px; font-weight:800; color:var(--gray-900); margin-top:4px; letter-spacing:-.5px; }
+        .stat-card .stat-label { font-size:14px; color:var(--gray-500); font-weight:500; }
+        .stat-card .stat-footer { display:flex; align-items:center; gap:6px; margin-top:6px; flex-wrap:wrap; }
+        .stat-card .stat-change { font-size:12px; font-weight:600; padding:2px 10px; border-radius:50px; }
+        .stat-card .stat-change.positive { background:#d1fae5; color:#065f46; }
+        .stat-card .stat-change.negative { background:#fce4ec; color:#c62828; }
+        .stat-card .stat-change-text { font-size:12px; color:var(--gray-400); }
+
+        .dashboard-grid { display:grid; grid-template-columns:2fr 1fr; gap:20px; margin-bottom:24px; }
+        .dashboard-card { background:var(--surface); border-radius:var(--radius); padding:22px 24px; box-shadow:var(--shadow); border:1px solid var(--gray-200); transition:background .3s ease, border-color .3s ease; }
+        .dashboard-card .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+        .dashboard-card .card-header h3 { font-size:16px; font-weight:700; color:var(--gray-900); }
+        .dashboard-card .card-header .card-action { font-size:13px; color:var(--gray-400); }
+
+        .bar-chart { display:flex; align-items:flex-end; gap:10px; height:200px; padding:10px 4px 0; }
+        .bar-chart .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:6px; }
+        .bar-chart .bar-col .bar { width:100%; max-width:36px; background:linear-gradient(180deg,var(--primary-light),var(--primary)); border-radius:6px 6px 0 0; transition:height .6s ease; position:relative; }
+        .bar-chart .bar-col .bar:hover::after { content:attr(data-val); position:absolute; top:-24px; left:50%; transform:translateX(-50%); background:var(--gray-900); color:var(--gray-50); font-size:11px; padding:2px 8px; border-radius:6px; white-space:nowrap; }
+        .bar-chart .bar-col .bar-label { font-size:11px; color:var(--gray-500); font-weight:600; }
+
+        .activity-list { display:flex; flex-direction:column; gap:2px; max-height:320px; overflow-y:auto; }
+        .activity-item { display:flex; align-items:flex-start; gap:12px; padding:10px 12px; border-radius:var(--radius-sm); transition:var(--transition); }
+        .activity-item:hover { background:var(--gray-50); }
+        .activity-item .activity-icon { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+        .activity-item .activity-icon.green { background:#d1fae5; color:#22c55e; }
+        .activity-item .activity-icon.blue { background:#dbeafe; color:#3b82f6; }
+        .activity-item .activity-icon.yellow { background:#fef3c7; color:#f59e0b; }
+        .activity-item .activity-icon.purple { background:#ede9fe; color:#8b5cf6; }
+        .activity-item .activity-icon.red { background:#fce4ec; color:#ef4444; }
+        .activity-item .activity-content { flex:1; min-width:0; }
+        .activity-item .activity-content p { font-size:14px; color:var(--gray-700); }
+        .activity-item .activity-content p strong { color:var(--gray-900); }
+        .activity-item .activity-content .time { font-size:12px; color:var(--gray-400); }
+        .empty-hint { text-align:center; padding:24px; color:var(--gray-400); font-size:13px; }
+
+        .quick-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .quick-action-btn { padding:14px; border:none; border-radius:var(--radius-sm); cursor:pointer; transition:var(--transition); text-align:center; font-size:13px; font-weight:600; font-family:'Inter',sans-serif; }
+        .quick-action-btn i { display:block; font-size:22px; margin-bottom:4px; }
+        .quick-action-btn.blue { background:var(--primary-bg); color:var(--primary); }
+        .quick-action-btn.blue:hover { background:#dbeafe; transform:translateY(-2px); }
+        .quick-action-btn.green { background:#d1fae5; color:var(--success); }
+        .quick-action-btn.green:hover { background:#a7f3d0; transform:translateY(-2px); }
+        .quick-action-btn.purple { background:#ede9fe; color:var(--purple); }
+        .quick-action-btn.purple:hover { background:#ddd6fe; transform:translateY(-2px); }
+        .quick-action-btn.orange { background:#fef3c7; color:var(--warning); }
+        .quick-action-btn.orange:hover { background:#fde68a; transform:translateY(-2px); }
+
+        .class-item { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:var(--gray-50); border-radius:var(--radius-sm); margin-bottom:8px; transition:var(--transition); }
+        .class-item:hover { background:var(--gray-100); }
+        .class-item .class-info h4 { font-size:14px; font-weight:600; color:var(--gray-900); }
+        .class-item .class-info p { font-size:13px; color:var(--gray-500); }
+        .class-item .class-status { padding:3px 12px; border-radius:50px; font-size:12px; font-weight:600; flex-shrink:0; }
+        .class-item .class-status.active { background:#d1fae5; color:#065f46; }
+        .class-item .class-status.pending { background:#fef3c7; color:#92400e; }
+
+        .page-toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+        .page-toolbar .search-box { flex:1; min-width:200px; position:relative; }
+        .page-toolbar .search-box input { width:100%; padding:10px 14px 10px 40px; border:2px solid var(--gray-200); border-radius:var(--radius-sm); font-size:14px; transition:var(--transition); font-family:'Inter',sans-serif; background:var(--surface); color:var(--gray-900); }
+        .page-toolbar .search-box input:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 4px rgba(99,102,241,.1); }
+        .page-toolbar .search-box i { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--gray-400); }
+        .page-toolbar .filters { display:flex; gap:8px; flex-wrap:wrap; }
+        .page-toolbar .filters select { padding:10px 14px; border:2px solid var(--gray-200); border-radius:var(--radius-sm); background:var(--surface); color:var(--gray-900); font-size:14px; font-family:'Inter',sans-serif; cursor:pointer; transition:var(--transition); }
+        .page-toolbar .filters select:focus { outline:none; border-color:var(--primary); }
+
+        .btn-primary-sm { padding:10px 18px; background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:#fff; border:none; border-radius:var(--radius-sm); font-size:14px; font-weight:600; cursor:pointer; transition:var(--transition); font-family:'Inter',sans-serif; display:flex; align-items:center; gap:8px; }
+        .btn-primary-sm:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(99,102,241,.3); }
+        .btn-outline-sm { padding:10px 18px; background:var(--surface); color:var(--gray-600); border:2px solid var(--gray-200); border-radius:var(--radius-sm); font-size:14px; font-weight:500; cursor:pointer; transition:var(--transition); font-family:'Inter',sans-serif; display:flex; align-items:center; gap:8px; }
+        .btn-outline-sm:hover { border-color:var(--primary); color:var(--primary); }
+
+        .table-container { background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--gray-200); overflow:hidden; transition:background .3s ease, border-color .3s ease; }
+        .table-container table { width:100%; border-collapse:collapse; }
+        .table-container thead { background:var(--gray-50); }
+        .table-container thead th { padding:12px 16px; text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; color:var(--gray-500); letter-spacing:.5px; border-bottom:2px solid var(--gray-200); cursor:pointer; user-select:none; white-space:nowrap; }
+        .table-container thead th:hover { color:var(--primary); }
+        .table-container thead th .sort-icon { margin-left:4px; opacity:.4; font-size:10px; }
+        .table-container thead th.sorted .sort-icon { opacity:1; color:var(--primary); }
+        .table-container tbody td { padding:12px 16px; border-bottom:1px solid var(--gray-100); font-size:14px; color:var(--gray-700); }
+        .table-container tbody tr:last-child td { border-bottom:none; }
+        .table-container tbody tr:hover { background:var(--gray-50); }
+        .table-container.scrollx { overflow-x:auto; }
+        .table-footer { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-top:1px solid var(--gray-100); font-size:13px; color:var(--gray-500); flex-wrap:wrap; gap:8px; }
+        .table-footer .pager { display:flex; gap:6px; align-items:center; }
+        .table-footer .pager button { width:30px; height:30px; border-radius:8px; border:1px solid var(--gray-200); background:var(--surface); color:var(--gray-600); cursor:pointer; font-size:13px; }
+        .table-footer .pager button:hover:not(:disabled) { border-color:var(--primary); color:var(--primary); }
+        .table-footer .pager button:disabled { opacity:.4; cursor:not-allowed; }
+        .table-footer .pager span { font-weight:600; color:var(--gray-700); padding:0 4px; }
+
+        .student-cell { display:flex; align-items:center; gap:12px; }
+        .student-cell .avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--primary-light)); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:13px; flex-shrink:0; }
+        .student-cell .avatar.purple { background:linear-gradient(135deg,#8b5cf6,#7c3aed); }
+        .student-cell .avatar.pink { background:linear-gradient(135deg,#ec4899,#db2777); }
+        .student-cell .avatar.orange { background:linear-gradient(135deg,#f59e0b,#d97706); }
+        .student-cell .avatar.green { background:linear-gradient(135deg,#22c55e,#16a34a); }
+        .student-cell .name { font-weight:600; color:var(--gray-900); }
+
+        .badge { padding:3px 12px; border-radius:50px; font-size:12px; font-weight:600; display:inline-block; }
+        .badge.success { background:#d1fae5; color:#065f46; }
+        .badge.warning { background:#fef3c7; color:#92400e; }
+        .badge.danger { background:#fce4ec; color:#c62828; }
+        .badge.info { background:#dbeafe; color:#1e40af; }
+        .badge.primary { background:var(--primary-bg); color:var(--primary); }
+
+        .action-btns { display:flex; gap:4px; }
+        .action-btns button { width:30px; height:30px; border:none; border-radius:50%; cursor:pointer; transition:var(--transition); font-size:13px; display:flex; align-items:center; justify-content:center; }
+        .action-btns .view { background:#dbeafe; color:#3b82f6; }
+        .action-btns .view:hover { background:#bfdbfe; transform:scale(1.1); }
+        .action-btns .edit { background:#d1fae5; color:#22c55e; }
+        .action-btns .edit:hover { background:#a7f3d0; transform:scale(1.1); }
+        .action-btns .delete { background:#fce4ec; color:#ef4444; }
+        .action-btns .delete:hover { background:#f8d7da; transform:scale(1.1); }
+        .action-btns .pay { background:#fef3c7; color:#f59e0b; }
+        .action-btns .pay:hover { background:#fde68a; transform:scale(1.1); }
+
+        .courses-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; }
+        .course-card { background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--gray-200); overflow:hidden; transition:var(--transition); }
+        .course-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
+        .course-card .course-image { height:120px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:40px; position:relative; }
+        .course-card .course-image .level { position:absolute; bottom:12px; left:16px; padding:3px 12px; background:rgba(255,255,255,.2); backdrop-filter:blur(10px); border-radius:50px; font-size:11px; font-weight:600; }
+        .course-card .course-image .course-del { position:absolute; top:10px; right:10px; width:28px; height:28px; border-radius:50%; border:none; background:rgba(255,255,255,.25); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+        .course-card .course-image .course-del:hover { background:rgba(239,68,68,.85); }
+        .course-card .course-body { padding:18px 20px 20px; }
+        .course-card .course-body h3 { font-size:17px; font-weight:700; color:var(--gray-900); margin-bottom:2px; }
+        .course-card .course-body .course-meta { display:flex; gap:16px; font-size:13px; color:var(--gray-500); margin-bottom:12px; flex-wrap:wrap; }
+        .course-card .course-body .course-meta span { display:flex; align-items:center; gap:5px; }
+        .course-card .course-body .course-footer { display:flex; justify-content:space-between; align-items:center; padding-top:12px; border-top:1px solid var(--gray-200); }
+        .course-card .course-body .course-footer .price { font-size:18px; font-weight:800; color:var(--primary); }
+        .course-card .course-body .course-footer .btn-course { padding:6px 16px; background:var(--primary); color:#fff; border:none; border-radius:var(--radius-sm); cursor:pointer; font-weight:600; font-family:'Inter',sans-serif; transition:var(--transition); }
+        .course-card .course-body .course-footer .btn-course:hover { background:var(--primary-dark); }
+
+        .reports-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; }
+        .report-card { background:var(--surface); border-radius:var(--radius); padding:28px 20px; box-shadow:var(--shadow); border:1px solid var(--gray-200); text-align:center; transition:var(--transition); cursor:pointer; }
+        .report-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
+        .report-card.selected { border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,.15); }
+        .report-card i { font-size:36px; margin-bottom:8px; display:block; }
+        .report-card h4 { font-size:15px; font-weight:700; color:var(--gray-900); }
+        .report-card p { font-size:13px; color:var(--gray-500); }
+        .report-detail { background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--gray-200); padding:22px 24px; margin-top:18px; }
+        .report-detail h3 { font-size:16px; font-weight:700; margin-bottom:14px; }
+        .mini-stat-row { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+        .mini-stat { background:var(--gray-50); border-radius:var(--radius-sm); padding:12px 18px; flex:1; min-width:140px; }
+        .mini-stat .v { font-family:'Manrope',sans-serif; font-size:20px; font-weight:800; color:var(--gray-900); }
+        .mini-stat .l { font-size:12px; color:var(--gray-500); }
+
+        /* Notifications dropdown */
+        .notif-wrapper { position:relative; }
+        .notif-panel { position:absolute; top:48px; right:0; width:340px; max-height:420px; overflow-y:auto; background:var(--surface); border:1px solid var(--gray-200); border-radius:var(--radius); box-shadow:var(--shadow-lg); z-index:200; display:none; flex-direction:column; animation:fadeIn .2s ease-out; }
+        .notif-panel.open { display:flex; }
+        .notif-panel-header { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid var(--gray-100); flex-shrink:0; }
+        .notif-panel-header h4 { font-size:14px; font-weight:700; color:var(--gray-900); }
+        .notif-panel-header button { background:none; border:none; color:var(--primary); font-size:12px; font-weight:600; cursor:pointer; }
+        .notif-panel-header button:hover { text-decoration:underline; }
+        .notif-list { padding:6px; }
+        .notif-item { display:flex; gap:10px; padding:10px; border-radius:var(--radius-sm); cursor:pointer; transition:var(--transition); align-items:flex-start; }
+        .notif-item:hover { background:var(--gray-50); }
+        .notif-item .notif-icon { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+        .notif-item .notif-icon.danger { background:#fce4ec; color:#ef4444; }
+        .notif-item .notif-icon.warning { background:#fef3c7; color:#f59e0b; }
+        .notif-item .notif-icon.info { background:#dbeafe; color:#3b82f6; }
+        .notif-item .notif-body { flex:1; min-width:0; }
+        .notif-item .notif-body p { font-size:13px; color:var(--gray-700); margin:0; }
+        .notif-item .notif-body p strong { color:var(--gray-900); }
+        .notif-item .notif-body .notif-time { font-size:11px; color:var(--gray-400); }
+
+        /* Attendance summary + bulk actions */
+        .att-summary-row { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+        .att-summary-card { flex:1; min-width:110px; background:var(--gray-50); border-radius:var(--radius-sm); padding:12px 16px; text-align:center; }
+        .att-summary-card .v { font-family:'Manrope',sans-serif; font-size:22px; font-weight:800; color:var(--gray-900); }
+        .att-summary-card .l { font-size:12px; color:var(--gray-500); }
+        .att-bulk-actions { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; justify-content:center; }
+
+        /* Horizontal bar rows (used in reports) */
+        .hbar-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+        .hbar-label { width:150px; font-size:13px; color:var(--gray-700); flex-shrink:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .hbar-track { flex:1; height:10px; background:var(--gray-100); border-radius:6px; overflow:hidden; }
+        .hbar-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--primary-light)); border-radius:6px; transition:width .6s ease; }
+        .hbar-fill.warning { background:linear-gradient(90deg,#f59e0b,#fbbf24); }
+        .hbar-value { width:90px; text-align:right; font-size:12px; font-weight:600; color:var(--gray-600); flex-shrink:0; }
+        .report-detail h4.section-label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--gray-400); margin:18px 0 10px; }
+
+        .profile-container { max-width:560px; }
+        .profile-card { background:var(--surface); border-radius:var(--radius); padding:28px 32px; box-shadow:var(--shadow); border:1px solid var(--gray-200); }
+        .profile-card .profile-header { display:flex; align-items:center; gap:24px; margin-bottom:24px; padding-bottom:20px; border-bottom:1px solid var(--gray-200); }
+        .profile-card .profile-header .profile-avatar { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--primary-light)); display:flex; align-items:center; justify-content:center; color:#fff; font-size:32px; font-weight:800; flex-shrink:0; box-shadow:0 8px 30px rgba(99,102,241,.3); }
+        .profile-card .profile-header .profile-info h2 { font-size:22px; font-weight:800; color:var(--gray-900); }
+        .profile-card .profile-header .profile-info p { color:var(--gray-500); font-size:14px; }
+        .profile-card .profile-details { display:flex; flex-direction:column; gap:6px; margin-bottom:20px; }
+        .profile-card .profile-details .detail-item { display:flex; justify-content:space-between; padding:12px 16px; background:var(--gray-50); border-radius:var(--radius-sm); }
+        .profile-card .profile-details .detail-item .label { color:var(--gray-500); font-size:14px; }
+        .profile-card .profile-details .detail-item .value { font-weight:600; color:var(--gray-900); }
+        .profile-card .profile-actions { display:flex; gap:12px; }
+        .profile-card .profile-actions button { flex:1; padding:10px; border:none; border-radius:var(--radius-sm); cursor:pointer; font-weight:600; font-family:'Inter',sans-serif; font-size:14px; transition:var(--transition); }
+        .profile-card .profile-actions .btn-edit { background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:#fff; }
+        .profile-card .profile-actions .btn-edit:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(99,102,241,.3); }
+        .profile-card .profile-actions .btn-password { background:var(--gray-200); color:var(--gray-700); }
+        .profile-card .profile-actions .btn-password:hover { background:var(--gray-300); }
+
+        .settings-container { max-width:660px; }
+        .settings-group { background:var(--surface); border-radius:var(--radius); padding:24px 28px; box-shadow:var(--shadow); border:1px solid var(--gray-200); margin-bottom:16px; }
+        .settings-group h3 { font-size:16px; font-weight:700; color:var(--gray-900); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+        .settings-group .setting-item { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--gray-100); }
+        .settings-group .setting-item:last-child { border-bottom:none; }
+        .settings-group .setting-item .setting-label { font-size:14px; color:var(--gray-600); font-weight:500; }
+        .settings-group .setting-item select, .settings-group .setting-item input { padding:6px 12px; border:2px solid var(--gray-200); border-radius:var(--radius-sm); font-size:14px; font-family:'Inter',sans-serif; background:var(--surface); color:var(--gray-900); min-width:120px; }
+        .settings-group .setting-item select:focus, .settings-group .setting-item input:focus { outline:none; border-color:var(--primary); }
+        .settings-group .toggle-switch { width:44px; height:24px; background:var(--gray-300); border-radius:50px; cursor:pointer; transition:var(--transition); position:relative; }
+        .settings-group .toggle-switch.active { background:var(--primary); }
+        .settings-group .toggle-switch::after { content:''; position:absolute; top:3px; left:3px; width:18px; height:18px; background:#fff; border-radius:50%; transition:var(--transition); box-shadow:0 2px 4px rgba(0,0,0,.1); }
+        .settings-group .toggle-switch.active::after { left:23px; }
+        .settings-group .add-user-btn { width:100%; padding:12px; border:2px dashed var(--gray-300); border-radius:var(--radius-sm); background:none; color:var(--gray-500); cursor:pointer; transition:var(--transition); font-size:14px; font-weight:500; font-family:'Inter',sans-serif; margin-top:12px; }
+        .settings-group .add-user-btn:hover { border-color:var(--primary); color:var(--primary); background:var(--primary-bg); }
+        .settings-group .user-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--gray-50); border-radius:var(--radius-sm); margin-bottom:6px; }
+        .settings-group .user-row .user-info { display:flex; align-items:center; gap:12px; }
+        .settings-group .user-row .user-info .mini-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--primary-light)); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:12px; }
+        .settings-group .user-row .del-user { background:none; border:none; color:var(--gray-400); cursor:pointer; width:28px; height:28px; border-radius:50%; }
+        .settings-group .user-row .del-user:hover { color:var(--danger); background:rgba(239,68,68,.1); }
+
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,.5); backdrop-filter:blur(6px); z-index:1000; align-items:center; justify-content:center; padding:20px; }
+        .modal-overlay.open { display:flex; }
+        .modal-content { background:var(--surface); border-radius:24px; padding:32px; max-width:480px; width:100%; max-height:90vh; overflow-y:auto; animation:slideUp .3s ease-out; box-shadow:0 30px 80px rgba(0,0,0,.2); }
+        .modal-content .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+        .modal-content .modal-header h2 { font-size:20px; font-weight:800; color:var(--gray-900); }
+        .modal-content .modal-header .close-btn { width:36px; height:36px; border:none; background:var(--gray-100); border-radius:50%; font-size:18px; cursor:pointer; transition:var(--transition); color:var(--gray-500); }
+        .modal-content .modal-header .close-btn:hover { background:var(--gray-200); transform:rotate(90deg); }
+        .modal-content .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+        .modal-content .form-group.full { grid-column:1/-1; }
+        .modal-content .form-group label { display:block; font-size:13px; font-weight:600; color:var(--gray-700); margin-bottom:4px; }
+        .modal-content .form-group input, .modal-content .form-group select { width:100%; padding:10px 12px; border:2px solid var(--gray-200); border-radius:var(--radius-sm); font-size:14px; font-family:'Inter',sans-serif; transition:var(--transition); background:var(--surface); color:var(--gray-900); }
+        .modal-content .form-group input:focus, .modal-content .form-group select:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 4px rgba(99,102,241,.1); }
+        .modal-content .form-group input.invalid, .modal-content .form-group select.invalid { border-color:var(--danger); }
+        .modal-content .form-group .field-error { display:none; font-size:12px; color:var(--danger); margin-top:4px; }
+        .modal-content .form-group.has-error .field-error { display:block; }
+        .modal-content .modal-actions { display:flex; gap:12px; margin-top:20px; }
+        .modal-content .modal-actions button { flex:1; padding:12px; border:none; border-radius:var(--radius-sm); cursor:pointer; font-weight:600; font-family:'Inter',sans-serif; font-size:14px; transition:var(--transition); }
+        .modal-content .modal-actions .btn-cancel { background:var(--gray-200); color:var(--gray-700); }
+        .modal-content .modal-actions .btn-cancel:hover { background:var(--gray-300); }
+        .modal-content .modal-actions .btn-submit { background:linear-gradient(135deg,var(--primary),var(--primary-light)); color:#fff; }
+        .modal-content .modal-actions .btn-submit:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(99,102,241,.3); }
+
+        .toast-stack { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:10px; align-items:flex-end; }
+        .toast { background:var(--surface); padding:14px 22px; border-radius:12px; box-shadow:0 20px 60px rgba(0,0,0,.15); border-left:4px solid var(--info); animation:slideUp .4s ease-out; font-family:'Inter',sans-serif; font-size:14px; font-weight:500; color:var(--gray-900); max-width:380px; display:flex; align-items:center; gap:10px; }
+
+        .skeleton { position:relative; overflow:hidden; background:var(--gray-100); border-radius:8px; }
+        .skeleton::after { content:''; position:absolute; inset:0; transform:translateX(-100%); background:linear-gradient(90deg, transparent, rgba(255,255,255,.4), transparent); animation:shimmer 1.4s infinite; }
+        @keyframes shimmer { 100% { transform:translateX(100%); } }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+        }
+
+        @media (max-width:1024px) { .dashboard-grid { grid-template-columns:1fr; } }
+        @media (max-width:768px) {
+            .sidebar { transform:translateX(-100%); width:280px; }
+            .sidebar.open { transform:translateX(0); }
+            .main-content { margin-left:0; }
+            .topbar { padding:0 16px; height:60px; }
+            .topbar-left .toggle-sidebar { display:block; }
+            .topbar-left .page-title h1 { font-size:17px; }
+            .topbar-left .page-title p { font-size:12px; }
+            .topbar-right .profile-btn .name { display:none; }
+            .page-content { padding:16px; }
+            .stats-grid { grid-template-columns:repeat(2,1fr); gap:12px; }
+            .stat-card { padding:16px; }
+            .stat-card .stat-value { font-size:22px; }
+            .page-toolbar { flex-direction:column; align-items:stretch; }
+            .page-toolbar .filters { flex-wrap:wrap; }
+            .page-toolbar .filters select { flex:1; min-width:100px; }
+            .login-container { padding:28px 20px; margin:12px; }
+            .profile-card .profile-header { flex-direction:column; text-align:center; }
+            .profile-card .profile-actions { flex-direction:column; }
+            .settings-group { padding:16px 18px; }
+            .settings-group .setting-item { flex-direction:column; align-items:flex-start; gap:8px; }
+            .settings-group .setting-item select, .settings-group .setting-item input { width:100%; min-width:unset; }
+            .modal-content { padding:20px; }
+            .modal-content .form-grid { grid-template-columns:1fr; }
+            .modal-content .modal-actions { flex-direction:column; }
+            .courses-grid { grid-template-columns:1fr; }
+            .reports-grid { grid-template-columns:1fr 1fr; }
+            .quick-actions { grid-template-columns:1fr 1fr; }
+            .dashboard-card { padding:16px; }
+            .class-item { flex-direction:column; align-items:flex-start; gap:6px; }
+            .toast-stack { left:16px; right:16px; align-items:stretch; }
+            .toast { max-width:none; }
+        }
+        @media (max-width:480px) {
+            .stats-grid { grid-template-columns:1fr; }
+            .reports-grid { grid-template-columns:1fr; }
+            .topbar-right .icon-btn { width:34px; height:34px; font-size:14px; }
+            .topbar-right .divider { display:none; }
+            .table-container.scrollx table { min-width:650px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN -->
+    <div id="loginPage" class="login-page">
+        <div class="login-container">
+            <div class="login-logo">
+                <div class="icon-box"><i class="fas fa-graduation-cap"></i></div>
+                <h1>EduCRM Pro</h1>
+                <p>O'quv markazi boshqaruv tizimi</p>
+            </div>
+            <div class="login-error" id="loginError">Email yoki parol noto'g'ri!</div>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" value="admin@example.com" placeholder="admin@example.com" required autocomplete="username">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Parol</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" value="password123" placeholder="••••••••" required autocomplete="current-password">
+                        <button type="button" class="toggle-password" id="togglePwBtn" aria-label="Parolni ko'rsatish"><i class="fas fa-eye" id="toggleIcon"></i></button>
+                    </div>
+                </div>
+                <div class="login-options">
+                    <label><input type="checkbox" id="rememberMe"> Eslab qolish</label>
+                    <a href="#" id="forgotPwLink">Parolni unutdingizmi?</a>
+                </div>
+                <button type="submit" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Kirish</button>
+                <div class="login-demo">Demo: <code>admin@example.com</code> / <code>password123</code></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div id="appContainer" class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+                <h2>EduCRM Pro</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-label">Asosiy</div>
+                <a class="nav-item active" data-page="dashboard" tabindex="0"><i class="fas fa-th-large"></i> Dashboard</a>
+                <a class="nav-item" data-page="students" tabindex="0"><i class="fas fa-users"></i> O'quvchilar <span class="badge-nav" id="studentCount">0</span></a>
+                <a class="nav-item" data-page="teachers" tabindex="0"><i class="fas fa-user-tie"></i> O'qituvchilar <span class="badge-nav" id="teacherCount">0</span></a>
+                <a class="nav-item" data-page="courses" tabindex="0"><i class="fas fa-book-open"></i> Kurslar <span class="badge-nav" id="courseCount">0</span></a>
+                <div class="nav-label" style="margin-top:12px;">Boshqaruv</div>
+                <a class="nav-item" data-page="groups" tabindex="0"><i class="fas fa-users-cog"></i> Guruhlar <span class="badge-nav" id="groupCount">0</span></a>
+                <a class="nav-item" data-page="attendance" tabindex="0"><i class="fas fa-calendar-check"></i> Davomat</a>
+                <a class="nav-item" data-page="payments" tabindex="0"><i class="fas fa-credit-card"></i> To'lovlar</a>
+                <a class="nav-item" data-page="salary" tabindex="0"><i class="fas fa-money-bill-wave"></i> Ish Haqi</a>
+                <div class="nav-label" style="margin-top:12px;">Hisobot</div>
+                <a class="nav-item" data-page="reports" tabindex="0"><i class="fas fa-chart-bar"></i> Hisobotlar</a>
+                <div class="nav-label" style="margin-top:12px;">Sozlamalar</div>
+                <a class="nav-item" data-page="profile" tabindex="0"><i class="fas fa-user-circle"></i> Profil</a>
+                <a class="nav-item" data-page="settings" tabindex="0"><i class="fas fa-cog"></i> Sozlamalar</a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="sidebarAvatar">AU</div>
+                    <div class="user-details">
+                        <div class="name" id="sidebarName">Admin User</div>
+                        <div class="role">Super Admin</div>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn" title="Chiqish"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="toggle-sidebar" id="sidebarToggleBtn" aria-label="Menyu"><i class="fas fa-bars"></i></button>
+                    <div class="page-title">
+                        <h1 id="pageTitle">📊 Dashboard</h1>
+                        <p id="pageSubtitle">O'quv markazi faoliyati haqida umumiy ma'lumot</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="icon-btn" id="themeToggleBtn" title="Tema"><i class="fas fa-moon" id="themeIcon"></i></button>
+                    <div class="notif-wrapper">
+                        <button class="icon-btn" id="notifBtn" title="Bildirishnomalar"><i class="fas fa-bell"></i><span class="badge-dot" id="notifDot" style="display:none;"></span></button>
+                        <div class="notif-panel" id="notifPanel">
+                            <div class="notif-panel-header">
+                                <h4>Bildirishnomalar</h4>
+                                <button id="notifMarkAllBtn" type="button">Barchasini o'qilgan deb belgilash</button>
+                            </div>
+                            <div class="notif-list" id="notifList"></div>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <button class="profile-btn" data-page="profile">
+                        <div class="avatar" id="topbarAvatar">AU</div>
+                        <span class="name" id="topbarName">Admin</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="page-content">
+
+                <!-- DASHBOARD -->
+                <div id="page-dashboard" class="page-section active">
+                    <div class="stats-grid" id="statsGrid"></div>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-chart-line" style="color:var(--primary);margin-right:8px;"></i> Daromad Dinamikasi</h3>
+                                <span class="card-action">Oxirgi 7 oy</span>
+                            </div>
+                            <div class="bar-chart" id="revenueChart"></div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="card-header"><h3><i class="fas fa-bell" style="color:var(--warning);margin-right:8px;"></i> So'nggi Faoliyatlar</h3></div>
+                            <div class="activity-list" id="activityList"></div>
+                        </div>
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <div class="card-header"><h3><i class="fas fa-calendar-day" style="color:var(--primary);margin-right:8px;"></i> Bugungi Darslar</h3></div>
+                            <div id="todayClasses"></div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="card-header"><h3><i class="fas fa-bolt" style="color:var(--warning);margin-right:8px;"></i> Tezkor Amallar</h3></div>
+                            <div class="quick-actions">
+                                <button class="quick-action-btn blue" data-action="add-student"><i class="fas fa-user-plus"></i> O'quvchi qo'shish</button>
+                                <button class="quick-action-btn green" data-action="add-group"><i class="fas fa-users-cog"></i> Guruh yaratish</button>
+                                <button class="quick-action-btn purple" data-goto="attendance"><i class="fas fa-calendar-check"></i> Davomat qayd etish</button>
+                                <button class="quick-action-btn orange" data-action="add-payment"><i class="fas fa-credit-card"></i> To'lov qabul qilish</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STUDENTS -->
+                <div id="page-students" class="page-section">
+                    <div class="page-toolbar">
+                        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="studentSearch" placeholder="O'quvchini qidirish..."></div>
+                        <div class="filters">
+                            <select id="studentStatusFilter">
+                                <option value="all">📋 Barcha holatlar</option>
+                                <option value="active">✅ Faol</option>
+                                <option value="inactive">❌ Faol emas</option>
+                            </select>
+                            <select id="studentGroupFilter">
+                                <option value="all">👥 Barcha guruhlar</option>
+                            </select>
+                            <button class="btn-outline-sm" id="exportStudentsBtn"><i class="fas fa-download"></i> Eksport</button>
+                            <button class="btn-primary-sm" data-action="add-student"><i class="fas fa-plus"></i> Yangi o'quvchi</button>
+                        </div>
+                    </div>
+                    <div class="table-container scrollx">
+                        <table>
+                            <thead><tr>
+                                <th data-sort="name">O'quvchi <i class="fas fa-sort sort-icon"></i></th>
+                                <th>Kontakt</th>
+                                <th data-sort="course">Kurs <i class="fas fa-sort sort-icon"></i></th>
+                                <th data-sort="group">Guruh <i class="fas fa-sort sort-icon"></i></th>
+                                <th data-sort="status">Holat <i class="fas fa-sort sort-icon"></i></th>
+                                <th>To'lov</th>
+                                <th>Amallar</th>
+                            </tr></thead>
+                            <tbody id="studentsTableBody"></tbody>
+                        </table>
+                        <div class="table-footer" id="studentsTableFooter"></div>
+                    </div>
+                </div>
+
+                <!-- TEACHERS -->
+                <div id="page-teachers" class="page-section">
+                    <div class="page-toolbar">
+                        <div><h2 style="font-size:20px;font-weight:800;color:var(--gray-900);">👨‍🏫 O'qituvchilar Boshqaruvi</h2><p style="color:var(--gray-500);font-size:14px;" id="teacherSubtitle">Jami 0 ta o'qituvchi</p></div>
+                        <div class="filters"><button class="btn-primary-sm" data-action="add-teacher"><i class="fas fa-plus"></i> Yangi o'qituvchi</button></div>
+                    </div>
+                    <div class="table-container scrollx">
+                        <table>
+                            <thead><tr><th>O'qituvchi</th><th>Mutaxassislik</th><th>Tajriba</th><th>Guruhlar</th><th>Reyting</th><th>Amallar</th></tr></thead>
+                            <tbody id="teachersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- COURSES -->
+                <div id="page-courses" class="page-section">
+                    <div class="page-toolbar">
+                        <div><h2 style="font-size:20px;font-weight:800;color:var(--gray-900);">📚 Kurslar Boshqaruvi</h2><p style="color:var(--gray-500);font-size:14px;" id="courseSubtitle">Jami 0 ta kurs</p></div>
+                        <div class="filters"><button class="btn-primary-sm" data-action="add-course"><i class="fas fa-plus"></i> Yangi kurs</button></div>
+                    </div>
+                    <div class="courses-grid" id="coursesGrid"></div>
+                </div>
+
+                <!-- GROUPS -->
+                <div id="page-groups" class="page-section">
+                    <div class="page-toolbar">
+                        <div><h2 style="font-size:20px;font-weight:800;color:var(--gray-900);">👥 Guruhlar Boshqaruvi</h2><p style="color:var(--gray-500);font-size:14px;" id="groupSubtitle">Jami 0 ta guruh</p></div>
+                        <div class="filters"><button class="btn-primary-sm" data-action="add-group"><i class="fas fa-plus"></i> Yangi guruh</button></div>
+                    </div>
+                    <div class="table-container scrollx">
+                        <table>
+                            <thead><tr><th>Guruh nomi</th><th>Kurs</th><th>O'qituvchi</th><th>O'quvchilar</th><th>Jadval</th><th>Holat</th><th>Amallar</th></tr></thead>
+                            <tbody id="groupsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ATTENDANCE -->
+                <div id="page-attendance" class="page-section">
+                    <div class="page-toolbar">
+                        <div><h2 style="font-size:20px;font-weight:800;color:var(--gray-900);">📅 Davomat Boshqaruvi</h2><p style="color:var(--gray-500);font-size:14px;">Bugungi davomat: <strong style="color:var(--success);" id="todayAttendanceCount">0</strong> o'quvchi</p></div>
+                    </div>
+                    <div class="dashboard-card" style="padding:28px;">
+                        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;">
+                            <input type="date" id="attendanceDate" style="padding:10px 14px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:'Inter',sans-serif;background:var(--surface);color:var(--gray-900);">
+                            <select id="attendanceGroupSelect" style="padding:10px 14px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:'Inter',sans-serif;min-width:150px;background:var(--surface);color:var(--gray-900);">
+                                <option value="">Guruh tanlang</option>
+                            </select>
+                            <button class="btn-primary-sm" id="loadAttendanceBtn">Ko'rish</button>
+                        </div>
+                        <div id="attendanceRoster"></div>
+                    </div>
+                </div>
+
+                <!-- PAYMENTS -->
+                <div id="page-payments" class="page-section">
+                    <div class="page-toolbar">
+                        <div><h2 style="font-size:20px;font-weight:800;color:var(--gray-900);">💰 To'lovlar Boshqaruvi</h2><p style="color:var(--gray-500);font-size:14px;">Jami: <strong style="color:var(--primary);" id="totalRevenueLabel">0 so'm</strong></p></div>
+                        <div class="filters"><button class="btn-primary-sm" data-action="add-payment"><i class="fas fa-plus"></i> To'lov qabul qilish</button></div>
+                    </div>
+                    <div class="table-container scrollx">
+                        <table>
+                            <thead><tr><th>O'quvchi</th><th>Summa</th><th>Sana</th><th>To'lov turi</th><th>Holat</th><th>Amallar</th></tr></thead>
+                            <tbody id="paymentsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SALARY -->
+                <div id="page-salary" class="page-section">
+                    <div class="page-toolbar">
+                        <div><h2 style="font-size:20px;font-weight:800;color:var(--gray-900);">💵 Ish Haqi Boshqaruvi</h2><p style="color:var(--gray-500);font-size:14px;">Jami: <strong style="color:var(--primary);" id="totalSalaryLabel">0 so'm</strong></p></div>
+                    </div>
+                    <div class="table-container scrollx">
+                        <table>
+                            <thead><tr><th>O'qituvchi</th><th>Stavka</th><th>Ishlagan soat</th><th>Bonus</th><th>Jami</th><th>Holat</th><th>Amallar</th></tr></thead>
+                            <tbody id="salaryTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- REPORTS -->
+                <div id="page-reports" class="page-section">
+                    <div class="page-toolbar">
+                        <div><h2 style="font-size:20px;font-weight:800;color:var(--gray-900);">📊 Hisobotlar</h2><p style="color:var(--gray-500);font-size:14px;">Barcha hisobot turlari</p></div>
+                        <div class="filters"><button class="btn-primary-sm" id="downloadReportBtn"><i class="fas fa-download"></i> Hisobot yuklab olish</button></div>
+                    </div>
+                    <div class="reports-grid">
+                        <div class="report-card" data-report="students"><i class="fas fa-users" style="color:var(--primary);"></i><h4>O'quvchilar hisoboti</h4><p>Umumiy va guruh bo'yicha</p></div>
+                        <div class="report-card" data-report="attendance"><i class="fas fa-calendar-check" style="color:var(--success);"></i><h4>Davomat hisoboti</h4><p>Oylik va o'quvchi bo'yicha</p></div>
+                        <div class="report-card" data-report="finance"><i class="fas fa-money-bill-wave" style="color:var(--warning);"></i><h4>Moliyaviy hisobot</h4><p>Daromad va xarajatlar</p></div>
+                        <div class="report-card" data-report="courses"><i class="fas fa-book-open" style="color:var(--purple);"></i><h4>Kurslar hisoboti</h4><p>Mashhurlik va samaradorlik</p></div>
+                    </div>
+                    <div class="report-detail" id="reportDetail" style="display:none;"></div>
+                </div>
+
+                <!-- PROFILE -->
+                <div id="page-profile" class="page-section">
+                    <h2 style="font-size:20px;font-weight:800;color:var(--gray-900);margin-bottom:20px;">👤 Foydalanuvchi Profili</h2>
+                    <div class="profile-container">
+                        <div class="profile-card">
+                            <div class="profile-header">
+                                <div class="profile-avatar" id="profileAvatarBig">AU</div>
+                                <div class="profile-info">
+                                    <h2 id="profileNameBig">Admin User</h2>
+                                    <p id="profileEmailBig">admin@example.com</p>
+                                    <span class="badge primary">Super Administrator</span>
+                                </div>
+                            </div>
+                            <div class="profile-details">
+                                <div class="detail-item"><span class="label">Ism</span><span class="value" id="profileDetailName">Admin User</span></div>
+                                <div class="detail-item"><span class="label">Email</span><span class="value" id="profileDetailEmail">admin@example.com</span></div>
+                                <div class="detail-item"><span class="label">Rol</span><span class="value"><span class="badge primary">Administrator</span></span></div>
+                                <div class="detail-item"><span class="label">Ro'yxatdan o'tgan</span><span class="value">2024-01-01</span></div>
+                            </div>
+                            <div class="profile-actions">
+                                <button class="btn-edit" id="editProfileBtn"><i class="fas fa-edit"></i> Tahrirlash</button>
+                                <button class="btn-password" id="changePwBtn"><i class="fas fa-key"></i> Parolni o'zgartirish</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SETTINGS -->
+                <div id="page-settings" class="page-section">
+                    <h2 style="font-size:20px;font-weight:800;color:var(--gray-900);margin-bottom:20px;">⚙️ Sozlamalar</h2>
+                    <div class="settings-container">
+                        <div class="settings-group">
+                            <h3><i class="fas fa-globe" style="color:var(--primary);"></i> Umumiy sozlamalar</h3>
+                            <div class="setting-item"><span class="setting-label">Tizim nomi</span><input type="text" id="settingSystemName" value="EduCRM Pro"></div>
+                            <div class="setting-item"><span class="setting-label">Til</span><select id="settingLang"><option>O'zbek</option><option>Русский</option><option>English</option></select></div>
+                            <div class="setting-item"><span class="setting-label">Valyuta</span><select id="settingCurrency"><option>UZS</option><option>USD</option></select></div>
+                        </div>
+                        <div class="settings-group">
+                            <h3><i class="fas fa-users-cog" style="color:var(--purple);"></i> Foydalanuvchilar</h3>
+                            <div id="usersList"></div>
+                            <button class="add-user-btn" id="addUserBtn"><i class="fas fa-plus"></i> Yangi foydalanuvchi qo'shish</button>
+                        </div>
+                        <div class="settings-group">
+                            <h3><i class="fas fa-bell" style="color:var(--warning);"></i> Xabar sozlamalari</h3>
+                            <div class="setting-item"><span class="setting-label">SMS xabarlar</span><div class="toggle-switch active" data-toggle="sms"></div></div>
+                            <div class="setting-item"><span class="setting-label">Email xabarlar</span><div class="toggle-switch active" data-toggle="email"></div></div>
+                            <div class="setting-item"><span class="setting-label">Push bildirishnomalar</span><div class="toggle-switch" data-toggle="push"></div></div>
+                        </div>
+                        <div class="settings-group">
+                            <h3><i class="fas fa-database" style="color:var(--danger);"></i> Ma'lumotlar</h3>
+                            <p style="font-size:13px;color:var(--gray-500);margin-bottom:12px;">Barcha ma'lumotlarni dastlabki holatga qaytarish.</p>
+                            <button class="add-user-btn" id="resetDataBtn" style="border-color:var(--danger);color:var(--danger);"><i class="fas fa-rotate-left"></i> Zavod sozlamalariga qaytarish</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: Add/Edit Student -->
+    <div class="modal-overlay" id="studentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="studentModalTitle"><i class="fas fa-user-plus" style="color:var(--primary);margin-right:10px;"></i> Yangi O'quvchi Qo'shish</h2>
+                <button class="close-btn" data-close="studentModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="studentForm" novalidate>
+                <input type="hidden" id="studentEditId">
+                <div class="form-grid">
+                    <div class="form-group"><label>Ism</label><input type="text" id="studentFirstName" required><span class="field-error">Ismni kiriting</span></div>
+                    <div class="form-group"><label>Familiya</label><input type="text" id="studentLastName" required><span class="field-error">Familiyani kiriting</span></div>
+                    <div class="form-group full"><label>Telefon</label><input type="tel" id="studentPhone" placeholder="+998 90 123 45 67" required><span class="field-error">To'g'ri telefon raqam kiriting</span></div>
+                    <div class="form-group full"><label>Email</label><input type="email" id="studentEmail" required><span class="field-error">To'g'ri email kiriting</span></div>
+                    <div class="form-group"><label>Kurs</label><select id="studentCourse"></select></div>
+                    <div class="form-group"><label>Guruh</label><select id="studentGroup"></select></div>
+                    <div class="form-group"><label>Holat</label><select id="studentStatus"><option value="active">Faol</option><option value="inactive">Faol emas</option></select></div>
+                    <div class="form-group"><label>To'lov holati</label><select id="studentPaymentStatus"><option value="paid">To'langan</option><option value="partial">Qisman</option><option value="unpaid">To'lanmagan</option></select></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-close="studentModal">Bekor qilish</button>
+                    <button type="submit" class="btn-submit"><i class="fas fa-check"></i> Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Add/Edit Teacher -->
+    <div class="modal-overlay" id="teacherModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="teacherModalTitle"><i class="fas fa-user-tie" style="color:var(--primary);margin-right:10px;"></i> Yangi O'qituvchi</h2>
+                <button class="close-btn" data-close="teacherModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="teacherForm" novalidate>
+                <input type="hidden" id="teacherEditId">
+                <div class="form-grid">
+                    <div class="form-group"><label>Ism</label><input type="text" id="teacherFirstName" required><span class="field-error">Ismni kiriting</span></div>
+                    <div class="form-group"><label>Familiya</label><input type="text" id="teacherLastName" required><span class="field-error">Familiyani kiriting</span></div>
+                    <div class="form-group full"><label>Mutaxassislik</label><input type="text" id="teacherSpecialty" placeholder="M: Frontend" required><span class="field-error">Mutaxassislikni kiriting</span></div>
+                    <div class="form-group"><label>Tajriba (yil)</label><input type="number" id="teacherExperience" min="0" value="1" required></div>
+                    <div class="form-group"><label>Reyting</label><input type="number" id="teacherRating" min="0" max="5" step="0.1" value="4.5" required></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-close="teacherModal">Bekor qilish</button>
+                    <button type="submit" class="btn-submit"><i class="fas fa-check"></i> Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Add/Edit Course -->
+    <div class="modal-overlay" id="courseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="courseModalTitle"><i class="fas fa-book-open" style="color:var(--primary);margin-right:10px;"></i> Yangi Kurs</h2>
+                <button class="close-btn" data-close="courseModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="courseForm" novalidate>
+                <input type="hidden" id="courseEditId">
+                <div class="form-grid">
+                    <div class="form-group full"><label>Kurs nomi</label><input type="text" id="courseName" required><span class="field-error">Kurs nomini kiriting</span></div>
+                    <div class="form-group"><label>Davomiyligi (oy)</label><input type="number" id="courseDuration" min="1" value="6" required></div>
+                    <div class="form-group"><label>Narxi (so'm)</label><input type="number" id="coursePrice" min="0" value="2000000" required></div>
+                    <div class="form-group"><label>Daraja</label><select id="courseLevel"><option>Boshlang'ich</option><option>O'rta</option><option>Yuqori</option></select></div>
+                    <div class="form-group"><label>Rang</label><select id="courseColor">
+                        <option value="linear-gradient(135deg,#6366f1,#818cf8)">Indigo</option>
+                        <option value="linear-gradient(135deg,#22c55e,#16a34a)">Yashil</option>
+                        <option value="linear-gradient(135deg,#8b5cf6,#7c3aed)">Binafsha</option>
+                        <option value="linear-gradient(135deg,#f59e0b,#d97706)">Sariq</option>
+                        <option value="linear-gradient(135deg,#ec4899,#db2777)">Pushti</option>
+                    </select></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-close="courseModal">Bekor qilish</button>
+                    <button type="submit" class="btn-submit"><i class="fas fa-check"></i> Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Add/Edit Group -->
+    <div class="modal-overlay" id="groupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="groupModalTitle"><i class="fas fa-users-cog" style="color:var(--primary);margin-right:10px;"></i> Yangi Guruh</h2>
+                <button class="close-btn" data-close="groupModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="groupForm" novalidate>
+                <input type="hidden" id="groupEditId">
+                <div class="form-grid">
+                    <div class="form-group full"><label>Guruh nomi</label><input type="text" id="groupName" placeholder="M: FD-2024" required><span class="field-error">Guruh nomini kiriting</span></div>
+                    <div class="form-group"><label>Kurs</label><select id="groupCourse"></select></div>
+                    <div class="form-group"><label>O'qituvchi</label><select id="groupTeacher"></select></div>
+                    <div class="form-group"><label>Sig'im</label><input type="number" id="groupCapacity" min="1" value="15" required></div>
+                    <div class="form-group"><label>Holat</label><select id="groupStatus"><option value="active">Faol</option><option value="pending">Kutilmoqda</option></select></div>
+                    <div class="form-group full"><label>Jadval</label><input type="text" id="groupSchedule" placeholder="M: Dushanba, Chorshanba 10:00" required><span class="field-error">Jadvalni kiriting</span></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-close="groupModal">Bekor qilish</button>
+                    <button type="submit" class="btn-submit"><i class="fas fa-check"></i> Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Add Payment -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-credit-card" style="color:var(--primary);margin-right:10px;"></i> To'lov Qabul Qilish</h2>
+                <button class="close-btn" data-close="paymentModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="paymentForm" novalidate>
+                <div class="form-grid">
+                    <div class="form-group full"><label>O'quvchi</label><select id="paymentStudent" required></select></div>
+                    <div class="form-group"><label>Summa (so'm)</label><input type="number" id="paymentAmount" min="1" required><span class="field-error">Summani kiriting</span></div>
+                    <div class="form-group"><label>Sana</label><input type="date" id="paymentDate" required></div>
+                    <div class="form-group full"><label>To'lov turi</label><select id="paymentType"><option value="Oylik">Oylik</option><option value="Qisman">Qisman</option><option value="Kurs uchun to'liq">Kurs uchun to'liq</option></select></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-close="paymentModal">Bekor qilish</button>
+                    <button type="submit" class="btn-submit"><i class="fas fa-check"></i> Qabul qilish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: View details (generic) -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="viewModalTitle"><i class="fas fa-eye" style="color:var(--primary);margin-right:10px;"></i> Tafsilotlar</h2>
+                <button class="close-btn" data-close="viewModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="viewModalBody"></div>
+        </div>
+    </div>
+
+    <!-- MODAL: Edit profile -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-edit" style="color:var(--primary);margin-right:10px;"></i> Profilni Tahrirlash</h2>
+                <button class="close-btn" data-close="profileModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="profileForm" novalidate>
+                <div class="form-grid">
+                    <div class="form-group full"><label>Ism Familiya</label><input type="text" id="profileEditName" required></div>
+                    <div class="form-group full"><label>Email</label><input type="email" id="profileEditEmail" required></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-close="profileModal">Bekor qilish</button>
+                    <button type="submit" class="btn-submit"><i class="fas fa-check"></i> Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Change password -->
+    <div class="modal-overlay" id="passwordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-key" style="color:var(--primary);margin-right:10px;"></i> Parolni O'zgartirish</h2>
+                <button class="close-btn" data-close="passwordModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="passwordForm" novalidate>
+                <div class="form-grid">
+                    <div class="form-group full"><label>Joriy parol</label><input type="password" id="currentPassword" required></div>
+                    <div class="form-group full"><label>Yangi parol</label><input type="password" id="newPassword" required minlength="6"></div>
+                    <div class="form-group full"><label>Yangi parolni tasdiqlang</label><input type="password" id="confirmPassword" required minlength="6"></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-close="passwordModal">Bekor qilish</button>
+                    <button type="submit" class="btn-submit"><i class="fas fa-check"></i> Yangilash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Add user (settings) -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus" style="color:var(--primary);margin-right:10px;"></i> Yangi Foydalanuvchi</h2>
+                <button class="close-btn" data-close="userModal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="userForm" novalidate>
+                <div class="form-grid">
+                    <div class="form-group full"><label>Ism Familiya</label><input type="text" id="newUserName" required></div>
+                    <div class="form-group full"><label>Email</label><input type="email" id="newUserEmail" required></div>
+                    <div class="form-group full"><label>Rol</label><select id="newUserRole"><option>Admin</option><option>Menejer</option><option>O'qituvchi</option></select></div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" data-close="userModal">Bekor qilish</button>
+                    <button type="submit" class="btn-submit"><i class="fas fa-check"></i> Qo'shish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast-stack" id="toastStack"></div>
+
+<script>
+(function(){
+    'use strict';
+
+    // ============================================
+    // STORAGE HELPERS (in-memory; persisted to localStorage when available)
+    // ============================================
+    const STORAGE_KEY = 'educrm_pro_data_v1';
+    let memoryFallback = {};
+    function storageAvailable() {
+        try { const t='__t'; localStorage.setItem(t,'1'); localStorage.removeItem(t); return true; }
+        catch(e){ return false; }
+    }
+    const hasLS = storageAvailable();
+    function saveData() {
+        const payload = {
+            students, teachers, courses, groups, payments, salaries, activities,
+            currentUser, users, settings, attendanceRecords
+        };
+        if (hasLS) {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch(e){ memoryFallback = payload; }
+        } else {
+            memoryFallback = payload;
+        }
+    }
+    function loadData() {
+        let raw = null;
+        if (hasLS) { try { raw = localStorage.getItem(STORAGE_KEY); } catch(e){ raw = null; } }
+        if (!raw && memoryFallback && Object.keys(memoryFallback).length) return memoryFallback;
+        if (!raw) return null;
+        try { return JSON.parse(raw); } catch(e){ return null; }
+    }
+
+    // ============================================
+    // SEED DATA
+    // ============================================
+    function seedData() {
+        return {
+            students: [
+                { id: 1, firstName:'Ali', lastName:'Karimov', phone:'+998901234567', email:'ali@example.com', course:'Frontend Development', group:'FD-2024', status:'active', paymentStatus:'paid' },
+                { id: 2, firstName:'Madina', lastName:'Rahmonova', phone:'+998901234568', email:'madina@example.com', course:'Backend Development', group:'BD-2024', status:'active', paymentStatus:'partial' },
+                { id: 3, firstName:'Jasur', lastName:'Aliyev', phone:'+998901234569', email:'jasur@example.com', course:'Data Science', group:'DS-2024', status:'inactive', paymentStatus:'unpaid' },
+                { id: 4, firstName:'Gulnora', lastName:'Saidova', phone:'+998901234570', email:'gulnora@example.com', course:'Frontend Development', group:'FD-2024', status:'active', paymentStatus:'paid' },
+                { id: 5, firstName:'Shoxrux', lastName:'Bekmurodov', phone:'+998901234571', email:'shoxrux@example.com', course:'Frontend Development', group:'FD-2024', status:'active', paymentStatus:'paid' },
+                { id: 6, firstName:'Dilnoza', lastName:'Rustamova', phone:'+998901234572', email:'dilnoza@example.com', course:'Backend Development', group:'BD-2024', status:'inactive', paymentStatus:'unpaid' },
+            ],
+            teachers: [
+                { id: 1, firstName:'John', lastName:'Doe', specialty:'Frontend', experience:5, rating:4.8, avatarClass:'purple' },
+                { id: 2, firstName:'Jane', lastName:'Smith', specialty:'Backend', experience:7, rating:4.9, avatarClass:'pink' },
+                { id: 3, firstName:'Bob', lastName:'Johnson', specialty:'Data Science', experience:4, rating:4.7, avatarClass:'orange' },
+            ],
+            courses: [
+                { id:1, name:'Frontend Development', duration:6, price:2500000, level:"Boshlang'ich", color:'linear-gradient(135deg,#6366f1,#818cf8)', icon:'fab fa-react' },
+                { id:2, name:'Backend Development', duration:6, price:2800000, level:"O'rta", color:'linear-gradient(135deg,#22c55e,#16a34a)', icon:'fas fa-server' },
+                { id:3, name:'Data Science', duration:8, price:3200000, level:'Yuqori', color:'linear-gradient(135deg,#8b5cf6,#7c3aed)', icon:'fas fa-database' },
+            ],
+            groups: [
+                { id:1, name:'FD-2024', course:'Frontend Development', teacherId:1, capacity:15, status:'active', schedule:'Dushanba, Chorshanba 10:00' },
+                { id:2, name:'BD-2024', course:'Backend Development', teacherId:2, capacity:15, status:'pending', schedule:'Seshanba, Payshanba 13:00' },
+                { id:3, name:'DS-2024', course:'Data Science', teacherId:3, capacity:12, status:'active', schedule:'Chorshanba, Juma 16:00' },
+            ],
+            payments: [
+                { id:1, studentId:1, amount:500000, date:'2024-06-15', type:'Oylik', status:'paid' },
+                { id:2, studentId:2, amount:250000, date:'2024-06-14', type:'Qisman', status:'partial' },
+                { id:3, studentId:3, amount:500000, date:'2024-06-10', type:'Oylik', status:'unpaid' },
+            ],
+            salaries: [
+                { id:1, teacherId:1, rate:1200000, hours:48, bonus:200000, status:'paid' },
+                { id:2, teacherId:2, rate:1500000, hours:40, bonus:150000, status:'pending' },
+                { id:3, teacherId:3, rate:1100000, hours:36, bonus:100000, status:'pending' },
+            ],
+            activities: [
+                { icon:'green', iconClass:'fa-credit-card', html:"<strong>Ali Karimov</strong> to'lov qildi <span style=\"color:var(--success);font-weight:600;\">500,000 so'm</span>", time:'5 daqiqa oldin' },
+                { icon:'blue', iconClass:'fa-user-plus', html:"<strong>Yangi o'quvchi</strong> qo'shildi: Madina Rahmonova", time:'15 daqiqa oldin' },
+                { icon:'yellow', iconClass:'fa-calendar-check', html:'<strong>Frontend</strong> guruhida 12 o\'quvchi qatnashdi', time:'1 soat oldin' },
+                { icon:'purple', iconClass:'fa-user-tie', html:'<strong>Yangi o\'qituvchi</strong>: Bob Johnson', time:'2 soat oldin' },
+            ],
+            currentUser: { name:'Admin User', email:'admin@example.com', password:'password123', role:'Super Administrator', registered:'2024-01-01' },
+            users: [ { name:'Admin User', email:'admin@example.com', role:'Admin' } ],
+            settings: { systemName:'EduCRM Pro', lang:"O'zbek", currency:'UZS', sms:true, email:true, push:false, theme:'light' },
+            attendanceRecords: {}
+        };
+    }
+
+    let students, teachers, courses, groups, payments, salaries, activities, currentUser, users, settings, attendanceRecords;
+
+    function initState() {
+        const loaded = loadData();
+        const seed = seedData();
+        const data = loaded || seed;
+        students = data.students || seed.students;
+        teachers = data.teachers || seed.teachers;
+        courses = data.courses || seed.courses;
+        groups = data.groups || seed.groups;
+        payments = data.payments || seed.payments;
+        salaries = data.salaries || seed.salaries;
+        activities = data.activities || seed.activities;
+        currentUser = data.currentUser || seed.currentUser;
+        users = data.users || seed.users;
+        settings = data.settings || seed.settings;
+        attendanceRecords = data.attendanceRecords || {};
+    }
+    initState();
+
+    let filteredStudents = [...students];
+    let studentSearchQuery = '';
+    let studentStatusQuery = 'all';
+    let studentGroupQuery = 'all';
+    let studentSort = { key: null, dir: 1 };
+    let studentPage = 1;
+    const STUDENTS_PER_PAGE = 8;
+    let isDark = (settings.theme === 'dark');
+    let editContext = {};
+
+    // ============================================
+    // UTIL
+    // ============================================
+    function fmt(n) { return Number(n||0).toLocaleString('ru-RU').replace(/,/g,' '); }
+    function uid(arr) { return arr.length ? Math.max(...arr.map(x=>x.id)) + 1 : 1; }
+    function initials(f,l) { return (f.charAt(0)+l.charAt(0)).toUpperCase(); }
+    function todayISO() { return new Date().toISOString().slice(0,10); }
+    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+    function isValidPhone(v) { return /^[\d+][\d\s+()-]{6,}$/.test(v); }
+
+    function showToast(message, type) {
+        type = type || 'info';
+        const colors = { success:'#22c55e', error:'#ef4444', info:'#3b82f6', warning:'#f59e0b' };
+        const stack = document.getElementById('toastStack');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.style.borderLeftColor = colors[type];
+        toast.innerHTML = `<span>${type==='success'?'✅':type==='error'?'❌':type==='warning'?'⚠️':'ℹ️'}</span> ${escapeHtml(message)}`;
+        stack.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity='0'; toast.style.transform='translateY(20px)'; toast.style.transition='all .3s ease';
+            setTimeout(()=>toast.remove(),300);
+        }, 3000);
+    }
+
+    function pushActivity(iconClass, colorClass, html) {
+        activities.unshift({ icon: colorClass, iconClass, html, time: 'hozirgina' });
+        activities = activities.slice(0, 20);
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('open');
+        document.querySelectorAll(`#${id} .form-group`).forEach(g => g.classList.remove('has-error'));
+        document.querySelectorAll(`#${id} .invalid`).forEach(el => el.classList.remove('invalid'));
+    }
+
+    // Lightweight, dependency-free form validator: marks empty/invalid required fields
+    function validateForm(formEl, extraChecks) {
+        let valid = true;
+        formEl.querySelectorAll('[required]').forEach(input => {
+            const group = input.closest('.form-group') || input.parentElement;
+            let ok = String(input.value||'').trim().length > 0;
+            if (ok && input.type === 'email') ok = isValidEmail(input.value);
+            if (ok && input.type === 'tel') ok = isValidPhone(input.value);
+            if (ok && input.type === 'number') ok = !isNaN(Number(input.value));
+            if (!ok) {
+                valid = false;
+                input.classList.add('invalid');
+                if (group) group.classList.add('has-error');
+            } else {
+                input.classList.remove('invalid');
+                if (group) group.classList.remove('has-error');
+            }
+        });
+        if (extraChecks) {
+            extraChecks.forEach(check => { if (!check()) valid = false; });
+        }
+        return valid;
+    }
+
+    // ============================================
+    // RENDER: STATS
+    // ============================================
+    function computeStats() {
+        const totalRevenue = payments.reduce((s,p)=> s + (p.status !== 'unpaid' ? p.amount : 0), 0);
+        const today = todayISO();
+        const todayAttendance = attendanceRecords[today] ? Object.values(attendanceRecords[today]).flat().filter(v=>v).length : Math.round(students.length * 0.76);
+        return {
+            totalStudents: students.length,
+            totalTeachers: teachers.length,
+            activeCourses: courses.length,
+            totalGroups: groups.length,
+            totalRevenue,
+            todayAttendance
+        };
+    }
+
+    function renderStats() {
+        const s = computeStats();
+        const grid = document.getElementById('statsGrid');
+        grid.innerHTML = `
+            <div class="stat-card">
+                <div class="stat-top"><div><div class="stat-label">Jami O'quvchilar</div><div class="stat-value">${s.totalStudents}</div></div><div class="stat-icon blue"><i class="fas fa-users"></i></div></div>
+                <div class="stat-footer"><span class="stat-change positive"><i class="fas fa-arrow-up"></i> jonli</span><span class="stat-change-text">joriy holat</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-top"><div><div class="stat-label">O'qituvchilar</div><div class="stat-value">${s.totalTeachers}</div></div><div class="stat-icon green"><i class="fas fa-user-tie"></i></div></div>
+                <div class="stat-footer"><span class="stat-change positive"><i class="fas fa-arrow-up"></i> jonli</span><span class="stat-change-text">joriy holat</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-top"><div><div class="stat-label">Faol Kurslar</div><div class="stat-value">${s.activeCourses}</div></div><div class="stat-icon purple"><i class="fas fa-book-open"></i></div></div>
+                <div class="stat-footer"><span class="stat-change positive"><i class="fas fa-arrow-up"></i> jonli</span><span class="stat-change-text">joriy holat</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-top"><div><div class="stat-label">Guruhlar</div><div class="stat-value">${s.totalGroups}</div></div><div class="stat-icon orange"><i class="fas fa-users-cog"></i></div></div>
+                <div class="stat-footer"><span class="stat-change positive"><i class="fas fa-arrow-up"></i> jonli</span><span class="stat-change-text">joriy holat</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-top"><div><div class="stat-label">Umumiy Daromad</div><div class="stat-value">${fmt(s.totalRevenue)}</div></div><div class="stat-icon emerald"><i class="fas fa-money-bill-wave"></i></div></div>
+                <div class="stat-footer"><span class="stat-change positive"><i class="fas fa-arrow-up"></i> jonli</span><span class="stat-change-text">so'mda</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-top"><div><div class="stat-label">Bugungi Davomat</div><div class="stat-value">${s.todayAttendance}</div></div><div class="stat-icon rose"><i class="fas fa-calendar-check"></i></div></div>
+                <div class="stat-footer"><span class="stat-change positive"><i class="fas fa-arrow-up"></i> ${s.totalStudents? Math.round(s.todayAttendance/s.totalStudents*100):0}%</span><span class="stat-change-text">qatnashish</span></div>
+            </div>
+        `;
+        document.getElementById('studentCount').textContent = students.length;
+        document.getElementById('teacherCount').textContent = teachers.length;
+        document.getElementById('courseCount').textContent = courses.length;
+        document.getElementById('groupCount').textContent = groups.length;
+        document.getElementById('totalRevenueLabel').textContent = fmt(s.totalRevenue) + " so'm";
+    }
+
+    function renderRevenueChart() {
+        const months = ['Yan','Fev','Mar','Apr','May','Iyun','Iyul'];
+        const base = payments.reduce((s,p)=> s + (p.status !== 'unpaid' ? p.amount : 0), 0);
+        const vals = months.map((m,i)=> Math.max(200000, Math.round(base * (0.5 + i*0.12) / months.length) + (i%2===0?150000:0)));
+        const max = Math.max(...vals, 1);
+        const el = document.getElementById('revenueChart');
+        el.innerHTML = vals.map((v,i) => `
+            <div class="bar-col">
+                <div class="bar" data-val="${fmt(v)} so'm" style="height:${Math.max(6, Math.round(v/max*100))}%;"></div>
+                <div class="bar-label">${months[i]}</div>
+            </div>
+        `).join('');
+    }
+
+    function renderActivity() {
+        const list = document.getElementById('activityList');
+        if (!activities.length) { list.innerHTML = '<div class="empty-hint">Hali faoliyat yo\'q</div>'; return; }
+        list.innerHTML = activities.map(a => `
+            <div class="activity-item">
+                <div class="activity-icon ${a.icon}"><i class="fas ${a.iconClass}"></i></div>
+                <div class="activity-content"><p>${a.html}</p><span class="time">${a.time}</span></div>
+            </div>
+        `).join('');
+    }
+
+    function renderTodayClasses() {
+        const el = document.getElementById('todayClasses');
+        if (!groups.length) { el.innerHTML = '<div class="empty-hint">Guruhlar mavjud emas</div>'; return; }
+        el.innerHTML = groups.slice(0,5).map(g => {
+            const t = teachers.find(t=>t.id===g.teacherId);
+            return `<div class="class-item">
+                <div class="class-info"><h4>${escapeHtml(g.course)}</h4><p><i class="far fa-clock"></i> ${escapeHtml(g.schedule)} • ${t?escapeHtml(t.firstName+' '+t.lastName):'—'} • ${escapeHtml(g.name)}</p></div>
+                <span class="class-status ${g.status}">${g.status==='active'?'Davom etmoqda':'Kutilmoqda'}</span>
+            </div>`;
+        }).join('');
+    }
+
+    // ============================================
+    // STUDENTS
+    // ============================================
+    function applyStudentFilters(resetPage) {
+        filteredStudents = students.filter(s => {
+            const matchesQuery = `${s.firstName} ${s.lastName}`.toLowerCase().includes(studentSearchQuery.toLowerCase())
+                || s.phone.toLowerCase().includes(studentSearchQuery.toLowerCase())
+                || s.email.toLowerCase().includes(studentSearchQuery.toLowerCase());
+            const matchesStatus = studentStatusQuery === 'all' || s.status === studentStatusQuery;
+            const matchesGroup = studentGroupQuery === 'all' || s.group === studentGroupQuery;
+            return matchesQuery && matchesStatus && matchesGroup;
+        });
+        if (studentSort.key) {
+            filteredStudents.sort((a,b) => {
+                let av, bv;
+                if (studentSort.key === 'name') { av = (a.firstName+a.lastName).toLowerCase(); bv = (b.firstName+b.lastName).toLowerCase(); }
+                else { av = String(a[studentSort.key]).toLowerCase(); bv = String(b[studentSort.key]).toLowerCase(); }
+                if (av < bv) return -1 * studentSort.dir;
+                if (av > bv) return 1 * studentSort.dir;
+                return 0;
+            });
+        }
+        if (resetPage) studentPage = 1;
+        renderStudents();
+    }
+
+    function renderStudents() {
+        const tbody = document.getElementById('studentsTableBody');
+        const footer = document.getElementById('studentsTableFooter');
+        if (!tbody) return;
+
+        document.querySelectorAll('#page-students th[data-sort]').forEach(th => {
+            th.classList.toggle('sorted', th.dataset.sort === studentSort.key);
+            const icon = th.querySelector('.sort-icon');
+            if (icon) icon.className = 'sort-icon fas ' + (th.dataset.sort === studentSort.key ? (studentSort.dir===1?'fa-sort-up':'fa-sort-down') : 'fa-sort');
+        });
+
+        if (filteredStudents.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--gray-400);"><i class="fas fa-user-slash" style="font-size:36px;display:block;margin-bottom:8px;opacity:.2;"></i><p style="font-weight:500;">Hech qanday o'quvchi topilmadi</p><p style="font-size:13px;">Qidiruv yoki filtrni o'zgartirib ko'ring</p></td></tr>`;
+            footer.innerHTML = '';
+            return;
+        }
+
+        const totalPages = Math.max(1, Math.ceil(filteredStudents.length / STUDENTS_PER_PAGE));
+        if (studentPage > totalPages) studentPage = totalPages;
+        const start = (studentPage - 1) * STUDENTS_PER_PAGE;
+        const pageItems = filteredStudents.slice(start, start + STUDENTS_PER_PAGE);
+
+        tbody.innerHTML = pageItems.map(s => `
+            <tr>
+                <td><div class="student-cell"><div class="avatar">${initials(s.firstName,s.lastName)}</div><div class="name">${escapeHtml(s.firstName)} ${escapeHtml(s.lastName)}</div></div></td>
+                <td><div style="font-size:14px;">${escapeHtml(s.phone)}</div><div style="font-size:12px;color:var(--gray-400);">${escapeHtml(s.email)}</div></td>
+                <td>${escapeHtml(s.course)}</td>
+                <td>${escapeHtml(s.group)}</td>
+                <td><span class="badge ${s.status==='active'?'success':'danger'}">${s.status==='active'?'✅ Faol':'❌ Faol emas'}</span></td>
+                <td><span class="badge ${s.paymentStatus==='paid'?'success':s.paymentStatus==='partial'?'warning':'danger'}">${s.paymentStatus==='paid'?"To'langan":s.paymentStatus==='partial'?'Qisman':"To'lanmagan"}</span></td>
+                <td><div class="action-btns">
+                    <button class="view" title="Ko'rish" data-view-student="${s.id}"><i class="fas fa-eye"></i></button>
+                    <button class="edit" title="Tahrirlash" data-edit-student="${s.id}"><i class="fas fa-edit"></i></button>
+                    <button class="delete" title="O'chirish" data-del-student="${s.id}"><i class="fas fa-trash"></i></button>
+                </div></td>
+            </tr>
+        `).join('');
+
+        footer.innerHTML = `
+            <span>${filteredStudents.length} tadan ${start+1}–${Math.min(start+STUDENTS_PER_PAGE, filteredStudents.length)} ko'rsatilmoqda</span>
+            <div class="pager">
+                <button id="studentsPrevPage" ${studentPage<=1?'disabled':''}><i class="fas fa-chevron-left"></i></button>
+                <span>${studentPage} / ${totalPages}</span>
+                <button id="studentsNextPage" ${studentPage>=totalPages?'disabled':''}><i class="fas fa-chevron-right"></i></button>
+            </div>
+        `;
+        const prevBtn = document.getElementById('studentsPrevPage');
+        const nextBtn = document.getElementById('studentsNextPage');
+        if (prevBtn) prevBtn.addEventListener('click', () => { studentPage--; renderStudents(); });
+        if (nextBtn) nextBtn.addEventListener('click', () => { studentPage++; renderStudents(); });
+    }
+
+    function populateCourseGroupSelects() {
+        const courseSel = document.getElementById('studentCourse');
+        courseSel.innerHTML = courses.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('') || '<option value="">Kurslar yo\'q</option>';
+        const groupSel = document.getElementById('studentGroup');
+        groupSel.innerHTML = groups.map(g => `<option value="${escapeHtml(g.name)}">${escapeHtml(g.name)}</option>`).join('') || '<option value="N/A">N/A</option>';
+
+        const gCourseSel = document.getElementById('groupCourse');
+        gCourseSel.innerHTML = courses.map(c => `<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('') || '<option value="">Kurslar yo\'q</option>';
+        const gTeacherSel = document.getElementById('groupTeacher');
+        gTeacherSel.innerHTML = teachers.map(t => `<option value="${t.id}">${escapeHtml(t.firstName+' '+t.lastName)}</option>`).join('') || '<option value="">O\'qituvchilar yo\'q</option>';
+
+        const payStudentSel = document.getElementById('paymentStudent');
+        payStudentSel.innerHTML = students.map(s => `<option value="${s.id}">${escapeHtml(s.firstName+' '+s.lastName)}</option>`).join('') || '<option value="">O\'quvchilar yo\'q</option>';
+
+        const attGroupSel = document.getElementById('attendanceGroupSelect');
+        const attCurrent = attGroupSel.value;
+        attGroupSel.innerHTML = '<option value="">Guruh tanlang</option>' + groups.map(g => `<option value="${escapeHtml(g.name)}">${escapeHtml(g.name)}</option>`).join('');
+        if (groups.some(g=>g.name===attCurrent)) attGroupSel.value = attCurrent;
+
+        const studentGroupFilter = document.getElementById('studentGroupFilter');
+        const filterCurrent = studentGroupFilter.value || 'all';
+        studentGroupFilter.innerHTML = '<option value="all">👥 Barcha guruhlar</option>' + groups.map(g => `<option value="${escapeHtml(g.name)}">${escapeHtml(g.name)}</option>`).join('');
+        if (groups.some(g=>g.name===filterCurrent) || filterCurrent==='all') studentGroupFilter.value = filterCurrent;
+    }
+
+    function openStudentModal(editId) {
+        populateCourseGroupSelects();
+        const form = document.getElementById('studentForm');
+        form.reset();
+        document.getElementById('studentEditId').value = '';
+        if (editId) {
+            const s = students.find(x=>x.id===editId);
+            if (!s) return;
+            document.getElementById('studentModalTitle').innerHTML = '<i class="fas fa-user-edit" style="color:var(--primary);margin-right:10px;"></i> O\'quvchini Tahrirlash';
+            document.getElementById('studentEditId').value = s.id;
+            document.getElementById('studentFirstName').value = s.firstName;
+            document.getElementById('studentLastName').value = s.lastName;
+            document.getElementById('studentPhone').value = s.phone;
+            document.getElementById('studentEmail').value = s.email;
+            document.getElementById('studentCourse').value = s.course;
+            document.getElementById('studentGroup').value = s.group;
+            document.getElementById('studentStatus').value = s.status;
+            document.getElementById('studentPaymentStatus').value = s.paymentStatus;
+        } else {
+            document.getElementById('studentModalTitle').innerHTML = '<i class="fas fa-user-plus" style="color:var(--primary);margin-right:10px;"></i> Yangi O\'quvchi Qo\'shish';
+        }
+        openModal('studentModal');
+        document.getElementById('studentFirstName').focus();
+    }
+
+    function handleStudentSubmit(e) {
+        e.preventDefault();
+        const form = e.target;
+        if (!validateForm(form)) { showToast('Iltimos, belgilangan maydonlarni to\'g\'ri to\'ldiring!', 'error'); return; }
+
+        const editId = document.getElementById('studentEditId').value;
+        const firstName = document.getElementById('studentFirstName').value.trim();
+        const lastName = document.getElementById('studentLastName').value.trim();
+        const phone = document.getElementById('studentPhone').value.trim();
+        const email = document.getElementById('studentEmail').value.trim();
+        const course = document.getElementById('studentCourse').value;
+        const group = document.getElementById('studentGroup').value;
+        const status = document.getElementById('studentStatus').value;
+        const paymentStatus = document.getElementById('studentPaymentStatus').value;
+
+        if (editId) {
+            const idx = students.findIndex(s=>s.id===Number(editId));
+            if (idx > -1) {
+                students[idx] = { ...students[idx], firstName, lastName, phone, email, course, group, status, paymentStatus };
+                showToast('✅ O\'quvchi ma\'lumotlari yangilandi!', 'success');
+                pushActivity('fa-user-edit','blue', `<strong>${escapeHtml(firstName+' '+lastName)}</strong> ma'lumotlari yangilandi`);
+            }
+        } else {
+            const newStudent = { id: uid(students), firstName, lastName, phone, email, course, group, status, paymentStatus };
+            students.push(newStudent);
+            showToast('✅ O\'quvchi muvaffaqiyatli qo\'shildi!', 'success');
+            pushActivity('fa-user-plus','blue', `<strong>Yangi o'quvchi</strong> qo'shildi: ${escapeHtml(firstName+' '+lastName)}`);
+        }
+        applyStudentFilters();
+        renderAll();
+        closeModal('studentModal');
+        saveData();
+    }
+
+    function deleteStudent(id) {
+        const s = students.find(x=>x.id===id);
+        if (!s) return;
+        if (confirm(`⚠️ Haqiqatan ham "${s.firstName} ${s.lastName}" ni o'chirmoqchimisiz?`)) {
+            students = students.filter(x=>x.id!==id);
+            payments = payments.filter(p=>p.studentId!==id);
+            applyStudentFilters();
+            renderAll();
+            showToast('O\'quvchi o\'chirildi', 'success');
+            saveData();
+        }
+    }
+
+    function viewStudent(id) {
+        const s = students.find(x=>x.id===id);
+        if (!s) return;
+        const studentPayments = payments.filter(p=>p.studentId===id);
+        document.getElementById('viewModalTitle').innerHTML = `<i class="fas fa-user" style="color:var(--primary);margin-right:10px;"></i> ${escapeHtml(s.firstName)} ${escapeHtml(s.lastName)}`;
+        document.getElementById('viewModalBody').innerHTML = `
+            <div class="profile-details">
+                <div class="detail-item"><span class="label">Telefon</span><span class="value">${escapeHtml(s.phone)}</span></div>
+                <div class="detail-item"><span class="label">Email</span><span class="value">${escapeHtml(s.email)}</span></div>
+                <div class="detail-item"><span class="label">Kurs</span><span class="value">${escapeHtml(s.course)}</span></div>
+                <div class="detail-item"><span class="label">Guruh</span><span class="value">${escapeHtml(s.group)}</span></div>
+                <div class="detail-item"><span class="label">Holat</span><span class="value"><span class="badge ${s.status==='active'?'success':'danger'}">${s.status==='active'?'Faol':'Faol emas'}</span></span></div>
+            </div>
+            <h3 style="font-size:14px;margin:16px 0 8px;">To'lovlar tarixi (${studentPayments.length})</h3>
+            ${studentPayments.length ? studentPayments.map(p=>`<div class="detail-item" style="margin-bottom:6px;"><span class="label">${p.date} — ${escapeHtml(p.type)}</span><span class="value">${fmt(p.amount)} so'm</span></div>`).join('') : '<div class="empty-hint">To\'lovlar yo\'q</div>'}
+        `;
+        openModal('viewModal');
+    }
+
+    // ============================================
+    // TEACHERS
+    // ============================================
+    function renderTeachers() {
+        const tbody = document.getElementById('teachersTableBody');
+        document.getElementById('teacherSubtitle').textContent = `Jami ${teachers.length} ta o'qituvchi`;
+        if (!teachers.length) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--gray-400);">O'qituvchilar yo'q</td></tr>`; return; }
+        tbody.innerHTML = teachers.map(t => {
+            const groupCount = groups.filter(g=>g.teacherId===t.id).length;
+            return `<tr>
+                <td><div class="student-cell"><div class="avatar ${t.avatarClass||''}">${initials(t.firstName,t.lastName)}</div><div class="name">${escapeHtml(t.firstName)} ${escapeHtml(t.lastName)}</div></div></td>
+                <td>${escapeHtml(t.specialty)}</td>
+                <td>${t.experience} yil</td>
+                <td><span class="badge info">${groupCount} ta</span></td>
+                <td><span class="badge success">⭐ ${t.rating}</span></td>
+                <td><div class="action-btns">
+                    <button class="view" data-view-teacher="${t.id}"><i class="fas fa-eye"></i></button>
+                    <button class="edit" data-edit-teacher="${t.id}"><i class="fas fa-edit"></i></button>
+                    <button class="delete" data-del-teacher="${t.id}"><i class="fas fa-trash"></i></button>
+                </div></td>
+            </tr>`;
+        }).join('');
+    }
+
+    function openTeacherModal(editId) {
+        const form = document.getElementById('teacherForm');
+        form.reset();
+        document.getElementById('teacherEditId').value = '';
+        if (editId) {
+            const t = teachers.find(x=>x.id===editId);
+            if (!t) return;
+            document.getElementById('teacherModalTitle').innerHTML = '<i class="fas fa-user-edit" style="color:var(--primary);margin-right:10px;"></i> O\'qituvchini Tahrirlash';
+            document.getElementById('teacherEditId').value = t.id;
+            document.getElementById('teacherFirstName').value = t.firstName;
+            document.getElementById('teacherLastName').value = t.lastName;
+            document.getElementById('teacherSpecialty').value = t.specialty;
+            document.getElementById('teacherExperience').value = t.experience;
+            document.getElementById('teacherRating').value = t.rating;
+        } else {
+            document.getElementById('teacherModalTitle').innerHTML = '<i class="fas fa-user-tie" style="color:var(--primary);margin-right:10px;"></i> Yangi O\'qituvchi';
+        }
+        openModal('teacherModal');
+        document.getElementById('teacherFirstName').focus();
+    }
+
+    function handleTeacherSubmit(e) {
+        e.preventDefault();
+        if (!validateForm(e.target)) { showToast('Iltimos, belgilangan maydonlarni to\'ldiring!', 'error'); return; }
+        const editId = document.getElementById('teacherEditId').value;
+        const firstName = document.getElementById('teacherFirstName').value.trim();
+        const lastName = document.getElementById('teacherLastName').value.trim();
+        const specialty = document.getElementById('teacherSpecialty').value.trim();
+        const experience = Math.max(0, Number(document.getElementById('teacherExperience').value) || 0);
+        const rating = Math.min(5, Math.max(0, Number(document.getElementById('teacherRating').value) || 0));
+        const colors = ['purple','pink','orange','green'];
+        if (editId) {
+            const idx = teachers.findIndex(t=>t.id===Number(editId));
+            if (idx>-1) { teachers[idx] = { ...teachers[idx], firstName, lastName, specialty, experience, rating }; showToast('✅ O\'qituvchi yangilandi!','success'); }
+        } else {
+            teachers.push({ id: uid(teachers), firstName, lastName, specialty, experience, rating, avatarClass: colors[teachers.length % colors.length] });
+            showToast('✅ O\'qituvchi qo\'shildi!','success');
+            pushActivity('fa-user-tie','purple', `<strong>Yangi o'qituvchi</strong>: ${escapeHtml(firstName+' '+lastName)}`);
+        }
+        renderAll();
+        closeModal('teacherModal');
+        saveData();
+    }
+
+    function deleteTeacher(id) {
+        const t = teachers.find(x=>x.id===id);
+        if (!t) return;
+        if (confirm(`⚠️ "${t.firstName} ${t.lastName}" ni o'chirmoqchimisiz? Unga bog'liq guruhlar ham ta'sirlanadi.`)) {
+            teachers = teachers.filter(x=>x.id!==id);
+            salaries = salaries.filter(s=>s.teacherId!==id);
+            renderAll();
+            showToast('O\'qituvchi o\'chirildi','success');
+            saveData();
+        }
+    }
+
+    function viewTeacher(id) {
+        const t = teachers.find(x=>x.id===id);
+        if (!t) return;
+        const tGroups = groups.filter(g=>g.teacherId===id);
+        document.getElementById('viewModalTitle').innerHTML = `<i class="fas fa-user-tie" style="color:var(--primary);margin-right:10px;"></i> ${escapeHtml(t.firstName)} ${escapeHtml(t.lastName)}`;
+        document.getElementById('viewModalBody').innerHTML = `
+            <div class="profile-details">
+                <div class="detail-item"><span class="label">Mutaxassislik</span><span class="value">${escapeHtml(t.specialty)}</span></div>
+                <div class="detail-item"><span class="label">Tajriba</span><span class="value">${t.experience} yil</span></div>
+                <div class="detail-item"><span class="label">Reyting</span><span class="value">⭐ ${t.rating}</span></div>
+            </div>
+            <h3 style="font-size:14px;margin:16px 0 8px;">Guruhlari (${tGroups.length})</h3>
+            ${tGroups.length ? tGroups.map(g=>`<div class="detail-item" style="margin-bottom:6px;"><span class="label">${escapeHtml(g.name)}</span><span class="value">${escapeHtml(g.course)}</span></div>`).join('') : '<div class="empty-hint">Guruhlar yo\'q</div>'}
+        `;
+        openModal('viewModal');
+    }
+
+    // ============================================
+    // COURSES
+    // ============================================
+    function renderCourses() {
+        const grid = document.getElementById('coursesGrid');
+        document.getElementById('courseSubtitle').textContent = `Jami ${courses.length} ta kurs`;
+        if (!courses.length) { grid.innerHTML = '<div class="empty-hint">Kurslar yo\'q</div>'; return; }
+        grid.innerHTML = courses.map(c => {
+            const studentCount = students.filter(s=>s.course===c.name).length;
+            return `<div class="course-card">
+                <div class="course-image" style="background:${c.color};">
+                    <i class="${c.icon||'fas fa-book'}"></i>
+                    <span class="level">⭐ ${escapeHtml(c.level)}</span>
+                    <button class="course-del" data-del-course="${c.id}" title="O'chirish"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="course-body">
+                    <h3>${escapeHtml(c.name)}</h3>
+                    <div class="course-meta"><span><i class="far fa-clock"></i> ${c.duration} oy</span><span><i class="fas fa-users"></i> ${studentCount} o'quvchi</span></div>
+                    <div class="course-footer">
+                        <span class="price">${fmt(c.price)} so'm</span>
+                        <button class="btn-course" data-edit-course="${c.id}">Tahrirlash</button>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function openCourseModal(editId) {
+        const form = document.getElementById('courseForm');
+        form.reset();
+        document.getElementById('courseEditId').value = '';
+        if (editId) {
+            const c = courses.find(x=>x.id===editId);
+            if (!c) return;
+            document.getElementById('courseModalTitle').innerHTML = '<i class="fas fa-edit" style="color:var(--primary);margin-right:10px;"></i> Kursni Tahrirlash';
+            document.getElementById('courseEditId').value = c.id;
+            document.getElementById('courseName').value = c.name;
+            document.getElementById('courseDuration').value = c.duration;
+            document.getElementById('coursePrice').value = c.price;
+            document.getElementById('courseLevel').value = c.level;
+            document.getElementById('courseColor').value = c.color;
+        } else {
+            document.getElementById('courseModalTitle').innerHTML = '<i class="fas fa-book-open" style="color:var(--primary);margin-right:10px;"></i> Yangi Kurs';
+        }
+        openModal('courseModal');
+        document.getElementById('courseName').focus();
+    }
+
+    function handleCourseSubmit(e) {
+        e.preventDefault();
+        if (!validateForm(e.target)) { showToast('Iltimos, belgilangan maydonlarni to\'ldiring!', 'error'); return; }
+        const editId = document.getElementById('courseEditId').value;
+        const name = document.getElementById('courseName').value.trim();
+        const duration = Math.max(1, Number(document.getElementById('courseDuration').value) || 1);
+        const price = Math.max(0, Number(document.getElementById('coursePrice').value) || 0);
+        const level = document.getElementById('courseLevel').value;
+        const color = document.getElementById('courseColor').value;
+        const icons = ['fas fa-book','fab fa-react','fas fa-server','fas fa-database','fas fa-mobile-alt','fas fa-palette'];
+        if (editId) {
+            const idx = courses.findIndex(c=>c.id===Number(editId));
+            if (idx>-1) {
+                const oldName = courses[idx].name;
+                courses[idx] = { ...courses[idx], name, duration, price, level, color };
+                if (oldName !== name) {
+                    students.forEach(s=>{ if (s.course===oldName) s.course = name; });
+                    groups.forEach(g=>{ if (g.course===oldName) g.course = name; });
+                }
+                showToast('✅ Kurs yangilandi!','success');
+            }
+        } else {
+            courses.push({ id: uid(courses), name, duration, price, level, color, icon: icons[courses.length % icons.length] });
+            showToast('✅ Yangi kurs qo\'shildi!','success');
+        }
+        renderAll();
+        closeModal('courseModal');
+        saveData();
+    }
+
+    function deleteCourse(id) {
+        const c = courses.find(x=>x.id===id);
+        if (!c) return;
+        if (confirm(`⚠️ "${c.name}" kursini o'chirmoqchimisiz?`)) {
+            courses = courses.filter(x=>x.id!==id);
+            renderAll();
+            showToast('Kurs o\'chirildi','success');
+            saveData();
+        }
+    }
+
+    // ============================================
+    // GROUPS
+    // ============================================
+    function renderGroups() {
+        const tbody = document.getElementById('groupsTableBody');
+        document.getElementById('groupSubtitle').textContent = `Jami ${groups.length} ta guruh`;
+        if (!groups.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--gray-400);">Guruhlar yo'q</td></tr>`; return; }
+        tbody.innerHTML = groups.map(g => {
+            const t = teachers.find(t=>t.id===g.teacherId);
+            const enrolled = students.filter(s=>s.group===g.name).length;
+            const full = enrolled >= g.capacity;
+            return `<tr>
+                <td><strong style="color:var(--primary);">${escapeHtml(g.name)}</strong></td>
+                <td>${escapeHtml(g.course)}</td>
+                <td>${t?escapeHtml(t.firstName+' '+t.lastName):'—'}</td>
+                <td><span class="badge ${full?'danger':'success'}">${enrolled} / ${g.capacity}</span></td>
+                <td>${escapeHtml(g.schedule)}</td>
+                <td><span class="badge ${g.status==='active'?'success':'warning'}">${g.status==='active'?'Faol':'Kutilmoqda'}</span></td>
+                <td><div class="action-btns">
+                    <button class="edit" data-edit-group="${g.id}"><i class="fas fa-edit"></i></button>
+                    <button class="delete" data-del-group="${g.id}"><i class="fas fa-trash"></i></button>
+                </div></td>
+            </tr>`;
+        }).join('');
+    }
+
+    function openGroupModal(editId) {
+        populateCourseGroupSelects();
+        const form = document.getElementById('groupForm');
+        form.reset();
+        document.getElementById('groupEditId').value = '';
+        if (editId) {
+            const g = groups.find(x=>x.id===editId);
+            if (!g) return;
+            document.getElementById('groupModalTitle').innerHTML = '<i class="fas fa-edit" style="color:var(--primary);margin-right:10px;"></i> Guruhni Tahrirlash';
+            document.getElementById('groupEditId').value = g.id;
+            document.getElementById('groupName').value = g.name;
+            document.getElementById('groupCourse').value = g.course;
+            document.getElementById('groupTeacher').value = g.teacherId;
+            document.getElementById('groupCapacity').value = g.capacity;
+            document.getElementById('groupStatus').value = g.status;
+            document.getElementById('groupSchedule').value = g.schedule;
+        } else {
+            document.getElementById('groupModalTitle').innerHTML = '<i class="fas fa-users-cog" style="color:var(--primary);margin-right:10px;"></i> Yangi Guruh';
+        }
+        openModal('groupModal');
+        document.getElementById('groupName').focus();
+    }
+
+    function handleGroupSubmit(e) {
+        e.preventDefault();
+        if (!validateForm(e.target)) { showToast('Iltimos, belgilangan maydonlarni to\'ldiring!', 'error'); return; }
+        const editId = document.getElementById('groupEditId').value;
+        const name = document.getElementById('groupName').value.trim();
+        const course = document.getElementById('groupCourse').value;
+        const teacherId = Number(document.getElementById('groupTeacher').value);
+        const capacity = Math.max(1, Number(document.getElementById('groupCapacity').value) || 1);
+        const status = document.getElementById('groupStatus').value;
+        const schedule = document.getElementById('groupSchedule').value.trim();
+        if (editId) {
+            const idx = groups.findIndex(g=>g.id===Number(editId));
+            if (idx>-1) {
+                const oldName = groups[idx].name;
+                groups[idx] = { ...groups[idx], name, course, teacherId, capacity, status, schedule };
+                if (oldName !== name) students.forEach(s=>{ if (s.group===oldName) s.group = name; });
+                showToast('✅ Guruh yangilandi!','success');
+            }
+        } else {
+            groups.push({ id: uid(groups), name, course, teacherId, capacity, status, schedule });
+            showToast('✅ Yangi guruh yaratildi!','success');
+            pushActivity('fa-users-cog','green', `<strong>Yangi guruh</strong> yaratildi: ${escapeHtml(name)}`);
+        }
+        renderAll();
+        closeModal('groupModal');
+        saveData();
+    }
+
+    function deleteGroup(id) {
+        const g = groups.find(x=>x.id===id);
+        if (!g) return;
+        if (confirm(`⚠️ "${g.name}" guruhini o'chirmoqchimisiz?`)) {
+            groups = groups.filter(x=>x.id!==id);
+            renderAll();
+            showToast('Guruh o\'chirildi','success');
+            saveData();
+        }
+    }
+
+    // ============================================
+    // ATTENDANCE
+    // ============================================
+    function updateAttendanceSummary(marks) {
+        const row = document.getElementById('attSummaryRow');
+        if (!row) return;
+        const total = marks.length;
+        const present = marks.filter(Boolean).length;
+        const absent = total - present;
+        const pct = total ? Math.round(present / total * 100) : 0;
+        row.innerHTML = `
+            <div class="att-summary-card"><div class="v">${total}</div><div class="l">Jami o'quvchi</div></div>
+            <div class="att-summary-card"><div class="v" style="color:var(--success);">${present}</div><div class="l">Keldi</div></div>
+            <div class="att-summary-card"><div class="v" style="color:var(--danger);">${absent}</div><div class="l">Kelmadi</div></div>
+            <div class="att-summary-card"><div class="v" style="color:var(--primary);">${pct}%</div><div class="l">Qatnashish darajasi</div></div>
+        `;
+    }
+
+    function loadAttendanceRoster() {
+        const date = document.getElementById('attendanceDate').value || todayISO();
+        const groupName = document.getElementById('attendanceGroupSelect').value;
+        const roster = document.getElementById('attendanceRoster');
+        if (!groupName) { roster.innerHTML = '<div class="empty-hint"><i class="fas fa-hand-pointer" style="font-size:28px;display:block;margin-bottom:8px;opacity:.3;"></i>Davomatni ko\'rish uchun sana va guruhni tanlang</div>'; return; }
+        const groupStudents = students.filter(s=>s.group===groupName);
+        if (!groupStudents.length) { roster.innerHTML = '<div class="empty-hint">Bu guruhda o\'quvchilar yo\'q</div>'; return; }
+        attendanceRecords[date] = attendanceRecords[date] || {};
+        attendanceRecords[date][groupName] = attendanceRecords[date][groupName] || groupStudents.map(()=>true);
+        const marks = attendanceRecords[date][groupName];
+        roster.innerHTML = `
+            <div class="att-summary-row" id="attSummaryRow"></div>
+            <div class="att-bulk-actions">
+                <button class="btn-outline-sm" id="attMarkAllPresentBtn" type="button"><i class="fas fa-check-double" style="color:var(--success);"></i> Barchasini "Keldi" belgilash</button>
+                <button class="btn-outline-sm" id="attMarkAllAbsentBtn" type="button"><i class="fas fa-xmark" style="color:var(--danger);"></i> Barchasini "Kelmadi" belgilash</button>
+            </div>
+            <div class="table-container scrollx">
+                <table>
+                    <thead><tr><th>O'quvchi</th><th>Holat</th></tr></thead>
+                    <tbody>
+                        ${groupStudents.map((s,i) => `
+                            <tr>
+                                <td><div class="student-cell"><div class="avatar">${initials(s.firstName,s.lastName)}</div><div class="name">${escapeHtml(s.firstName)} ${escapeHtml(s.lastName)}</div></div></td>
+                                <td><div class="toggle-switch ${marks[i]?'active':''}" data-att-toggle="${i}" data-att-date="${date}" data-att-group="${escapeHtml(groupName)}"></div></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:14px;text-align:right;"><button class="btn-primary-sm" id="saveAttendanceBtn"><i class="fas fa-save"></i> Saqlash</button></div>
+        `;
+        updateAttendanceSummary(marks);
+
+        document.getElementById('attMarkAllPresentBtn').addEventListener('click', () => {
+            attendanceRecords[date][groupName] = groupStudents.map(()=>true);
+            document.querySelectorAll('#attendanceRoster [data-att-toggle]').forEach(el=>el.classList.add('active'));
+            updateAttendanceSummary(attendanceRecords[date][groupName]);
+        });
+        document.getElementById('attMarkAllAbsentBtn').addEventListener('click', () => {
+            attendanceRecords[date][groupName] = groupStudents.map(()=>false);
+            document.querySelectorAll('#attendanceRoster [data-att-toggle]').forEach(el=>el.classList.remove('active'));
+            updateAttendanceSummary(attendanceRecords[date][groupName]);
+        });
+        document.getElementById('saveAttendanceBtn').addEventListener('click', () => {
+            renderStats();
+            renderNotifications();
+            document.getElementById('todayAttendanceCount').textContent = computeStats().todayAttendance;
+            showToast('✅ Davomat saqlandi!','success');
+            pushActivity('fa-calendar-check','yellow', `<strong>${escapeHtml(groupName)}</strong> guruhida davomat qayd etildi`);
+            renderActivity();
+            saveData();
+        });
+    }
+
+    // ============================================
+    // PAYMENTS
+    // ============================================
+    function renderPayments() {
+        const tbody = document.getElementById('paymentsTableBody');
+        const totalRev = payments.reduce((s,p)=> s + (p.status!=='unpaid'?p.amount:0), 0);
+        document.getElementById('totalRevenueLabel').textContent = fmt(totalRev) + " so'm";
+        if (!payments.length) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--gray-400);">To'lovlar yo'q</td></tr>`; return; }
+        tbody.innerHTML = [...payments].reverse().map(p => {
+            const s = students.find(s=>s.id===p.studentId);
+            return `<tr>
+                <td><div class="student-cell"><div class="avatar">${s?initials(s.firstName,s.lastName):'?'}</div><span class="name">${s?escapeHtml(s.firstName+' '+s.lastName):'O\'chirilgan'}</span></div></td>
+                <td><strong>${fmt(p.amount)} so'm</strong></td>
+                <td>${p.date}</td>
+                <td><span class="badge info">${escapeHtml(p.type)}</span></td>
+                <td><span class="badge ${p.status==='paid'?'success':p.status==='partial'?'warning':'danger'}">${p.status==='paid'?"To'langan":p.status==='partial'?'Qisman':"To'lanmagan"}</span></td>
+                <td><div class="action-btns"><button class="delete" data-del-payment="${p.id}"><i class="fas fa-trash"></i></button></div></td>
+            </tr>`;
+        }).join('');
+    }
+
+    function openPaymentModal() {
+        populateCourseGroupSelects();
+        document.getElementById('paymentForm').reset();
+        document.getElementById('paymentDate').value = todayISO();
+        openModal('paymentModal');
+    }
+
+    function handlePaymentSubmit(e) {
+        e.preventDefault();
+        if (!validateForm(e.target)) { showToast('Iltimos, belgilangan maydonlarni to\'ldiring!', 'error'); return; }
+        const studentId = Number(document.getElementById('paymentStudent').value);
+        const amount = Number(document.getElementById('paymentAmount').value);
+        const date = document.getElementById('paymentDate').value;
+        const type = document.getElementById('paymentType').value;
+        if (!studentId || !amount || !date) { showToast('Iltimos, barcha maydonlarni to\'ldiring!','error'); return; }
+        payments.push({ id: uid(payments), studentId, amount, date, type, status:'paid' });
+        const s = students.find(x=>x.id===studentId);
+        if (s) s.paymentStatus = 'paid';
+        showToast('✅ To\'lov muvaffaqiyatli qabul qilindi!','success');
+        pushActivity('fa-credit-card','green', `<strong>${s?escapeHtml(s.firstName+' '+s.lastName):''}</strong> to'lov qildi <span style="color:var(--success);font-weight:600;">${fmt(amount)} so'm</span>`);
+        renderAll();
+        closeModal('paymentModal');
+        saveData();
+    }
+
+    function deletePayment(id) {
+        if (confirm('⚠️ Bu to\'lovni o\'chirmoqchimisiz?')) {
+            payments = payments.filter(p=>p.id!==id);
+            renderAll();
+            showToast('To\'lov o\'chirildi','success');
+            saveData();
+        }
+    }
+
+    // ============================================
+    // SALARY
+    // ============================================
+    function renderSalary() {
+        const tbody = document.getElementById('salaryTableBody');
+        let total = 0;
+        if (!salaries.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--gray-400);">Ish haqi yozuvlari yo'q</td></tr>`; document.getElementById('totalSalaryLabel').textContent = '0 so\'m'; return; }
+        tbody.innerHTML = salaries.map(sal => {
+            const t = teachers.find(t=>t.id===sal.teacherId);
+            const sum = sal.rate + sal.bonus;
+            total += sum;
+            return `<tr>
+                <td><div class="student-cell"><div class="avatar ${t?t.avatarClass:''}">${t?initials(t.firstName,t.lastName):'?'}</div><span class="name">${t?escapeHtml(t.firstName+' '+t.lastName):'O\'chirilgan'}</span></div></td>
+                <td>${fmt(sal.rate)} so'm</td>
+                <td>${sal.hours} soat</td>
+                <td><span style="color:var(--success);">+${fmt(sal.bonus)}</span></td>
+                <td><strong style="color:var(--primary);">${fmt(sum)} so'm</strong></td>
+                <td><span class="badge ${sal.status==='paid'?'success':'warning'}">${sal.status==='paid'?"To'langan":'Kutilmoqda'}</span></td>
+                <td><div class="action-btns"><button class="pay" title="To'lash" data-pay-salary="${sal.id}"><i class="fas fa-money-bill"></i></button></div></td>
+            </tr>`;
+        }).join('');
+        document.getElementById('totalSalaryLabel').textContent = fmt(total) + " so'm";
+    }
+
+    function paySalary(id) {
+        const sal = salaries.find(s=>s.id===id);
+        if (!sal) return;
+        sal.status = 'paid';
+        renderSalary();
+        showToast('✅ Ish haqi to\'landi!','success');
+        saveData();
+    }
+
+    // ============================================
+    // REPORTS
+    // ============================================
+    function reportHeader(icon, title) {
+        return `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+            <h3 style="margin:0;">${icon} ${title}</h3>
+            <button class="btn-outline-sm" id="reportDownloadBtn" type="button"><i class="fas fa-download"></i> Ushbu hisobotni yuklab olish</button>
+        </div>`;
+    }
+
+    function hbarList(entries, valueSuffix) {
+        if (!entries.length) return '<div class="empty-hint">Ma\'lumot yo\'q</div>';
+        const max = Math.max(...entries.map(e=>e[1]), 1);
+        return entries.map(([label, val]) => `
+            <div class="hbar-row">
+                <span class="hbar-label" title="${escapeHtml(label)}">${escapeHtml(label)}</span>
+                <div class="hbar-track"><div class="hbar-fill" style="width:${Math.max(3, Math.round(val/max*100))}%;"></div></div>
+                <span class="hbar-value">${fmt(val)}${valueSuffix||''}</span>
+            </div>
+        `).join('');
+    }
+
+    function showReport(type) {
+        const detail = document.getElementById('reportDetail');
+        detail.style.display = 'block';
+        document.querySelectorAll('.report-card').forEach(c => c.classList.toggle('selected', c.dataset.report === type));
+        if (type === 'students') {
+            const active = students.filter(s=>s.status==='active').length;
+            const byGroup = {};
+            students.forEach(s=>{ byGroup[s.group] = (byGroup[s.group]||0)+1; });
+            detail.innerHTML = reportHeader('📊', "O'quvchilar hisoboti") + `
+                <div class="mini-stat-row">
+                    <div class="mini-stat"><div class="v">${students.length}</div><div class="l">Jami</div></div>
+                    <div class="mini-stat"><div class="v" style="color:var(--success);">${active}</div><div class="l">Faol</div></div>
+                    <div class="mini-stat"><div class="v" style="color:var(--danger);">${students.length-active}</div><div class="l">Faol emas</div></div>
+                </div>
+                <h4 class="section-label">Guruhlar bo'yicha taqsimot</h4>
+                ${hbarList(Object.entries(byGroup), ' ta')}`;
+        } else if (type === 'attendance') {
+            const stats = computeStats();
+            const today = todayISO();
+            const byGroupToday = {};
+            groups.forEach(g => {
+                const gs = students.filter(s=>s.group===g.name);
+                const marks = (attendanceRecords[today] && attendanceRecords[today][g.name]) || null;
+                const present = marks ? marks.filter(Boolean).length : Math.round(gs.length*0.76);
+                if (gs.length) byGroupToday[g.name] = gs.length ? Math.round(present/gs.length*100) : 0;
+            });
+            detail.innerHTML = reportHeader('📅', 'Davomat hisoboti') + `
+                <div class="mini-stat-row">
+                    <div class="mini-stat"><div class="v">${stats.todayAttendance}</div><div class="l">Bugungi davomat</div></div>
+                    <div class="mini-stat"><div class="v">${stats.totalStudents?Math.round(stats.todayAttendance/stats.totalStudents*100):0}%</div><div class="l">Qatnashish darajasi</div></div>
+                </div>
+                <h4 class="section-label">Guruhlar bo'yicha bugungi qatnashish</h4>
+                ${hbarList(Object.entries(byGroupToday), '%')}`;
+        } else if (type === 'finance') {
+            const totalRevenue = payments.reduce((s,p)=> s + (p.status!=='unpaid'?p.amount:0), 0);
+            const totalSalary = salaries.reduce((s,x)=> s + x.rate + x.bonus, 0);
+            const netProfit = totalRevenue - totalSalary;
+            detail.innerHTML = reportHeader('💰', 'Moliyaviy hisobot') + `
+                <div class="mini-stat-row">
+                    <div class="mini-stat"><div class="v" style="color:var(--success);">${fmt(totalRevenue)}</div><div class="l">Daromad (so'm)</div></div>
+                    <div class="mini-stat"><div class="v" style="color:var(--danger);">${fmt(totalSalary)}</div><div class="l">Xarajat: Ish haqi (so'm)</div></div>
+                    <div class="mini-stat"><div class="v" style="color:${netProfit>=0?'var(--primary)':'var(--danger)'};">${fmt(netProfit)}</div><div class="l">Sof foyda (so'm)</div></div>
+                </div>
+                <h4 class="section-label">Daromad va xarajat taqqoslash</h4>
+                ${hbarList([["Daromad", totalRevenue], ["Xarajat", totalSalary]], " so'm")}`;
+        } else if (type === 'courses') {
+            const byCourse = courses.map(c => [c.name, students.filter(s=>s.course===c.name).length]);
+            detail.innerHTML = reportHeader('📚', 'Kurslar hisoboti') + `
+                <h4 class="section-label">Kurslar bo'yicha o'quvchilar soni</h4>
+                ${hbarList(byCourse, ' ta')}
+                <h4 class="section-label">Narxlar</h4>
+                ${courses.map(c=>`<div class="detail-item" style="margin-bottom:6px;background:var(--gray-50);"><span class="label">${escapeHtml(c.name)}</span><span class="value">${fmt(c.price)} so'm / ${c.duration} oy</span></div>`).join('') || '<div class="empty-hint">Kurslar yo\'q</div>'}`;
+        }
+        const dlBtn = document.getElementById('reportDownloadBtn');
+        if (dlBtn) dlBtn.addEventListener('click', () => downloadReportByType(type));
+        detail.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+
+    function downloadReportByType(type) {
+        const lines = [];
+        const stamp = new Date().toLocaleDateString('uz-UZ');
+        if (type === 'students') {
+            lines.push("O'quvchilar hisoboti — " + stamp, '');
+            students.forEach(s=> lines.push(`${s.firstName} ${s.lastName} | ${s.course} | ${s.group} | ${s.status==='active'?'Faol':'Faol emas'}`));
+        } else if (type === 'attendance') {
+            const stats = computeStats();
+            lines.push('Davomat hisoboti — ' + stamp, '', `Bugungi davomat: ${stats.todayAttendance} / ${stats.totalStudents}`);
+        } else if (type === 'finance') {
+            const totalRevenue = payments.reduce((s,p)=> s + (p.status!=='unpaid'?p.amount:0), 0);
+            const totalSalary = salaries.reduce((s,x)=> s + x.rate + x.bonus, 0);
+            lines.push('Moliyaviy hisobot — ' + stamp, '',
+                `Daromad: ${fmt(totalRevenue)} so'm`, `Xarajat: ${fmt(totalSalary)} so'm`, `Sof foyda: ${fmt(totalRevenue-totalSalary)} so'm`);
+        } else if (type === 'courses') {
+            lines.push('Kurslar hisoboti — ' + stamp, '');
+            courses.forEach(c=>{
+                const cnt = students.filter(s=>s.course===c.name).length;
+                lines.push(`${c.name} | ${cnt} o'quvchi | ${fmt(c.price)} so'm`);
+            });
+        }
+        const blob = new Blob([lines.join('\n')], { type:'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `hisobot-${type}.txt`;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+        showToast('📥 Hisobot yuklab olindi!','success');
+    }
+
+    function downloadReport() {
+        const stats = computeStats();
+        const lines = [];
+        lines.push('EduCRM Pro — Umumiy Hisobot');
+        lines.push('Sana: ' + new Date().toLocaleDateString('uz-UZ'));
+        lines.push('');
+        lines.push(`Jami o'quvchilar: ${stats.totalStudents}`);
+        lines.push(`O'qituvchilar: ${stats.totalTeachers}`);
+        lines.push(`Faol kurslar: ${stats.activeCourses}`);
+        lines.push(`Guruhlar: ${stats.totalGroups}`);
+        lines.push(`Umumiy daromad: ${fmt(stats.totalRevenue)} so'm`);
+        lines.push('');
+        lines.push('O\'quvchilar ro\'yxati:');
+        students.forEach(s=> lines.push(`- ${s.firstName} ${s.lastName} | ${s.course} | ${s.group} | ${s.status}`));
+        const blob = new Blob([lines.join('\n')], { type:'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'educrm-hisobot.txt';
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+        showToast('📥 Hisobot yuklab olindi!','success');
+    }
+
+    function exportStudentsCsv() {
+        const rows = [['Ism','Familiya','Telefon','Email','Kurs','Guruh','Holat','Tolov']];
+        students.forEach(s=> rows.push([s.firstName,s.lastName,s.phone,s.email,s.course,s.group,s.status,s.paymentStatus]));
+        const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+        const blob = new Blob(['\uFEFF'+csv], { type:'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'oquvchilar.csv';
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+        showToast('📥 Eksport qilindi!','success');
+    }
+
+    // ============================================
+    // PROFILE / SETTINGS
+    // ============================================
+    function renderProfile() {
+        const initialsStr = currentUser.name.split(' ').map(w=>w.charAt(0)).slice(0,2).join('').toUpperCase();
+        document.getElementById('sidebarAvatar').textContent = initialsStr;
+        document.getElementById('sidebarName').textContent = currentUser.name;
+        document.getElementById('topbarAvatar').textContent = initialsStr;
+        document.getElementById('topbarName').textContent = currentUser.name.split(' ')[0];
+        document.getElementById('profileAvatarBig').textContent = initialsStr;
+        document.getElementById('profileNameBig').textContent = currentUser.name;
+        document.getElementById('profileEmailBig').textContent = currentUser.email;
+        document.getElementById('profileDetailName').textContent = currentUser.name;
+        document.getElementById('profileDetailEmail').textContent = currentUser.email;
+    }
+
+    function renderUsersList() {
+        const el = document.getElementById('usersList');
+        if (!users.length) { el.innerHTML = '<div class="empty-hint">Foydalanuvchilar yo\'q</div>'; return; }
+        el.innerHTML = users.map((u,i) => `
+            <div class="user-row">
+                <div class="user-info"><div class="mini-avatar">${u.name.split(' ').map(w=>w.charAt(0)).slice(0,2).join('').toUpperCase()}</div>
+                <div><div style="font-weight:600;font-size:14px;">${escapeHtml(u.name)}</div><div style="font-size:12px;color:var(--gray-500);">${escapeHtml(u.email)}</div></div></div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="badge primary">${escapeHtml(u.role)}</span>
+                    ${i>0?`<button class="del-user" data-del-user="${i}" title="O'chirish"><i class="fas fa-times"></i></button>`:''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // ============================================
+    // NOTIFICATIONS (derived live from real data — no fake feed)
+    // ============================================
+    function computeNotifications() {
+        const items = [];
+        const unpaid = students.filter(s=>s.paymentStatus==='unpaid');
+        if (unpaid.length) items.push({ icon:'fa-credit-card', level:'danger', text:`<strong>${unpaid.length} ta o'quvchi</strong> to'lov qilmagan`, page:'payments' });
+        const partial = students.filter(s=>s.paymentStatus==='partial');
+        if (partial.length) items.push({ icon:'fa-hand-holding-dollar', level:'warning', text:`<strong>${partial.length} ta o'quvchi</strong> qisman to'lagan`, page:'payments' });
+        const fullGroups = groups.filter(g => students.filter(s=>s.group===g.name).length >= g.capacity);
+        if (fullGroups.length) items.push({ icon:'fa-users', level:'warning', text:`<strong>${fullGroups.length} ta guruh</strong> sig'imi to'lib bo'ldi`, page:'groups' });
+        const pendingGroups = groups.filter(g=>g.status==='pending');
+        if (pendingGroups.length) items.push({ icon:'fa-hourglass-half', level:'info', text:`<strong>${pendingGroups.length} ta guruh</strong> hali faollashmagan`, page:'groups' });
+        const pendingSalaries = salaries.filter(s=>s.status==='pending');
+        if (pendingSalaries.length) items.push({ icon:'fa-money-bill-wave', level:'warning', text:`<strong>${pendingSalaries.length} ta ish haqi</strong> to'lanishi kerak`, page:'salary' });
+        const stats = computeStats();
+        if (stats.totalStudents && (stats.todayAttendance / stats.totalStudents) < 0.6) {
+            items.push({ icon:'fa-calendar-xmark', level:'danger', text:`Bugungi davomat past — <strong>${Math.round(stats.todayAttendance/stats.totalStudents*100)}%</strong>`, page:'attendance' });
+        }
+        return items;
+    }
+
+    function renderNotifications() {
+        const items = computeNotifications();
+        const list = document.getElementById('notifList');
+        const dot = document.getElementById('notifDot');
+        if (!list) return;
+        list.innerHTML = items.length ? items.map(n => `
+            <div class="notif-item" data-notif-page="${n.page}">
+                <div class="notif-icon ${n.level}"><i class="fas ${n.icon}"></i></div>
+                <div class="notif-body"><p>${n.text}</p><span class="notif-time">joriy holat</span></div>
+            </div>
+        `).join('') : '<div class="empty-hint">Yangi bildirishnoma yo\'q 🎉</div>';
+        if (dot) dot.style.display = items.length ? 'block' : 'none';
+    }
+
+    // ============================================
+    // MASTER RENDER
+    // ============================================
+    function renderAll() {
+        renderStats();
+        renderRevenueChart();
+        renderActivity();
+        renderTodayClasses();
+        populateCourseGroupSelects();
+        applyStudentFilters();
+        renderTeachers();
+        renderCourses();
+        renderGroups();
+        renderPayments();
+        renderSalary();
+        renderUsersList();
+        renderProfile();
+        renderNotifications();
+        document.getElementById('todayAttendanceCount').textContent = computeStats().todayAttendance;
+    }
+
+    // ============================================
+    // NAVIGATION
+    // ============================================
+    const pageTitles = {
+        dashboard: { title:'📊 Dashboard', sub:'O\'quv markazi faoliyati haqida umumiy ma\'lumot' },
+        students: { title:'👨‍🎓 O\'quvchilar Boshqaruvi', sub:null },
+        teachers: { title:'👨‍🏫 O\'qituvchilar Boshqaruvi', sub:null },
+        courses: { title:'📚 Kurslar Boshqaruvi', sub:null },
+        groups: { title:'👥 Guruhlar Boshqaruvi', sub:null },
+        attendance: { title:'📅 Davomat Boshqaruvi', sub:'Sana va guruh tanlang' },
+        payments: { title:'💰 To\'lovlar Boshqaruvi', sub:null },
+        salary: { title:'💵 Ish Haqi Boshqaruvi', sub:null },
+        reports: { title:'📊 Hisobotlar', sub:'Barcha hisobot turlari' },
+        profile: { title:'👤 Foydalanuvchi Profili', sub:'Shaxsiy ma\'lumotlar' },
+        settings: { title:'⚙️ Sozlamalar', sub:'Tizim sozlamalari' },
+    };
+
+    function navigateTo(page) {
+        document.querySelectorAll('.page-section').forEach(el=>el.classList.remove('active'));
+        const target = document.getElementById('page-'+page);
+        if (target) target.classList.add('active');
+        document.querySelectorAll('.sidebar-nav .nav-item').forEach(el=>el.classList.remove('active'));
+        const nav = document.querySelector(`.sidebar-nav .nav-item[data-page="${page}"]`);
+        if (nav) nav.classList.add('active');
+        const info = pageTitles[page] || pageTitles.dashboard;
+        document.getElementById('pageTitle').textContent = info.title;
+        document.getElementById('pageSubtitle').textContent = info.sub || `Jami ${
+            page==='students'?students.length: page==='teachers'?teachers.length: page==='courses'?courses.length:
+            page==='groups'?groups.length: page==='payments'? fmt(payments.reduce((s,p)=>s+(p.status!=='unpaid'?p.amount:0),0))+" so'm" :
+            page==='salary'? fmt(salaries.reduce((s,x)=>s+x.rate+x.bonus,0))+" so'm" : ''
+        }${page==='payments'||page==='salary'?'':' ta'}`;
+        if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+        window.scrollTo(0,0);
+    }
+
+    // ============================================
+    // THEME (pure CSS-variable driven — persists across re-renders)
+    // ============================================
+    function applyTheme(dark) {
+        isDark = dark;
+        settings.theme = dark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        document.getElementById('themeIcon').className = dark ? 'fas fa-sun' : 'fas fa-moon';
+        saveData();
+    }
+
+    // ============================================
+    // LOGIN / LOGOUT
+    // ============================================
+    function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const btn = document.getElementById('loginBtn');
+        const errBox = document.getElementById('loginError');
+        errBox.classList.remove('show');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yuklanmoqda...';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            if (email === currentUser.email && password === currentUser.password) {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('appContainer').classList.add('active');
+                applyTheme(isDark);
+                renderAll();
+                navigateTo('dashboard');
+                showToast('✅ Tizimga muvaffaqiyatli kirdingiz!','success');
+            } else {
+                errBox.textContent = "Email yoki parol noto'g'ri!";
+                errBox.classList.add('show');
+                showToast('❌ Email yoki parol noto\'g\'ri!','error');
+            }
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Kirish';
+            btn.disabled = false;
+        }, 600);
+    }
+
+    function handleLogout() {
+        if (confirm('Chiqishni xohlaysizmi?')) {
+            document.getElementById('appContainer').classList.remove('active');
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('loginPassword').value = currentUser.password;
+            showToast('👋 Tizimdan chiqdingiz','info');
+        }
+    }
+
+    // ============================================
+    // EVENT WIRING
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+        // Apply persisted theme immediately (also affects the login screen icon)
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+        document.getElementById('togglePwBtn').addEventListener('click', () => {
+            const input = document.getElementById('loginPassword');
+            const icon = document.getElementById('toggleIcon');
+            if (input.type === 'password') { input.type = 'text'; icon.className = 'fas fa-eye-slash'; }
+            else { input.type = 'password'; icon.className = 'fas fa-eye'; }
+        });
+        document.getElementById('forgotPwLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            showToast('ℹ️ Administratorga murojaat qiling: ' + currentUser.email, 'info');
+        });
+
+        // Sidebar nav (click + keyboard)
+        document.querySelectorAll('.sidebar-nav .nav-item').forEach(el => {
+            el.addEventListener('click', () => navigateTo(el.dataset.page));
+            el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateTo(el.dataset.page); } });
+        });
+        document.querySelectorAll('.profile-btn[data-page]').forEach(el=>{
+            el.addEventListener('click', ()=>navigateTo(el.dataset.page));
+        });
+        document.querySelectorAll('[data-goto]').forEach(el=>{
+            el.addEventListener('click', ()=>navigateTo(el.dataset.goto));
+        });
+
+        document.getElementById('sidebarToggleBtn').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('open'));
+        document.getElementById('themeToggleBtn').addEventListener('click', () => { applyTheme(!isDark); showToast(isDark?'🌙 Dark Mode yoqildi':'☀️ Light Mode yoqildi','info'); });
+        document.getElementById('notifBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            renderNotifications();
+            document.getElementById('notifPanel').classList.toggle('open');
+        });
+        document.getElementById('notifMarkAllBtn').addEventListener('click', () => {
+            document.getElementById('notifDot').style.display = 'none';
+            document.getElementById('notifPanel').classList.remove('open');
+            showToast('Barchasi o\'qilgan deb belgilandi','info');
+        });
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('notifPanel');
+            if (panel.classList.contains('open') && !e.target.closest('.notif-wrapper')) panel.classList.remove('open');
+        });
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+
+        // Modal generic close
+        document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.dataset.close)));
+        document.querySelectorAll('.modal-overlay').forEach(ov => ov.addEventListener('click', (e) => { if (e.target === ov) closeModal(ov.id); }));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m=>closeModal(m.id)); });
+
+        // Quick action buttons
+        document.querySelectorAll('[data-action="add-student"]').forEach(b=>b.addEventListener('click', ()=>openStudentModal(null)));
+        document.querySelectorAll('[data-action="add-teacher"]').forEach(b=>b.addEventListener('click', ()=>openTeacherModal(null)));
+        document.querySelectorAll('[data-action="add-course"]').forEach(b=>b.addEventListener('click', ()=>openCourseModal(null)));
+        document.querySelectorAll('[data-action="add-group"]').forEach(b=>b.addEventListener('click', ()=>openGroupModal(null)));
+        document.querySelectorAll('[data-action="add-payment"]').forEach(b=>b.addEventListener('click', openPaymentModal));
+
+        // Forms
+        document.getElementById('studentForm').addEventListener('submit', handleStudentSubmit);
+        document.getElementById('teacherForm').addEventListener('submit', handleTeacherSubmit);
+        document.getElementById('courseForm').addEventListener('submit', handleCourseSubmit);
+        document.getElementById('groupForm').addEventListener('submit', handleGroupSubmit);
+        document.getElementById('paymentForm').addEventListener('submit', handlePaymentSubmit);
+
+        // Students search / filter / export / sort
+        document.getElementById('studentSearch').addEventListener('input', (e) => { studentSearchQuery = e.target.value; applyStudentFilters(true); });
+        document.getElementById('studentStatusFilter').addEventListener('change', (e) => { studentStatusQuery = e.target.value; applyStudentFilters(true); });
+        document.getElementById('studentGroupFilter').addEventListener('change', (e) => { studentGroupQuery = e.target.value; applyStudentFilters(true); });
+        document.getElementById('exportStudentsBtn').addEventListener('click', exportStudentsCsv);
+        document.querySelectorAll('#page-students th[data-sort]').forEach(th => {
+            th.addEventListener('click', () => {
+                const key = th.dataset.sort;
+                if (studentSort.key === key) studentSort.dir *= -1; else { studentSort.key = key; studentSort.dir = 1; }
+                applyStudentFilters(true);
+            });
+        });
+
+        // Delegated clicks for dynamic tables
+        document.addEventListener('click', (e) => {
+            const t = e.target.closest('[data-view-student]'); if (t) return viewStudent(Number(t.dataset.viewStudent));
+            const e1 = e.target.closest('[data-edit-student]'); if (e1) return openStudentModal(Number(e1.dataset.editStudent));
+            const d1 = e.target.closest('[data-del-student]'); if (d1) return deleteStudent(Number(d1.dataset.delStudent));
+
+            const vt = e.target.closest('[data-view-teacher]'); if (vt) return viewTeacher(Number(vt.dataset.viewTeacher));
+            const et = e.target.closest('[data-edit-teacher]'); if (et) return openTeacherModal(Number(et.dataset.editTeacher));
+            const dt = e.target.closest('[data-del-teacher]'); if (dt) return deleteTeacher(Number(dt.dataset.delTeacher));
+
+            const ec = e.target.closest('[data-edit-course]'); if (ec) return openCourseModal(Number(ec.dataset.editCourse));
+            const dc = e.target.closest('[data-del-course]'); if (dc) return deleteCourse(Number(dc.dataset.delCourse));
+
+            const eg = e.target.closest('[data-edit-group]'); if (eg) return openGroupModal(Number(eg.dataset.editGroup));
+            const dg = e.target.closest('[data-del-group]'); if (dg) return deleteGroup(Number(dg.dataset.delGroup));
+
+            const dp = e.target.closest('[data-del-payment]'); if (dp) return deletePayment(Number(dp.dataset.delPayment));
+            const ps = e.target.closest('[data-pay-salary]'); if (ps) return paySalary(Number(ps.dataset.paySalary));
+
+            const du = e.target.closest('[data-del-user]'); if (du) {
+                const idx = Number(du.dataset.delUser);
+                if (idx > 0) { users.splice(idx,1); renderUsersList(); saveData(); showToast('Foydalanuvchi o\'chirildi','success'); }
+                return;
+            }
+
+            const att = e.target.closest('[data-att-toggle]'); if (att) {
+                const date = att.dataset.attDate, group = att.dataset.attGroup, idx = Number(att.dataset.attToggle);
+                attendanceRecords[date] = attendanceRecords[date] || {};
+                attendanceRecords[date][group] = attendanceRecords[date][group] || [];
+                attendanceRecords[date][group][idx] = !attendanceRecords[date][group][idx];
+                att.classList.toggle('active');
+                updateAttendanceSummary(attendanceRecords[date][group]);
+                return;
+            }
+
+            const np = e.target.closest('[data-notif-page]'); if (np) {
+                document.getElementById('notifPanel').classList.remove('open');
+                navigateTo(np.dataset.notifPage);
+                return;
+            }
+
+            const rc = e.target.closest('[data-report]'); if (rc) return showReport(rc.dataset.report);
+
+            const ts = e.target.closest('[data-toggle]'); if (ts) {
+                ts.classList.toggle('active');
+                settings[ts.dataset.toggle] = ts.classList.contains('active');
+                saveData();
+                return;
+            }
+        });
+
+        // Attendance controls
+        document.getElementById('attendanceDate').value = todayISO();
+        document.getElementById('loadAttendanceBtn').addEventListener('click', loadAttendanceRoster);
+
+        // Reports
+        document.getElementById('downloadReportBtn').addEventListener('click', downloadReport);
+
+        // Profile
+        document.getElementById('editProfileBtn').addEventListener('click', () => {
+            document.getElementById('profileEditName').value = currentUser.name;
+            document.getElementById('profileEditEmail').value = currentUser.email;
+            openModal('profileModal');
+        });
+        document.getElementById('profileForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!validateForm(e.target)) { showToast('Iltimos, maydonlarni to\'g\'ri to\'ldiring!','error'); return; }
+            currentUser.name = document.getElementById('profileEditName').value.trim();
+            currentUser.email = document.getElementById('profileEditEmail').value.trim();
+            renderProfile();
+            closeModal('profileModal');
+            showToast('✅ Profil yangilandi!','success');
+            saveData();
+        });
+        document.getElementById('changePwBtn').addEventListener('click', () => {
+            document.getElementById('passwordForm').reset();
+            openModal('passwordModal');
+        });
+        document.getElementById('passwordForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const cur = document.getElementById('currentPassword').value;
+            const nw = document.getElementById('newPassword').value;
+            const cf = document.getElementById('confirmPassword').value;
+            if (cur !== currentUser.password) { showToast('❌ Joriy parol noto\'g\'ri!','error'); return; }
+            if (nw !== cf) { showToast('❌ Yangi parollar mos emas!','error'); return; }
+            if (nw.length < 6) { showToast('❌ Parol kamida 6 belgidan iborat bo\'lishi kerak!','error'); return; }
+            currentUser.password = nw;
+            closeModal('passwordModal');
+            showToast('✅ Parol muvaffaqiyatli yangilandi!','success');
+            saveData();
+        });
+
+        // Settings
+        document.getElementById('settingSystemName').addEventListener('change', (e) => {
+            settings.systemName = e.target.value;
+            document.querySelector('.sidebar-brand h2').textContent = e.target.value || 'EduCRM Pro';
+            saveData(); showToast('✅ Saqlandi','success');
+        });
+        document.getElementById('settingLang').addEventListener('change', (e) => { settings.lang = e.target.value; saveData(); showToast('✅ Til o\'zgartirildi','success'); });
+        document.getElementById('settingCurrency').addEventListener('change', (e) => { settings.currency = e.target.value; saveData(); showToast('✅ Valyuta o\'zgartirildi','success'); });
+        document.getElementById('addUserBtn').addEventListener('click', () => { document.getElementById('userForm').reset(); openModal('userModal'); });
+        document.getElementById('userForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!validateForm(e.target)) { showToast('Iltimos, maydonlarni to\'g\'ri to\'ldiring!','error'); return; }
+            const name = document.getElementById('newUserName').value.trim();
+            const email = document.getElementById('newUserEmail').value.trim();
+            const role = document.getElementById('newUserRole').value;
+            users.push({ name, email, role });
+            renderUsersList();
+            closeModal('userModal');
+            showToast('✅ Foydalanuvchi qo\'shildi!','success');
+            saveData();
+        });
+        document.getElementById('resetDataBtn').addEventListener('click', () => {
+            if (confirm('⚠️ Barcha ma\'lumotlar o\'chib, boshlang\'ich holatga qaytariladi. Davom etasizmi?')) {
+                const seed = seedData();
+                students = seed.students; teachers = seed.teachers; courses = seed.courses; groups = seed.groups;
+                payments = seed.payments; salaries = seed.salaries; activities = seed.activities;
+                users = seed.users; attendanceRecords = {};
+                settings = { ...seed.settings, theme: settings.theme };
+                renderAll();
+                saveData();
+                showToast('✅ Ma\'lumotlar tiklandi!','success');
+            }
+        });
+
+        // Init settings UI values
+        document.getElementById('settingSystemName').value = settings.systemName;
+        document.getElementById('settingLang').value = settings.lang;
+        document.getElementById('settingCurrency').value = settings.currency;
+        document.querySelector('[data-toggle="sms"]').classList.toggle('active', !!settings.sms);
+        document.querySelector('[data-toggle="email"]').classList.toggle('active', !!settings.email);
+        document.querySelector('[data-toggle="push"]').classList.toggle('active', !!settings.push);
+
+        console.log('🚀 EduCRM Pro tayyor!');
+    });
+
+})();
+</script>
+</body>
+</html>

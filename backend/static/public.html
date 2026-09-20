@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+        <meta name="hms-api-base" content="">
+    <title>HotelMS — Mehmonxona bron qilish</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- CSS Animation (scroll animations uchun) -->
+    <link href="https://cdn.jsdelivr.net/npm/@hellouxpavel/cssanimation@latest/dist/cssanimation.min.css" rel="stylesheet" />
+
+    <!-- Public CSS -->
+    <link rel="stylesheet" href="/static/hotel-management/public/css/public.css" />
+</head>
+<body>
+
+    <div class="public-page" id="publicApp">
+
+        <!-- ============================================================
+        HEADER — DeepSeek uslubidagi navbar
+        ============================================================ -->
+        <header class="ds-header" id="mainHeader">
+            <div class="ds-header-inner">
+                <!-- Logo -->
+                <a class="ds-logo" href="#">
+                    <i class="fas fa-hotel"></i>
+                    <span>Hotel<span class="ds-logo-highlight">MS</span></span>
+                </a>
+
+                <!-- Desktop navigatsiya -->
+                <nav class="ds-nav-desktop">
+                    <a href="#rooms" class="ds-nav-link active" data-nav="rooms">
+                        <i class="fas fa-door-open"></i> Xonalar
+                    </a>
+                    <a href="#booking" class="ds-nav-link" data-nav="booking">
+                        <i class="fas fa-pen-alt"></i> Bron
+                    </a>
+                    <a href="#about" class="ds-nav-link" data-nav="about">
+                        <i class="fas fa-info-circle"></i> Biz haqimizda
+                    </a>
+                    <a href="#contact" class="ds-nav-link" data-nav="contact">
+                        <i class="fas fa-phone"></i> Bog‘lanish
+                    </a>
+                </nav>
+
+                <!-- O‘ng tomon: til + tema + admin -->
+                <div class="ds-header-actions">
+ <!-- Til almashtirgich (dropdown) -->
+<div class="ds-lang-dropdown" id="langDropdown">
+    <button type="button" class="ds-lang-trigger" id="langTrigger"
+            aria-haspopup="listbox" aria-expanded="false" aria-label="Tilni tanlash">
+        <i class="fas fa-globe" aria-hidden="true"></i>
+        <span id="langCurrent">O‘zbekcha</span>
+        <i class="fas fa-chevron-down ds-lang-chevron" aria-hidden="true"></i>
+    </button>
+    <ul class="ds-lang-menu" id="langMenu" role="listbox" aria-label="Tillar">
+        <li role="option" data-lang="uz" aria-selected="true" tabindex="0">
+            <span class="ds-lang-flag">🇺🇿</span> O‘zbekcha
+            <i class="fas fa-check ds-lang-check" aria-hidden="true"></i>
+        </li>
+        <li role="option" data-lang="ru" aria-selected="false" tabindex="0">
+            <span class="ds-lang-flag">🇷🇺</span> Русский
+            <i class="fas fa-check ds-lang-check" aria-hidden="true"></i>
+        </li>
+        <li role="option" data-lang="en" aria-selected="false" tabindex="0">
+            <span class="ds-lang-flag">🇬🇧</span> English
+            <i class="fas fa-check ds-lang-check" aria-hidden="true"></i>
+        </li>
+    </ul>
+</div>
+
+                    <!-- Tema almashtirgich -->
+                    <button class="ds-theme-toggle" id="themeToggle" aria-label="Temani almashtirish">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+
+                    <!-- Admin tugmasi -->
+                    <a class="ds-btn-ghost" href="hotel-management/index.html" target="_blank">
+                        <i class="fas fa-user-shield"></i>
+                    </a>
+
+                    <!-- Mobil menyu tugmasi -->
+                    <button class="ds-mobile-toggle" id="mobileToggle" aria-label="Menyu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobil menyu -->
+            <div class="ds-mobile-menu" id="mobileMenu">
+                <nav class="ds-mobile-nav">
+                    <a href="#rooms" class="ds-mobile-link active" data-nav="rooms">
+                        <i class="fas fa-door-open"></i> Xonalar
+                    </a>
+                    <a href="#booking" class="ds-mobile-link" data-nav="booking">
+                        <i class="fas fa-pen-alt"></i> Bron
+                    </a>
+                    <a href="#about" class="ds-mobile-link" data-nav="about">
+                        <i class="fas fa-info-circle"></i> Biz haqimizda
+                    </a>
+                    <a href="#contact" class="ds-mobile-link" data-nav="contact">
+                        <i class="fas fa-phone"></i> Bog‘lanish
+                    </a>
+                    <a href="hotel-management/index.html" class="ds-mobile-link" target="_blank">
+                        <i class="fas fa-user-shield"></i> Admin
+                    </a>
+                </nav>
+<div class="ds-mobile-footer">
+    <button class="ds-theme-toggle" id="themeToggleMobile" aria-label="Temani almashtirish">
+        <i class="fas fa-moon"></i>
+    </button>
+</div>
+            </div>
+        </header>
+
+        <!-- ============================================================
+        HERO
+        ============================================================ -->
+        <section class="ds-hero" id="hero">
+            <div class="ds-hero-content" data-scrolly-down="fadeInUp">
+                <h1>Zamonaviy mehmonxonangizda</h1>
+                <p class="ds-hero-subtitle">Qulay va sifatli dam olish uchun eng yaxshi xonalarni bron qiling.</p>
+
+                <!-- Search Card -->
+                <div class="ds-search-card" id="searchCard">
+                    <form id="searchForm" novalidate>
+                        <div class="ds-search-grid">
+                            <div class="ds-search-field">
+                                <label class="ds-search-label" for="searchCheckin">
+                                    <i class="fas fa-calendar-check"></i> Kirish
+                                </label>
+                                <input type="date" id="searchCheckin" class="ds-search-input" />
+                            </div>
+                            <div class="ds-search-field">
+                                <label class="ds-search-label" for="searchCheckout">
+                                    <i class="fas fa-calendar-times"></i> Chiqish
+                                </label>
+                                <input type="date" id="searchCheckout" class="ds-search-input" />
+                            </div>
+                            <div class="ds-search-field">
+                                <label class="ds-search-label" for="searchGuests">
+                                    <i class="fas fa-users"></i> Mehmonlar
+                                </label>
+                                <select id="searchGuests" class="ds-search-select">
+                                    <option value="1">1</option>
+                                    <option value="2" selected>2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="ds-btn-primary ds-search-btn" id="searchBtn">
+                                <i class="fas fa-search"></i> Qidirish
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        ROOMS
+        ============================================================ -->
+        <section class="ds-section" id="rooms">
+            <div class="ds-section-header" data-scrolly-down="fadeInUp">
+                <h2 class="ds-section-title">Bizning xonalar</h2>
+                <p class="ds-section-subtitle" id="roomSubtitle">Sizga eng mos xonani tanlang</p>
+            </div>
+
+            <!-- Loading -->
+            <div id="roomsLoading" class="ds-state-placeholder">
+                <div class="ds-state-icon"><i class="fas fa-spinner fa-pulse"></i></div>
+                <h5>Xonalar yuklanmoqda...</h5>
+            </div>
+
+            <!-- Grid -->
+            <div id="roomsGrid" class="ds-rooms-grid d-none"></div>
+
+            <!-- Empty -->
+            <div id="roomsEmpty" class="ds-state-placeholder d-none">
+                <div class="ds-state-icon"><i class="fas fa-door-open"></i></div>
+                <h5>Xonalar topilmadi</h5>
+                <p>Kiritgan sanalarga mos bo‘sh xona mavjud emas.</p>
+                <button class="ds-btn-ghost" onclick="document.getElementById('searchForm').reset(); Public.searchAvailability();">
+                    <i class="fas fa-undo"></i> Qayta qidirish
+                </button>
+            </div>
+
+            <!-- Error -->
+            <div id="roomsError" class="ds-state-placeholder d-none">
+                <div class="ds-state-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <h5>Xatolik yuz berdi</h5>
+                <button class="ds-btn-primary" onclick="Public.loadRooms()">
+                    <i class="fas fa-redo"></i> Qayta urinish
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        BOOKING
+        ============================================================ -->
+        <section class="ds-modal-overlay d-none" id="bookingSection">
+    <div class="ds-modal ds-booking-modal" id="bookingCard">
+
+        <button
+            type="button"
+            class="ds-modal-close"
+            onclick="Public.closeBookingForm()"
+            aria-label="Yopish">
+            &times;
+        </button>
+
+        <div class="ds-modal-header">
+            <span class="ds-modal-icon">
+                <i class="fas fa-calendar-check"></i>
+            </span>
+
+            <div>
+                <h2>Bron qilish</h2>
+                <p id="bookingSelectedRoom">
+                    Xona tanlanmagan
+                </p>
+            </div>
+        </div>
+
+        <form id="bookingForm" novalidate>
+
+            <input type="hidden" id="bookingRoomId">
+
+            <div class="ds-form-grid">
+
+                <div class="ds-form-group">
+                    <label for="guestFullName">To‘liq ism *</label>
+                    <input
+                        type="text"
+                        id="guestFullName"
+                        class="ds-booking-input"
+                        placeholder="Ism Familiya"
+                        required>
+                </div>
+
+                <div class="ds-form-group">
+                    <label for="guestPassport">Pasport *</label>
+                    <input
+                        type="text"
+                        id="guestPassport"
+                        class="ds-booking-input"
+                        placeholder="AA1234567"
+                        required>
+                </div>
+
+                <div class="ds-form-group">
+                    <label for="guestPhone">Telefon *</label>
+                    <input
+                        type="tel"
+                        id="guestPhone"
+                        class="ds-booking-input"
+                        placeholder="+998901234567"
+                        autocomplete="tel"
+                        required>
+                </div>
+
+                <div class="ds-form-group">
+                    <label for="guestEmail">Email</label>
+                    <input
+                        type="email"
+                        id="guestEmail"
+                        class="ds-booking-input"
+                        placeholder="example@gmail.com">
+                </div>
+
+                <div class="ds-form-group">
+                    <label for="bookCheckin">Kirish sanasi *</label>
+                    <input
+                        type="date"
+                        id="bookCheckin"
+                        class="ds-booking-input"
+                        required>
+                </div>
+
+                <div class="ds-form-group">
+                    <label for="bookCheckout">Chiqish sanasi *</label>
+                    <input
+                        type="date"
+                        id="bookCheckout"
+                        class="ds-booking-input"
+                        required>
+                </div>
+
+                <div class="ds-form-group">
+                    <label for="guestCount">Mehmonlar *</label>
+                    <select
+                        id="guestCount"
+                        class="ds-booking-input"
+                        required>
+                        <option value="1">1 mehmon</option>
+                        <option value="2">2 mehmon</option>
+                        <option value="3">3 mehmon</option>
+                        <option value="4">4 mehmon</option>
+                        <option value="5">5 mehmon</option>
+                    </select>
+                </div>
+
+                <div class="ds-form-group">
+                    <label>Umumiy narx</label>
+                    <div class="ds-booking-total">
+                        <span id="bookingTotalPrice">$0</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="ds-form-group ds-form-full">
+                <label for="specialRequests">Qo‘shimcha izoh</label>
+                <textarea
+                    id="specialRequests"
+                    class="ds-booking-input"
+                    rows="3"
+                    placeholder="Qo‘shimcha talablaringiz..."></textarea>
+            </div>
+
+            <div class="ds-modal-actions">
+                <button
+                    type="button"
+                    class="ds-btn ds-btn-secondary"
+                    onclick="Public.closeBookingForm()">
+                    Bekor qilish
+                </button>
+
+                <button
+                    type="submit"
+                    class="ds-btn ds-btn-primary"
+                    id="confirmBookingBtn">
+                    <i class="fas fa-check"></i>
+                    Tasdiqlash
+                </button>
+            </div>
+
+        </form>
+    </div>
+</section>
+
+        <!-- ============================================================
+        CONFIRMATION
+        ============================================================ -->
+        <section class="ds-section ds-section-center d-none" id="confirmationSection">
+            <div class="ds-confirmation" data-scrolly-down="fadeInUp">
+                <div class="ds-confirmation-icon"><i class="fas fa-check-circle"></i></div>
+                <h4>Bron tasdiqlandi!</h4>
+                <p class="ds-text-muted">Sizning broningiz muvaffaqiyatli amalga oshirildi.</p>
+                <div class="ds-confirmation-details" id="confirmationDetails">
+                    <div class="ds-conf-row">
+                        <span class="ds-conf-label">Bron raqami</span>
+                        <span class="ds-conf-value" id="confId">—</span>
+                    </div>
+                    <div class="ds-conf-row">
+                        <span class="ds-conf-label">Xona</span>
+                        <span class="ds-conf-value" id="confRoom">—</span>
+                    </div>
+                    <div class="ds-conf-row">
+                        <span class="ds-conf-label">Kirish</span>
+                        <span class="ds-conf-value" id="confCheckin">—</span>
+                    </div>
+                    <div class="ds-conf-row">
+                        <span class="ds-conf-label">Chiqish</span>
+                        <span class="ds-conf-value" id="confCheckout">—</span>
+                    </div>
+                    <div class="ds-conf-row">
+                        <span class="ds-conf-label">Mehmonlar</span>
+                        <span class="ds-conf-value" id="confGuests">—</span>
+                    </div>
+                    <div class="ds-conf-row">
+                        <span class="ds-conf-label">Jami narx</span>
+                        <span class="ds-conf-value" id="confTotal">—</span>
+                    </div>
+                    <div class="ds-conf-row">
+                        <span class="ds-conf-label">Holat</span>
+                        <span class="ds-conf-value" id="confStatus">—</span>
+                    </div>
+                </div>
+                <button class="ds-btn-primary ds-confirmation-btn" onclick="Public.resetBooking()">
+                    <i class="fas fa-home"></i> Bosh sahifa
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        ABOUT / CONTACT
+        ============================================================ -->
+        <section class="ds-section ds-section-compact" id="about">
+            <div class="ds-info-grid">
+                <div class="ds-info-card" data-scrolly-down="fadeInLeft">
+                    <h4><i class="fas fa-info-circle"></i> Biz haqimizda</h4>
+                    <p class="ds-text-muted">HotelMS — zamonaviy mehmonxona boshqaruvi tizimi. Biz mijozlarimizga eng yaxshi xizmat va qulaylikni taqdim etamiz.</p>
+                </div>
+                <div class="ds-info-card" id="contact" data-scrolly-down="fadeInRight">
+                    <h4><i class="fas fa-phone"></i> Bog‘lanish</h4>
+                    <p class="ds-text-muted"><i class="fas fa-envelope"></i> info@hotelms.uz</p>
+                    <p class="ds-text-muted"><i class="fas fa-phone-alt"></i> +998 90 123 45 67</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================
+        FOOTER
+        ============================================================ -->
+        <footer class="ds-footer">
+            <div class="ds-footer-inner">
+                <p>&copy; 2026 Hotel Management System. Barcha huquqlar himoyalangan.</p>
+                <small class="ds-text-muted">Powered by HotelMS</small>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js">
+    </script>
+    <script src="https://unpkg.com/scrollyjs/dist/scrolly.min.js">
+    </script>
+    <script src="/static/hotel-management/js/public.js">
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ScrollyJS init
+            if (typeof Scrolly !== 'undefined') {
+                Scrolly.init();
+            }
+
+            // Public init
+            if (typeof Public !== 'undefined' && Public.init) {
+                Public.init();
+            }
+
+            // —— Tema almashtirgich ——
+            const themeToggle = document.getElementById('themeToggle');
+            const themeToggleMobile = document.getElementById('themeToggleMobile');
+            const themeIcon = document.getElementById('themeIcon');
+            const html = document.documentElement;
+
+            function setTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                const icon = theme === 'dark' ? 'fa-moon' : 'fa-sun';
+                themeIcon.className = 'fas ' + icon;
+                document.querySelectorAll('.ds-theme-toggle').forEach(el => {
+                    el.querySelector('i').className = 'fas ' + icon;
+                });
+            }
+
+            function toggleTheme() {
+                const current = html.getAttribute('data-theme');
+                setTheme(current === 'dark' ? 'light' : 'dark');
+            }
+
+            // Saqlangan tema yoki system
+            const saved = localStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved) {
+                setTheme(saved);
+            } else {
+                setTheme(systemDark ? 'dark' : 'light');
+            }
+
+            themeToggle.addEventListener('click', toggleTheme);
+            if (themeToggleMobile) {
+                themeToggleMobile.addEventListener('click', toggleTheme);
+            }
+
+            // —— Til almashtirgich ——
+                        langBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    setLanguage(this.dataset.lang);
+                });
+            });
+            const translations = {
+                uz: {
+                    heroTitle: 'Zamonaviy mehmonxonangizda',
+                    heroSub: 'Qulay va sifatli dam olish uchun eng yaxshi xonalarni bron qiling.',
+                    searchPlaceholder: 'Qidirish',
+                    roomsTitle: 'Bizning xonalar',
+                    roomsSub: 'Sizga eng mos xonani tanlang',
+                    bookTitle: 'Bron qilish',
+                    bookRoom: 'Tanlangan xona:',
+                    fullName: "To‘liq ism",
+                    passport: 'Passport',
+                    phone: 'Telefon',
+                    email: 'Email',
+                    guests: 'Mehmonlar soni',
+                    special: 'Maxsus talablar',
+                    total: 'Umumiy narx:',
+                    confirm: 'Tasdiqlash',
+                    cancel: 'Bekor qilish',
+                    confirmed: 'Bron tasdiqlandi!',
+                    confirmedSub: 'Sizning broningiz muvaffaqiyatli amalga oshirildi.',
+                    bookingId: 'Bron raqami',
+                    room: 'Xona',
+                    checkin: 'Kirish',
+                    checkout: 'Chiqish',
+                    guestCount: 'Mehmonlar',
+                    totalPrice: 'Jami narx',
+                    status: 'Holat',
+                    home: 'Bosh sahifa',
+                    about: 'Biz haqimizda',
+                    aboutText: 'HotelMS — zamonaviy mehmonxona boshqaruvi tizimi. Biz mijozlarimizga eng yaxshi xizmat va qulaylikni taqdim etamiz.',
+                    contact: "Bog‘lanish",
+                    footer: '© 2026 Hotel Management System. Barcha huquqlar himoyalangan.',
+                    powered: 'Powered by HotelMS',
+                    navRooms: 'Xonalar',
+                    navBooking: 'Bron',
+                    navAbout: 'Biz haqimizda',
+                    navContact: "Bog‘lanish",
+                    navAdmin: 'Admin',
+                },
+                ru: {
+                    heroTitle: 'В современном отеле',
+                    heroSub: 'Забронируйте лучшие номера для комфортного и качественного отдыха.',
+                    searchPlaceholder: 'Поиск',
+                    roomsTitle: 'Наши номера',
+                    roomsSub: 'Выберите подходящий номер',
+                    bookTitle: 'Бронирование',
+                    bookRoom: 'Выбранный номер:',
+                    fullName: 'Полное имя',
+                    passport: 'Паспорт',
+                    phone: 'Телефон',
+                    email: 'Email',
+                    guests: 'Количество гостей',
+                    special: 'Особые пожелания',
+                    total: 'Общая стоимость:',
+                    confirm: 'Подтвердить',
+                    cancel: 'Отмена',
+                    confirmed: 'Бронирование подтверждено!',
+                    confirmedSub: 'Ваше бронирование успешно выполнено.',
+                    bookingId: 'Номер брони',
+                    room: 'Номер',
+                    checkin: 'Заезд',
+                    checkout: 'Выезд',
+                    guestCount: 'Гости',
+                    totalPrice: 'Общая стоимость',
+                    status: 'Статус',
+                    home: 'Главная',
+                    about: 'О нас',
+                    aboutText: 'HotelMS — современная система управления отелем. Мы предоставляем нашим клиентам лучший сервис и комфорт.',
+                    contact: 'Контакты',
+                    footer: '© 2026 Hotel Management System. Все права защищены.',
+                    powered: 'Работает на HotelMS',
+                    navRooms: 'Номера',
+                    navBooking: 'Бронь',
+                    navAbout: 'О нас',
+                    navContact: 'Контакты',
+                    navAdmin: 'Админ',
+                },
+                en: {
+                    heroTitle: 'At Your Modern Hotel',
+                    heroSub: 'Book the best rooms for a comfortable and quality stay.',
+                    searchPlaceholder: 'Search',
+                    roomsTitle: 'Our Rooms',
+                    roomsSub: 'Choose the perfect room for you',
+                    bookTitle: 'Booking',
+                    bookRoom: 'Selected room:',
+                    fullName: 'Full Name',
+                    passport: 'Passport',
+                    phone: 'Phone',
+                    email: 'Email',
+                    guests: 'Number of guests',
+                    special: 'Special requests',
+                    total: 'Total price:',
+                    confirm: 'Confirm',
+                    cancel: 'Cancel',
+                    confirmed: 'Booking confirmed!',
+                    confirmedSub: 'Your booking has been successfully completed.',
+                    bookingId: 'Booking ID',
+                    room: 'Room',
+                    checkin: 'Check-in',
+                    checkout: 'Check-out',
+                    guestCount: 'Guests',
+                    totalPrice: 'Total price',
+                    status: 'Status',
+                    home: 'Home',
+                    about: 'About Us',
+                    aboutText: 'HotelMS is a modern hotel management system. We provide our clients with the best service and comfort.',
+                    contact: 'Contact',
+                    footer: '© 2026 Hotel Management System. All rights reserved.',
+                    powered: 'Powered by HotelMS',
+                    navRooms: 'Rooms',
+                    navBooking: 'Booking',
+                    navAbout: 'About',
+                    navContact: 'Contact',
+                    navAdmin: 'Admin',
+                }
+            };
+
+            let currentLang = 'uz';
+
+            function setLanguage(lang) {
+                currentLang = lang;
+                const t = translations[lang] || translations.uz;
+
+                // Hero
+                document.querySelector('.ds-hero h1').textContent = t.heroTitle;
+                document.querySelector('.ds-hero-subtitle').textContent = t.heroSub;
+                document.querySelector('#searchBtn').innerHTML = '<i class="fas fa-search"></i> ' + t.searchPlaceholder;
+
+                // Rooms
+                document.querySelector('.ds-section-title').textContent = t.roomsTitle;
+                document.querySelector('#roomSubtitle').textContent = t.roomsSub;
+
+                // Booking
+                document.querySelector('.ds-booking-title').innerHTML = '<i class="fas fa-pen-alt"></i> ' + t.bookTitle;
+                document.querySelector('#bookingSelectedRoom').innerHTML = t.bookRoom + ' <span id="selectedRoomName" class="ds-text-accent">—</span>';
+                document.querySelector('label[for="guestFullName"]').innerHTML = '<i class="fas fa-user"></i> ' + t.fullName + ' <span class="ds-required">*</span>';
+                document.querySelector('label[for="guestPassport"]').innerHTML = '<i class="fas fa-id-card"></i> ' + t.passport + ' <span class="ds-required">*</span>';
+                document.querySelector('label[for="guestPhone"]').innerHTML = '<i class="fas fa-phone"></i> ' + t.phone + ' <span class="ds-required">*</span>';
+                document.querySelector('label[for="guestEmail"]').innerHTML = '<i class="fas fa-envelope"></i> ' + t.email;
+                document.querySelector('label[for="guestCount"]').innerHTML = '<i class="fas fa-users"></i> ' + t.guests;
+                document.querySelector('label[for="specialRequests"]').innerHTML = '<i class="fas fa-comment"></i> ' + t.special;
+                document.querySelector('.ds-booking-total strong').textContent = t.total;
+                document.querySelector('#confirmBookingBtn').innerHTML = '<i class="fas fa-check"></i> ' + t.confirm;
+                document.querySelector('.ds-booking-buttons .ds-btn-ghost').innerHTML = '<i class="fas fa-times"></i> ' + t.cancel;
+
+                // Confirmation
+                document.querySelector('.ds-confirmation h4').textContent = t.confirmed;
+                document.querySelector('.ds-confirmation > p').textContent = t.confirmedSub;
+                const confLabels = document.querySelectorAll('.ds-conf-label');
+                if (confLabels.length >= 7) {
+                    confLabels[0].textContent = t.bookingId;
+                    confLabels[1].textContent = t.room;
+                    confLabels[2].textContent = t.checkin;
+                    confLabels[3].textContent = t.checkout;
+                    confLabels[4].textContent = t.guestCount;
+                    confLabels[5].textContent = t.totalPrice;
+                    confLabels[6].textContent = t.status;
+                }
+                document.querySelector('.ds-confirmation-btn').innerHTML = '<i class="fas fa-home"></i> ' + t.home;
+
+                // About / Contact
+                const infoCards = document.querySelectorAll('.ds-info-card h4');
+                if (infoCards.length >= 2) {
+                    infoCards[0].innerHTML = '<i class="fas fa-info-circle"></i> ' + t.about;
+                    infoCards[1].innerHTML = '<i class="fas fa-phone"></i> ' + t.contact;
+                }
+                const aboutText = document.querySelector('.ds-info-card:first-child .ds-text-muted');
+                if (aboutText) aboutText.textContent = t.aboutText;
+
+                // Footer
+                document.querySelector('.ds-footer p').textContent = t.footer;
+                document.querySelector('.ds-footer small').textContent = t.powered;
+
+                // Nav
+                document.querySelectorAll('.ds-nav-link, .ds-mobile-link').forEach(el => {
+                    const key = el.getAttribute('data-nav');
+                    if (key === 'rooms') el.innerHTML = '<i class="fas fa-door-open"></i> ' + t.navRooms;
+                    else if (key === 'booking') el.innerHTML = '<i class="fas fa-pen-alt"></i> ' + t.navBooking;
+                    else if (key === 'about') el.innerHTML = '<i class="fas fa-info-circle"></i> ' + t.navAbout;
+                    else if (key === 'contact') el.innerHTML = '<i class="fas fa-phone"></i> ' + t.navContact;
+                });
+                document.querySelectorAll('.ds-mobile-link[target="_blank"]').forEach(el => {
+                    el.innerHTML = '<i class="fas fa-user-shield"></i> ' + t.navAdmin;
+                });
+
+                // Active lang button
+                document.querySelectorAll('.ds-locale-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === lang);
+                });
+            }
+
+// Dropdown handlerlar
+const langDropdown = document.getElementById('langDropdown');
+const langTrigger  = document.getElementById('langTrigger');
+const langMenu     = document.getElementById('langMenu');
+const langCurrent  = document.getElementById('langCurrent');
+const LANG_LABELS  = { uz: 'O‘zbekcha', ru: 'Русский', en: 'English' };
+
+function _openLang()  { langDropdown?.classList.add('open'); langTrigger?.setAttribute('aria-expanded','true'); }
+function _closeLang() { langDropdown?.classList.remove('open'); langTrigger?.setAttribute('aria-expanded','false'); }
+
+if (langTrigger) {
+    langTrigger.addEventListener('click', function(e){ e.stopPropagation(); langDropdown.classList.toggle('open'); });
+}
+if (langMenu) {
+    langMenu.querySelectorAll('li[data-lang]').forEach(item => {
+        item.addEventListener('click', function() {
+            var lang = this.dataset.lang;
+            setLanguage(lang);
+            if (langCurrent) langCurrent.textContent = LANG_LABELS[lang] || lang;
+            langMenu.querySelectorAll('li').forEach(li =>
+                li.setAttribute('aria-selected', li === this ? 'true' : 'false'));
+            _closeLang();
+        });
+        item.addEventListener('keydown', function(e){
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); }
+            if (e.key === 'Escape') _closeLang();
+        });
+    });
+}
+document.addEventListener('click', function(e){
+    if (langDropdown && !langDropdown.contains(e.target)) _closeLang();
+});
+
+            // —— Mobil menyu ——
+            const mobileToggle = document.getElementById('mobileToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            mobileToggle.addEventListener('click', function() {
+                mobileMenu.classList.toggle('open');
+                const icon = this.querySelector('i');
+                icon.className = mobileMenu.classList.contains('open') ? 'fas fa-times' : 'fas fa-bars';
+            });
+
+            // Menudagi linklar bosilganda yopish
+            document.querySelectorAll('.ds-mobile-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    mobileMenu.classList.remove('open');
+                    document.querySelector('#mobileToggle i').className = 'fas fa-bars';
+                });
+            });
+
+            // —— Nav link active ——
+            document.querySelectorAll('.ds-nav-link, .ds-mobile-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    document.querySelectorAll('.ds-nav-link, .ds-mobile-link').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // —— Scroll paytida headerga shadow ——
+            window.addEventListener('scroll', function() {
+                const header = document.getElementById('mainHeader');
+                if (window.scrollY > 20) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        });
+    </script>
+
+
+
+<div class="ds-modal-overlay d-none" id="roomDetailsModal">
+    <div class="ds-modal ds-room-details-modal">
+
+        <button
+            type="button"
+            class="ds-modal-close"
+            onclick="Public.closeRoomDetails()"
+            aria-label="Yopish">
+            &times;
+        </button>
+
+        <div id="roomDetailsContent"></div>
+
+        <div class="ds-modal-actions">
+            <button
+                type="button"
+                class="ds-btn ds-btn-secondary"
+                onclick="Public.closeRoomDetails()">
+                Yopish
+            </button>
+
+            <button
+                type="button"
+                class="ds-btn ds-btn-primary"
+                id="roomDetailsBookBtn">
+                <i class="fas fa-calendar-check"></i>
+                Bron qilish
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+</body>
+</html>

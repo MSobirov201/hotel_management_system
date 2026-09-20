@@ -1,0 +1,16 @@
+.venv/
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+db.sqlite3
+*.log
+logs/
+staticfiles/
+media/
+temp/
+*.backup
+*.before-final-fix

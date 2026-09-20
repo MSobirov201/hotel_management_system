@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>Hotel Management · Liquid Glass</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+            --glass-shadow-hover: 0 16px 56px rgba(79, 70, 229, 0.12);
+            --glass-blur: 28px;
+            
+            --bg-primary: #0A0F1E;
+            --bg-secondary: rgba(15, 23, 42, 0.6);
+            --text-primary: #F1F5F9;
+            --text-secondary: #CBD5E1;
+            --text-muted: #94A3B8;
+            --text-body: #E2E8F0;
+            
+            --accent-1: #818CF8;
+            --accent-2: #A78BFA;
+            --accent-3: #60A5FA;
+            --accent-gradient: linear-gradient(135deg, #818CF8 0%, #A78BFA 100%);
+            --accent-glow: 0 0 40px rgba(129, 140, 248, 0.08);
+            
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.06);
+            --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+            --card-shadow-hover: 0 16px 56px rgba(0, 0, 0, 0.3);
+            
+            --input-bg: rgba(255, 255, 255, 0.04);
+            --input-border: rgba(255, 255, 255, 0.07);
+            --input-focus: #818CF8;
+            --input-text: #F1F5F9;
+            
+            --radius-sm: 12px;
+            --radius-md: 18px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --radius-full: 9999px;
+            
+            --font-family: 'Inter', -apple-system, 'Segoe UI', system-ui, sans-serif;
+            --font-base: 0.95rem;
+            --transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #F0F4FC;
+            --bg-secondary: rgba(255, 255, 255, 0.3);
+            --text-primary: #0A1628;
+            --text-secondary: #334155;
+            --text-muted: #64748B;
+            --text-body: #1E293B;
+            
+            --card-bg: rgba(255, 255, 255, 0.25);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --card-shadow: 0 8px 40px rgba(0, 0, 0, 0.04);
+            --card-shadow-hover: 0 16px 56px rgba(79, 70, 229, 0.06);
+            
+            --input-bg: rgba(255, 255, 255, 0.35);
+            --input-border: rgba(0, 0, 0, 0.06);
+            --input-text: #0A1628;
+            
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 40px rgba(0, 0, 0, 0.04);
+            
+            --accent-1: #4F46E5;
+            --accent-2: #7C3AED;
+            --accent-gradient: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background 0.5s ease, color 0.4s ease;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 20px; }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            transition: transform var(--transition), box-shadow var(--transition);
+            padding: 1.25rem;
+            color: var(--text-primary);
+        }
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--card-shadow-hover);
+        }
+        .glass-card .stat-icon { font-size: 2.2rem; opacity: 0.6; color: var(--accent-1); }
+        .glass-card .stat-icon.green { color: #10B981; }
+        .glass-card .stat-icon.yellow { color: #F59E0B; }
+        .glass-card .stat-icon.purple { color: #8B5CF6; }
+        .glass-card .stat-icon.blue { color: #4F46E5; }
+
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+            padding: 1.5rem;
+        }
+        .login-card {
+            max-width: 420px;
+            width: 100%;
+            padding: 3rem 2.5rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow-hover);
+            color: var(--text-primary);
+        }
+        .login-card .logo h2 {
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #app { display: flex; min-height: 100vh; }
+        .main-content { flex: 1; padding: 1.5rem 2rem 3rem; min-height: 100vh; overflow-x: hidden; }
+
+        .sidebar {
+            width: 280px;
+            min-height: calc(100vh - 2rem);
+            margin: 1rem 0 1rem 1rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow-hover);
+            padding: 1.5rem 0.5rem;
+            position: sticky;
+            top: 1rem;
+            height: calc(100vh - 2rem);
+            overflow-y: auto;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1000;
+        }
+        .sidebar .nav-link {
+            color: var(--text-secondary);
+            border-radius: var(--radius-full);
+            margin: 0.1rem 0.5rem;
+            padding: 0.7rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 0.9rem;
+            position: relative;
+            min-height: 48px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .sidebar .nav-link:hover { background: rgba(255,255,255,0.06); color: var(--accent-1); transform: translateX(4px); }
+        .sidebar .nav-link.active { background: rgba(255,255,255,0.08); color: var(--accent-1); }
+        .sidebar .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 28px;
+            background: var(--accent-gradient);
+            border-radius: 0 4px 4px 0;
+        }
+        .sidebar .logo-area {
+            padding: 0 0.5rem 1.5rem 0.5rem;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 1rem;
+        }
+        .sidebar .logo-area h4 {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .sidebar .brand-text {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            opacity: 0.6;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .sidebar .logout-btn {
+            margin-top: 1rem;
+            padding: 0.7rem 1.2rem;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--card-border);
+            background: rgba(239, 68, 68, 0.08);
+            color: #EF4444;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: calc(100% - 1rem);
+            margin-left: 0.5rem;
+            min-height: 48px;
+            border: none;
+        }
+        .sidebar .logout-btn:hover { background: rgba(239, 68, 68, 0.16); transform: translateX(4px); }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            animation: fadeIn 0.3s ease;
+        }
+        .sidebar-overlay.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .page-section { display: none; animation: fadeSlide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .page-section.active-page { display: block; }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(16px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .navbar-glass {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-full);
+            padding: 0.4rem 1.4rem;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            z-index: 100;
+            min-height: 64px;
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        .navbar-glass .page-title {
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+        .navbar-glass .nav-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-full);
+            padding: 0.5rem 1.4rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: all 0.25s;
+            font-size: var(--font-base);
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            line-height: 1;
+            touch-action: manipulation;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-glass:hover { 
+            background: rgba(255, 255, 255, 0.08); 
+            transform: scale(1.02); 
+            color: var(--accent-1); 
+            border-color: var(--accent-1);
+        }
+        .btn-glass-primary {
+            background: var(--accent-gradient);
+            color: white !important;
+            border: none;
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.25);
+        }
+        .btn-glass-primary:hover { 
+            color: white !important; 
+            transform: scale(1.02); 
+            box-shadow: 0 6px 28px rgba(79, 70, 229, 0.35);
+            background: var(--accent-gradient);
+        }
+        .btn-glass-sm { min-height: 36px; padding: 0.25rem 1rem; font-size: 0.85rem; }
+
+        .form-control, .form-select {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--input-text) !important;
+            border-radius: var(--radius-full);
+            padding: 0.6rem 1.2rem;
+            transition: all 0.25s;
+            font-size: var(--font-base);
+            min-height: 48px;
+            width: 100%;
+            touch-action: manipulation;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .form-control::placeholder { color: var(--text-muted); opacity: 0.5; }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-1);
+            box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.1);
+            background: var(--input-bg);
+            color: var(--input-text) !important;
+        }
+        .form-label { color: var(--text-secondary); font-weight: 500; }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid var(--input-border);
+            border-radius: var(--radius-full);
+            padding: 0.4rem 1.4rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            position: relative;
+            touch-action: manipulation;
+        }
+        .filter-btn:hover { 
+            border-color: var(--accent-1); 
+            color: var(--accent-1); 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(129, 140, 248, 0.08);
+            background: rgba(129, 140, 248, 0.04);
+        }
+        .filter-btn.active {
+            border-color: var(--accent-1);
+            color: #FFFFFF;
+            background: var(--accent-gradient);
+            box-shadow: 0 4px 24px rgba(129, 140, 248, 0.2);
+            transform: scale(1.04) translateY(-2px);
+        }
+        .filter-btn.active i {
+            color: #FFFFFF;
+        }
+        .filter-btn.active::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: var(--radius-full);
+            padding: 2px;
+            background: var(--accent-gradient);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .sort-btn {
+            background: none;
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-full);
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.2rem 0.8rem;
+            transition: all 0.2s;
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: var(--font-base);
+            touch-action: manipulation;
+        }
+        .sort-btn:hover { border-color: var(--accent-1); color: var(--accent-1); }
+        .sort-btn.active { border-color: var(--accent-1); color: var(--accent-1); background: rgba(129, 140, 248, 0.06); }
+
+        .badge-status {
+            padding: 0.3rem 1rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            letter-spacing: 0.3px;
+        }
+        .badge-status.active { background: #10B981; color: white; }
+        .badge-status.completed { background: #8B8E98; color: white; }
+        .badge-status.pending { background: #F59E0B; color: white; }
+        .badge-status.cancelled { background: #EF4444; color: white; }
+        .badge-status.available { background: #10B981; color: white; }
+        .badge-status.booked { background: #F59E0B; color: white; }
+        .badge-status.occupied { background: #EF4444; color: white; }
+        .badge-status.paid { background: #10B981; color: white; }
+        .badge-status.unpaid { background: #EF4444; color: white; }
+
+        .notif-bell {
+            position: relative;
+            cursor: pointer;
+            z-index: 101;
+            touch-action: manipulation;
+            display: inline-flex;
+            align-items: center;
+        }
+        .notif-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #EF4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        .notif-dropdown {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            width: 460px;
+            max-width: 90vw;
+            max-height: 600px;
+            background: var(--card-bg);
+            backdrop-filter: blur(48px);
+            -webkit-backdrop-filter: blur(48px);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow-hover);
+            display: none;
+            z-index: 9999;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        .notif-dropdown.open { display: flex; animation: fadeSlide 0.3s ease; }
+        .notif-header {
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            min-height: 54px;
+            flex-wrap: wrap;
+            gap: 4px;
+            background: rgba(0,0,0,0.1);
+        }
+        .notif-header .title { font-weight: 600; font-size: 0.95rem; color: var(--text-primary); }
+        .notif-header .actions button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--radius-full);
+            transition: all 0.2s;
+            min-height: 34px;
+        }
+        .notif-header .actions button:hover { background: rgba(255,255,255,0.04); color: var(--accent-1); }
+        .notif-filters {
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.05);
+        }
+        .notif-filters .filter-btn { font-size: 0.75rem; padding: 0.15rem 0.8rem; min-height: 28px; }
+        .notif-search {
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--card-border);
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.03);
+        }
+        .notif-search input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-full);
+            padding: 0.35rem 1rem;
+            font-size: 0.85rem;
+            color: var(--input-text);
+            min-height: 36px;
+        }
+        .notif-search input::placeholder { color: var(--text-muted); opacity: 0.6; }
+        .notif-list {
+            overflow-y: auto;
+            flex: 1;
+            -webkit-overflow-scrolling: touch;
+            background: var(--card-bg);
+        }
+        .notif-item {
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid var(--input-border);
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            min-height: 54px;
+            color: var(--text-primary);
+            background: var(--card-bg);
+        }
+        .notif-item:hover { background: rgba(255,255,255,0.03); }
+        .notif-item .content { flex: 1; word-break: break-word; }
+        .notif-item .time { color: var(--text-muted); font-size: 0.75rem; }
+        .notif-item .actions button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 0.1rem 0.3rem;
+            border-radius: var(--radius-full);
+            min-height: 30px;
+            transition: all 0.2s;
+        }
+        .notif-item .actions button:hover { color: var(--accent-1); }
+        .notif-item.unread .content { font-weight: 600; }
+        .notif-item.unread::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-1);
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 8px;
+        }
+        .notif-empty {
+            padding: 2.5rem 1rem;
+            text-align: center;
+            color: var(--text-muted);
+            background: var(--card-bg);
+        }
+        .notif-empty i { font-size: 2.5rem; opacity: 0.3; display: block; margin-bottom: 0.75rem; }
+        .notif-load-more {
+            padding: 0.5rem;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+            flex-shrink: 0;
+            background: rgba(0,0,0,0.05);
+        }
+        .notif-load-more button {
+            background: none;
+            border: none;
+            color: var(--accent-1);
+            cursor: pointer;
+            font-size: 0.85rem;
+            min-height: 36px;
+            font-weight: 500;
+        }
+
+        .avatar-upload {
+            width: 110px;
+            height: 110px;
+            border-radius: 55px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            background: rgba(129, 140, 248, 0.06);
+            border: 2px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            color: var(--accent-1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .avatar-upload:hover { opacity: 0.8; transform: scale(1.03); }
+        .avatar-upload img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-upload input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+        .table {
+            color: var(--text-primary);
+            margin-bottom: 0;
+        }
+        .table thead th {
+            color: var(--text-secondary);
+            border-bottom-color: var(--card-border);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .table tbody td {
+            color: var(--text-primary);
+            border-bottom-color: var(--input-border);
+            vertical-align: middle;
+        }
+        .table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+        #toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 400px;
+            width: calc(100% - 48px);
+        }
+        .toast-msg {
+            padding: 0.8rem 1.6rem;
+            border-radius: var(--radius-full);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            box-shadow: var(--card-shadow-hover);
+            animation: toastIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.95rem;
+            min-height: 52px;
+        }
+        .toast-msg.success { border-left: 5px solid #10B981; }
+        .toast-msg.error { border-left: 5px solid #EF4444; }
+        .toast-msg.warning { border-left: 5px solid #F59E0B; }
+        .toast-msg.info { border-left: 5px solid var(--accent-1); }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(40px) scale(0.95); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        .modal {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .modal-dialog {
+            margin: 1.75rem auto;
+        }
+        .modal-content.glass {
+            background: var(--card-bg);
+            backdrop-filter: blur(48px);
+            -webkit-backdrop-filter: blur(48px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            color: var(--text-primary);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 95vh;
+            overflow: hidden;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-header {
+            border-bottom: 1px solid var(--card-border);
+            padding: 1.2rem 1.5rem;
+            flex-shrink: 0;
+            min-height: 64px;
+            background: rgba(0,0,0,0.15);
+        }
+        .modal-header .modal-title { color: var(--text-primary); font-weight: 600; }
+        .modal-header .btn-close { filter: invert(0.8); opacity: 0.6; }
+        .modal-footer {
+            border-top: 1px solid var(--card-border);
+            padding: 1.2rem 1.5rem;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: rgba(0,0,0,0.1);
+        }
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: calc(95vh - 140px);
+            color: var(--text-primary);
+            background: transparent;
+        }
+        .modal-body .form-label { color: var(--text-secondary); font-weight: 500; }
+        .modal-body .form-control, .modal-body .form-select {
+            background: var(--input-bg);
+            border-color: var(--input-border);
+            color: var(--input-text) !important;
+        }
+        .modal-body .form-control:focus, .modal-body .form-select:focus {
+            background: var(--input-bg);
+            border-color: var(--accent-1);
+        }
+        .modal-body .form-select option {
+            background: #1E293B;
+            color: #F1F5F9;
+        }
+        [data-theme="light"] .modal-body .form-select option {
+            background: #FFFFFF;
+            color: #0A1628;
+        }
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+
+        .empty-state { padding: 3.5rem 1.5rem; text-align: center; }
+        .empty-state .icon { font-size: 4.5rem; color: var(--text-muted); opacity: 0.25; margin-bottom: 1.2rem; }
+        .empty-state h5 { color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 600; }
+        .empty-state p { color: var(--text-muted); margin-bottom: 1.5rem; }
+
+        .outstanding-item {
+            padding: 0.6rem 0.8rem;
+            border-radius: var(--radius-sm);
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.1);
+            margin-bottom: 0.3rem;
+        }
+        .outstanding-item:last-child { margin-bottom: 0; }
+        .outstanding-item .due-amount { font-weight: 600; color: #EF4444; }
+
+        /* Notification styling */
+        .notification-toast {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            z-index: 9998;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            box-shadow: var(--card-shadow-hover);
+            max-width: 350px;
+            animation: toastIn 0.5s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                position: fixed;
+                top: 0; left: 0;
+                transform: translateX(-100%);
+                width: 300px;
+                height: 100vh;
+                margin: 0;
+                border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+                z-index: 1001;
+                padding-top: 2.5rem;
+            }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { padding: 1rem; }
+            .sidebar-overlay.active { display: block; }
+            .notif-dropdown {
+                width: calc(100vw - 24px);
+                max-width: 420px;
+                right: 50%;
+                transform: translateX(50%);
+                max-height: 500px;
+            }
+            .notif-dropdown.open { transform: translateX(50%); }
+        }
+        @media (max-width: 768px) {
+            .main-content { padding: 0.75rem; }
+            .navbar-glass { padding: 0.4rem 1rem; flex-wrap: nowrap; gap: 4px; min-height: 60px; }
+            .navbar-glass .page-title { font-size: 0.95rem; }
+            .glass-card { padding: 0.75rem !important; }
+            .notif-dropdown {
+                width: calc(100vw - 16px);
+                max-width: 100%;
+                right: 50%;
+                transform: translateX(50%);
+                max-height: 420px;
+            }
+            .notif-dropdown.open { transform: translateX(50%); }
+            .avatar-upload { width: 85px; height: 85px; border-radius: 42px; font-size: 2.2rem; }
+            .table-to-cards thead { display: none; }
+            .table-to-cards tbody tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid var(--card-border);
+                border-radius: var(--radius-md);
+                padding: 0.75rem;
+                background: var(--card-bg);
+            }
+            .table-to-cards tbody tr td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.4rem 0;
+                border: none;
+                border-bottom: 1px solid var(--input-border);
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .table-to-cards tbody tr td:last-child { border-bottom: none; }
+            .table-to-cards tbody tr td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--text-secondary);
+                font-size: 0.8rem;
+                flex-shrink: 0;
+                min-width: 80px;
+            }
+            .filter-btn {
+                padding: 0.25rem 1rem;
+                font-size: 0.75rem;
+                min-height: 32px;
+            }
+            .btn-glass { font-size: 0.8rem; padding: 0.3rem 0.8rem; min-height: 36px; }
+            .form-control, .form-select { font-size: 0.85rem; min-height: 38px; }
+            .modal-dialog { margin: 0.5rem; }
+            .modal-content.glass { border-radius: var(--radius-md); }
+        }
+        @media (max-width: 576px) {
+            .main-content { padding: 0.5rem; }
+            .navbar-glass { flex-wrap: nowrap; gap: 4px; padding: 0.3rem 0.8rem; min-height: 54px; }
+            .navbar-glass .page-title { font-size: 0.85rem; }
+            .filter-btn {
+                padding: 0.2rem 0.8rem;
+                font-size: 0.7rem;
+                min-height: 28px;
+                gap: 4px;
+            }
+            .notif-dropdown {
+                width: calc(100vw - 12px);
+                max-width: 100%;
+                right: 50%;
+                transform: translateX(50%);
+                max-height: 380px;
+            }
+            .notif-dropdown.open { transform: translateX(50%); }
+            .glass-card { padding: 0.5rem !important; }
+            .toast-msg { font-size: 0.85rem; padding: 0.6rem 1.2rem; min-height: 44px; }
+        }
+
+        @media print {
+            .sidebar, .navbar-glass, .btn-glass, .btn-glass-primary { display: none !important; }
+            .main-content { padding: 0.5rem !important; }
+            .glass-card { box-shadow: none !important; border: 1px solid #ddd !important; }
+            body { background: white !important; color: black !important; }
+        }
+
+        .text-muted { color: var(--text-muted) !important; }
+        .fw-light { font-weight: 300 !important; }
+        .gap-1 { gap: 0.25rem; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        
+        .room-card .badge-status { font-size: 0.7rem; }
+        .room-card .text-muted { color: var(--text-muted) !important; }
+
+        /* Additional fixes */
+        .form-check-input {
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+        }
+        .form-check-input:checked {
+            background-color: var(--accent-1);
+            border-color: var(--accent-1);
+        }
+        .form-check-label {
+            color: var(--text-primary);
+        }
+        .modal-body .form-check-label {
+            color: var(--text-secondary);
+        }
+        .btn-close {
+            filter: invert(0.8);
+            opacity: 0.6;
+        }
+        [data-theme="light"] .btn-close {
+            filter: invert(0.2);
+        }
+        .form-select option {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        [data-theme="light"] .form-select option {
+            background: #ffffff;
+            color: #0A1628;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loginPage" class="login-page">
+    <div class="login-card">
+        <div class="logo">
+            <h2><i class="fas fa-hotel me-2"></i>HMS</h2>
+            <p>Liquid Glass · Enterprise</p>
+        </div>
+        <form id="loginForm">
+            <div class="mb-3">
+                <label class="form-label" data-i18n="username">Username</label>
+                <input type="text" id="loginUsername" class="form-control" value="admin">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" data-i18n="password">Password</label>
+                <input type="password" id="loginPassword" class="form-control" value="admin123">
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="loginRemember">
+                <label class="form-check-label" data-i18n="remember_me">Remember me</label>
+            </div>
+            <button type="submit" class="btn-glass btn-glass-primary w-100" data-i18n="login">Login</button>
+        </form>
+        <div class="mt-3 text-center text-muted" style="font-size:0.8rem;">
+            Default: admin / admin123
+        </div>
+    </div>
+</div>
+
+<div id="app" style="display:none;">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="logo-area">
+            <h4><i class="fas fa-hotel me-2"></i>HMS</h4>
+            <small class="brand-text">liquid glass</small>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link active" data-page="dashboard" href="#"><i class="fas fa-chart-pie"></i> <span data-i18n="nav_dashboard">Dashboard</span></a></li>
+            <li class="nav-item"><a class="nav-link" data-page="rooms" href="#"><i class="fas fa-door-open"></i> <span data-i18n="nav_rooms">Rooms</span></a></li>
+            <li class="nav-item"><a class="nav-link" data-page="customers" href="#"><i class="fas fa-users"></i> <span data-i18n="nav_customers">Customers</span></a></li>
+            <li class="nav-item"><a class="nav-link" data-page="bookings" href="#"><i class="fas fa-calendar-check"></i> <span data-i18n="nav_bookings">Bookings</span></a></li>
+            <li class="nav-item"><a class="nav-link" data-page="payments" href="#"><i class="fas fa-credit-card"></i> <span data-i18n="nav_payments">Payments</span></a></li>
+            <li class="nav-item"><a class="nav-link" data-page="reports" href="#"><i class="fas fa-file-alt"></i> <span data-i18n="nav_reports">Reports</span></a></li>
+            <li class="nav-item"><a class="nav-link" data-page="profile" href="#"><i class="fas fa-user-cog"></i> <span data-i18n="nav_profile">Profile</span></a></li>
+            <li class="nav-item"><a class="nav-link" data-page="settings" href="#"><i class="fas fa-sliders-h"></i> <span data-i18n="nav_settings">Settings</span></a></li>
+        </ul>
+        <div class="mt-3 px-2">
+            <select id="langSelect" class="form-select" style="background:var(--input-bg);border:1px solid var(--input-border);color:var(--input-text);border-radius:var(--radius-full);min-height:48px;font-size:0.85rem;">
+                <option value="uz">🇺🇿 O'zbek</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="ru">🇷🇺 Русский</option>
+            </select>
+        </div>
+        <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span data-i18n="logout">Logout</span></button>
+    </nav>
+
+    <div class="main-content">
+        <div class="navbar-glass d-flex justify-content-between align-items-center mb-3 p-2 px-4">
+            <h5 class="mb-0 fw-light page-title" id="pageTitle"><i class="fas fa-chart-line me-2"></i>Dashboard</h5>
+            <div class="nav-actions">
+                <div class="notif-bell" id="notifBell">
+                    <i class="fas fa-bell" style="font-size:1.3rem;color:var(--text-primary);"></i>
+                    <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-header">
+                            <span class="title"><i class="fas fa-bell"></i> <span data-i18n="notifications">Notifications</span></span>
+                            <div class="actions">
+                                <button id="notifMarkAllRead"><i class="fas fa-check-double"></i> <span data-i18n="mark_all_read">Mark all</span></button>
+                                <button id="notifClearAll"><i class="fas fa-trash"></i> <span data-i18n="clear_all">Clear</span></button>
+                            </div>
+                        </div>
+                        <div class="notif-filters" id="notifFilters">
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="unread">Unread</button>
+                            <button class="filter-btn" data-filter="booking">Bookings</button>
+                            <button class="filter-btn" data-filter="payment">Payments</button>
+                            <button class="filter-btn" data-filter="customer">Customers</button>
+                            <button class="filter-btn" data-filter="system">System</button>
+                        </div>
+                        <div class="notif-search">
+                            <input type="text" id="notifSearch" placeholder="Search notifications...">
+                        </div>
+                        <div class="notif-list" id="notifList">
+                            <div class="notif-empty">
+                                <i class="fas fa-bell-slash"></i>
+                                <div>No notifications</div>
+                            </div>
+                        </div>
+                        <div class="notif-load-more" id="notifLoadMore" style="display:none;">
+                            <button id="loadMoreBtn">Load more...</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="themeToggle" class="btn-glass"><i class="fas fa-moon"></i></button>
+                <button id="sidebarToggle" class="btn-glass d-lg-none"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+
+        <div id="page-dashboard" class="page-section active-page"></div>
+        <div id="page-rooms" class="page-section"></div>
+        <div id="page-customers" class="page-section"></div>
+        <div id="page-bookings" class="page-section"></div>
+        <div id="page-payments" class="page-section"></div>
+        <div id="page-reports" class="page-section"></div>
+        <div id="page-profile" class="page-section"></div>
+        <div id="page-settings" class="page-section"></div>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+<div id="modal-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ================================================================
+// TRANSLATIONS - FULLY UPDATED
+// ================================================================
+const T = {
+    uz: {
+        nav_dashboard: 'Boshqaruv', nav_rooms: 'Xonalar', nav_customers: 'Mijozlar',
+        nav_bookings: 'Bronlar', nav_payments: 'To\'lovlar', nav_reports: 'Hisobotlar',
+        nav_profile: 'Profil', nav_settings: 'Sozlamalar',
+        total_rooms: 'Jami Xonalar', available: 'Bo\'sh', booked: 'Band',
+        customers: 'Mijozlar', recent_bookings: 'So\'nggi bronlar',
+        add_room: 'Xona qo\'shish', add_customer: 'Mijoz qo\'shish',
+        create_booking: 'Bron yaratish', add_payment: 'To\'lov qo\'shish',
+        revenue_summary: 'Daromad xulosasi', room: 'Xona', number: 'Raqam',
+        type: 'Tur', price: 'Narx', status: 'Holat', cancel: 'Bekor qilish',
+        save: 'Saqlash', customer: 'Mijoz', name: 'Ism', email: 'Email',
+        phone: 'Telefon', booking: 'Bron', checkin: 'Kirish', checkout: 'Chiqish',
+        payment: 'To\'lov', amount: 'Miqdor', method: 'Usul',
+        new_password: 'Yangi parol', update_profile: 'Profilni yangilash',
+        dark_mode: 'Tungi rejim', hotel_name: 'Mehmonxona nomi',
+        save_settings: 'Sozlamalarni saqlash',
+        total_revenue: 'Jami daromad', today_revenue: 'Bugungi daromad',
+        paid_payments: 'To\'langan to\'lovlar',
+        occupancy_rate: 'Bandlik darajasi',
+        no_notifications: 'Xabarlar yo\'q', language: 'Til',
+        hotel_address: 'Manzil', hotel_phone: 'Telefon',
+        active_bookings: 'Faol bronlar',
+        notifications: 'Xabarlar',
+        mark_all_read: 'Hammasini o\'qilgan deb belgilash',
+        clear_all: 'Hammasini tozalash',
+        logout: 'Chiqish',
+        nights: 'kecha', total_price: 'Jami narx',
+        all: 'Barcha', upcoming: 'Kelgusi', active: 'Faol',
+        checked_in: 'Kirgan', checked_out: 'Chiqgan', no_booking: 'Bronsiz',
+        active_booking: 'Faol bron',
+        unpaid: 'To\'lanmagan',
+        today_filter: 'Bugun', this_week: 'Bu hafta', this_month: 'Bu oy',
+        maintenance: 'Ta\'mirlash',
+        enter_name: 'Ism kiriting...', enter_email: 'Email kiriting...',
+        enter_phone: '+998 90 123 45 67', enter_password: 'Yangi parol kiriting...',
+        enter_room_number: 'Xona raqamini kiriting...', enter_price: 'Narx kiriting...',
+        enter_amount: 'Miqdor kiriting...',
+        required_field: 'Bu maydon majburiy', valid_email: 'To\'g\'ri email kiriting',
+        phone_format: 'Telefon +998 bilan boshlanishi kerak',
+        duplicate_room: 'Xona raqami allaqachon mavjud',
+        room_added: 'Xona qo\'shildi', room_updated: 'Xona yangilandi',
+        room_deleted: 'Xona o\'chirildi', customer_added: 'Mijoz qo\'shildi',
+        customer_updated: 'Mijoz yangilandi', customer_deleted: 'Mijoz o\'chirildi',
+        booking_created: 'Bron yaratildi', booking_updated: 'Bron yangilandi',
+        booking_deleted: 'Bron o\'chirildi', payment_added: 'To\'lov qo\'shildi',
+        payment_updated: 'To\'lov yangilandi', payment_deleted: 'To\'lov o\'chirildi',
+        success: 'Muvaffaqiyat', info: 'Ma\'lumot', warning: 'Ogohlantirish',
+        empty_rooms: 'Hozircha xonalar yo\'q',
+        empty_rooms_desc: 'Birinchi xonani qo\'shish orqali boshlang.',
+        empty_customers: 'Hozircha mijozlar yo\'q',
+        empty_customers_desc: 'Birinchi mijozni qo\'shish orqali boshlang.',
+        empty_bookings: 'Hozircha bronlar yo\'q',
+        empty_bookings_desc: 'Birinchi bronni yaratish orqali boshlang.',
+        empty_payments: 'Hozircha to\'lovlar yo\'q',
+        empty_payments_desc: 'Birinchi to\'lovni qo\'shish orqali boshlang.',
+        username: 'Foydalanuvchi nomi', password: 'Parol', remember_me: 'Eslab qolish',
+        login: 'Kirish', recent_activity: 'So\'nggi faoliyat',
+        no_recent_activity: 'So\'nggi faoliyat yo\'q',
+        guest: 'Mehmon', view_all: 'Hammasini ko\'rish',
+        edit: 'Tahrirlash', delete: 'O\'chirish', actions: 'Amallar',
+        no_data: 'Ma\'lumotlar mavjud emas', 
+        pdf_export: 'PDF eksport', excel_export: 'Excel eksport', 
+        print: 'Chop etish'
+    },
+    en: {
+        nav_dashboard: 'Dashboard', nav_rooms: 'Rooms', nav_customers: 'Customers',
+        nav_bookings: 'Bookings', nav_payments: 'Payments', nav_reports: 'Reports',
+        nav_profile: 'Profile', nav_settings: 'Settings',
+        total_rooms: 'Total Rooms', available: 'Available', booked: 'Booked',
+        customers: 'Customers', recent_bookings: 'Recent Bookings',
+        add_room: 'Add Room', add_customer: 'Add Customer', create_booking: 'Create Booking',
+        add_payment: 'Add Payment', revenue_summary: 'Revenue Summary', room: 'Room',
+        number: 'Number', type: 'Type', price: 'Price', status: 'Status',
+        cancel: 'Cancel', save: 'Save', customer: 'Customer', name: 'Name',
+        email: 'Email', phone: 'Phone', booking: 'Booking', checkin: 'Check-in',
+        checkout: 'Check-out', payment: 'Payment', amount: 'Amount', method: 'Method',
+        new_password: 'New Password', update_profile: 'Update Profile',
+        dark_mode: 'Dark Mode', hotel_name: 'Hotel Name',
+        save_settings: 'Save Settings',
+        total_revenue: 'Total Revenue', today_revenue: 'Today\'s Revenue',
+        paid_payments: 'Paid Payments',
+        occupancy_rate: 'Occupancy Rate',
+        no_notifications: 'No notifications', language: 'Language',
+        hotel_address: 'Address', hotel_phone: 'Phone',
+        active_bookings: 'Active Bookings',
+        notifications: 'Notifications',
+        mark_all_read: 'Mark all as read',
+        clear_all: 'Clear all',
+        logout: 'Logout',
+        nights: 'nights', total_price: 'Total price',
+        all: 'All', upcoming: 'Upcoming', active: 'Active',
+        checked_in: 'Checked In', checked_out: 'Checked Out', no_booking: 'No Booking',
+        active_booking: 'Active Booking',
+        unpaid: 'Unpaid',
+        today_filter: 'Today', this_week: 'This Week', this_month: 'This Month',
+        maintenance: 'Maintenance',
+        enter_name: 'Enter name...', enter_email: 'Enter email...',
+        enter_phone: '+998 90 123 45 67', enter_password: 'Enter new password...',
+        enter_room_number: 'Enter room number...', enter_price: 'Enter price...',
+        enter_amount: 'Enter amount...',
+        required_field: 'This field is required', valid_email: 'Please enter a valid email',
+        phone_format: 'Phone must start with +998',
+        duplicate_room: 'Room number already exists',
+        room_added: 'Room added', room_updated: 'Room updated',
+        room_deleted: 'Room deleted', customer_added: 'Customer added',
+        customer_updated: 'Customer updated', customer_deleted: 'Customer deleted',
+        booking_created: 'Booking created', booking_updated: 'Booking updated',
+        booking_deleted: 'Booking deleted', payment_added: 'Payment added',
+        payment_updated: 'Payment updated', payment_deleted: 'Payment deleted',
+        success: 'Success', info: 'Info', warning: 'Warning',
+        empty_rooms: 'No rooms yet',
+        empty_rooms_desc: 'Add your first room to get started.',
+        empty_customers: 'No customers yet',
+        empty_customers_desc: 'Add your first customer to get started.',
+        empty_bookings: 'No bookings yet',
+        empty_bookings_desc: 'Create your first booking to get started.',
+        empty_payments: 'No payments yet',
+        empty_payments_desc: 'Add your first payment to get started.',
+        username: 'Username', password: 'Password', remember_me: 'Remember me',
+        login: 'Login', recent_activity: 'Recent Activity',
+        no_recent_activity: 'No recent activity',
+        guest: 'Guest', view_all: 'View All',
+        edit: 'Edit', delete: 'Delete', actions: 'Actions',
+        no_data: 'No data available',
+        pdf_export: 'PDF Export', excel_export: 'Excel Export',
+        print: 'Print'
+    },
+    ru: {
+        nav_dashboard: 'Панель', nav_rooms: 'Номера', nav_customers: 'Клиенты',
+        nav_bookings: 'Брони', nav_payments: 'Платежи', nav_reports: 'Отчёты',
+        nav_profile: 'Профиль', nav_settings: 'Настройки',
+        total_rooms: 'Всего номеров', available: 'Свободно', booked: 'Занято',
+        customers: 'Клиенты', recent_bookings: 'Последние брони',
+        add_room: 'Добавить номер', add_customer: 'Добавить клиента',
+        create_booking: 'Создать бронь', add_payment: 'Добавить платеж',
+        revenue_summary: 'Сводка доходов', room: 'Номер', number: 'Номер',
+        type: 'Тип', price: 'Цена', status: 'Статус', cancel: 'Отмена',
+        save: 'Сохранить', customer: 'Клиент', name: 'Имя', email: 'Email',
+        phone: 'Телефон', booking: 'Бронь', checkin: 'Заезд', checkout: 'Выезд',
+        payment: 'Платёж', amount: 'Сумма', method: 'Метод',
+        new_password: 'Новый пароль', update_profile: 'Обновить профиль',
+        dark_mode: 'Тёмный режим', hotel_name: 'Название отеля',
+        save_settings: 'Сохранить настройки',
+        total_revenue: 'Общий доход', today_revenue: 'Доход сегодня',
+        paid_payments: 'Оплаченные платежи',
+        occupancy_rate: 'Заполняемость',
+        no_notifications: 'Нет уведомлений', language: 'Язык',
+        hotel_address: 'Адрес', hotel_phone: 'Телефон',
+        active_bookings: 'Активные брони',
+        notifications: 'Уведомления',
+        mark_all_read: 'Отметить все как прочитанные',
+        clear_all: 'Очистить всё',
+        logout: 'Выйти',
+        nights: 'ночей', total_price: 'Общая цена',
+        all: 'Все', upcoming: 'Предстоящие', active: 'Активные',
+        checked_in: 'Заехали', checked_out: 'Выехали', no_booking: 'Без брони',
+        active_booking: 'Активная бронь',
+        unpaid: 'Неоплаченные',
+        today_filter: 'Сегодня', this_week: 'Эта неделя', this_month: 'Этот месяц',
+        maintenance: 'Ремонт',
+        enter_name: 'Введите имя...', enter_email: 'Введите email...',
+        enter_phone: '+998 90 123 45 67', enter_password: 'Введите новый пароль...',
+        enter_room_number: 'Введите номер...', enter_price: 'Введите цену...',
+        enter_amount: 'Введите сумму...',
+        required_field: 'Обязательное поле', valid_email: 'Введите корректный email',
+        phone_format: 'Телефон должен начинаться с +998',
+        duplicate_room: 'Номер уже существует',
+        room_added: 'Номер добавлен', room_updated: 'Номер обновлён',
+        room_deleted: 'Номер удалён', customer_added: 'Клиент добавлен',
+        customer_updated: 'Клиент обновлён', customer_deleted: 'Клиент удалён',
+        booking_created: 'Бронь создана', booking_updated: 'Бронь обновлена',
+        booking_deleted: 'Бронь удалена', payment_added: 'Платёж добавлен',
+        payment_updated: 'Платёж обновлён', payment_deleted: 'Платёж удалён',
+        success: 'Успешно', info: 'Информация', warning: 'Предупреждение',
+        empty_rooms: 'Нет номеров',
+        empty_rooms_desc: 'Добавьте первый номер для начала.',
+        empty_customers: 'Нет клиентов',
+        empty_customers_desc: 'Добавьте первого клиента для начала.',
+        empty_bookings: 'Нет броней',
+        empty_bookings_desc: 'Создайте первую бронь для начала.',
+        empty_payments: 'Нет платежей',
+        empty_payments_desc: 'Добавьте первый платёж для начала.',
+        username: 'Имя пользователя', password: 'Пароль', remember_me: 'Запомнить меня',
+        login: 'Войти', recent_activity: 'Недавняя активность',
+        no_recent_activity: 'Нет недавней активности',
+        guest: 'Гость', view_all: 'Показать все',
+        edit: 'Редактировать', delete: 'Удалить', actions: 'Действия',
+        no_data: 'Нет данных',
+        pdf_export: 'Экспорт PDF', excel_export: 'Экспорт Excel',
+        print: 'Печать'
+    }
+};
+
+// ================================================================
+// HELPERS
+// ================================================================
+function formatCurrency(amount, currency = null) {
+    const state = AppState ? AppState.get() : { currency: 'USD' };
+    const curr = currency || state.currency || 'USD';
+    const symbols = { USD: '$', EUR: '€', UZS: 'so\'m' };
+    const symbol = symbols[curr] || '$';
+    if (curr === 'UZS') {
+        return `${new Intl.NumberFormat('uz-UZ').format(amount)} ${symbol}`;
+    }
+    return `${symbol}${amount}`;
+}
+
+function getRelativeTime(timestamp) {
+    const now = Date.now();
+    const diff = now - timestamp;
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    if (seconds < 60) return 'Just now';
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    if (days < 7) return `${days}d ago`;
+    return new Date(timestamp).toLocaleDateString();
+}
+
+function getStatusKey(status) {
+    const map = {
+        'Available': 'available',
+        'Booked': 'booked',
+        'Occupied': 'occupied',
+        'Maintenance': 'cancelled',
+        'Checked-in': 'active',
+        'Checked-out': 'completed',
+        'Pending': 'pending',
+        'Cancelled': 'cancelled',
+        'Paid': 'paid',
+        'Unpaid': 'unpaid',
+        'Refunded': 'cancelled'
+    };
+    return map[status] || 'pending';
+}
+
+// ================================================================
+// AUTH
+// ================================================================
+const Auth = {
+    isLoggedIn() { return localStorage.getItem('hms_logged_in') === 'true'; },
+    login(username, password, remember = false) {
+        if (username === 'admin' && password === 'admin123') {
+            localStorage.setItem('hms_logged_in', 'true');
+            if (remember) { localStorage.setItem('hms_remember', 'true'); localStorage.setItem('hms_user', username); }
+            else { sessionStorage.setItem('hms_logged_in', 'true'); }
+            return true;
+        }
+        return false;
+    },
+    logout() {
+        localStorage.removeItem('hms_logged_in');
+        localStorage.removeItem('hms_remember');
+        localStorage.removeItem('hms_user');
+        sessionStorage.removeItem('hms_logged_in');
+        window.location.reload();
+    },
+    check() { return localStorage.getItem('hms_logged_in') === 'true' || sessionStorage.getItem('hms_logged_in') === 'true'; }
+};
+
+// ================================================================
+// APP STATE
+// ================================================================
+const AppState = {
+    data: { rooms: [], customers: [], bookings: [], payments: [], notifications: [], theme: 'dark', language: 'uz', currentPage: 'dashboard', currency: 'USD' },
+    load() {
+        try {
+            const saved = localStorage.getItem('hms_state');
+            if (saved) this.data = { ...this.data, ...JSON.parse(saved) };
+            this.data.rooms = JSON.parse(localStorage.getItem('hms_rooms')) || [];
+            this.data.customers = JSON.parse(localStorage.getItem('hms_customers')) || [];
+            this.data.bookings = JSON.parse(localStorage.getItem('hms_bookings')) || [];
+            this.data.payments = JSON.parse(localStorage.getItem('hms_payments')) || [];
+            this.data.notifications = JSON.parse(localStorage.getItem('hms_notifications')) || [];
+            const settings = JSON.parse(localStorage.getItem('hms_settings')) || {};
+            this.data.currency = settings.currency || 'USD';
+        } catch (e) { console.warn(e); }
+    },
+    save() {
+        try {
+            localStorage.setItem('hms_state', JSON.stringify({ theme: this.data.theme, language: this.data.language, currentPage: this.data.currentPage }));
+            localStorage.setItem('hms_rooms', JSON.stringify(this.data.rooms));
+            localStorage.setItem('hms_customers', JSON.stringify(this.data.customers));
+            localStorage.setItem('hms_bookings', JSON.stringify(this.data.bookings));
+            localStorage.setItem('hms_payments', JSON.stringify(this.data.payments));
+            localStorage.setItem('hms_notifications', JSON.stringify(this.data.notifications));
+        } catch (e) { console.warn(e); }
+    },
+    get() { return this.data; },
+    set(newData) { this.data = { ...this.data, ...newData }; this.save(); },
+    genId() { return Date.now() + Math.random().toString(36).substr(2, 6); },
+    addNotification(message, type = 'info', category = 'system') {
+        const notif = { id: this.genId(), message, type, category, time: Date.now(), read: false };
+        this.data.notifications.unshift(notif);
+        if (this.data.notifications.length > 200) this.data.notifications = this.data.notifications.slice(0, 200);
+        this.save();
+        return notif;
+    }
+};
+
+// ================================================================
+// SERVICES
+// ================================================================
+const Lang = {
+    current: 'uz',
+    t(key) { return T[this.current]?.[key] || T.uz[key] || key; },
+    apply() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            el.textContent = this.t(el.dataset.i18n);
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            el.placeholder = this.t(el.dataset.i18nPlaceholder);
+        });
+        const sel = document.getElementById('langSelect');
+        if (sel) sel.value = this.current;
+    },
+    set(lang) { if (T[lang]) { this.current = lang; localStorage.setItem('hms_lang', lang); AppState.set({ language: lang }); this.apply(); App.renderPage(AppState.get().currentPage); } }
+};
+
+const Theme = {
+    current: 'dark',
+    apply(theme) {
+        this.current = theme || this.current;
+        document.documentElement.setAttribute('data-theme', this.current);
+        localStorage.setItem('hms_theme', this.current);
+        AppState.set({ theme: this.current });
+        const icon = document.querySelector('#themeToggle i');
+        if (icon) icon.className = this.current === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        const cb = document.getElementById('settingsDarkMode');
+        if (cb) cb.checked = this.current === 'dark';
+    },
+    toggle() { this.apply(this.current === 'dark' ? 'light' : 'dark'); },
+    init() { this.apply(localStorage.getItem('hms_theme') || 'dark'); }
+};
+
+const Toast = {
+    container: null,
+    init() { this.container = document.getElementById('toast-container'); },
+    show(msg, type = 'info') {
+        const div = document.createElement('div');
+        const icons = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+        div.className = `toast-msg ${type}`;
+        div.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${msg}`;
+        this.container.appendChild(div);
+        setTimeout(() => { div.classList.add('fade-out'); setTimeout(() => div.remove(), 300); }, 4000);
+    },
+    success(m) { this.show(m, 'success'); },
+    error(m) { this.show(m, 'error'); },
+    warning(m) { this.show(m, 'warning'); },
+    info(m) { this.show(m, 'info'); }
+};
+
+// ================================================================
+// APP - Main Controller
+// ================================================================
+const App = {
+    charts: {},
+    currentSort: { field: 'number', direction: 'asc' },
+    notifPage: 0,
+    notifLimit: 10,
+    notifFilter: 'all',
+    notifSearch: '',
+
+    init() {
+        if (!Auth.check()) {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('app').style.display = 'none';
+            this.bindLoginEvents();
+            return;
+        }
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+
+        AppState.load();
+        Theme.init();
+        Lang.current = localStorage.getItem('hms_lang') || 'uz';
+        Lang.apply();
+        Toast.init();
+        this.bindEvents();
+        this.seedData();
+        this.renderPage('dashboard');
+        this.updateNotifications();
+        setTimeout(() => Toast.info('Welcome to HMS 🏨'), 500);
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+    },
+
+    bindLoginEvents() {
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const remember = document.getElementById('loginRemember').checked;
+            if (Auth.login(username, password, remember)) {
+                window.location.reload();
+            } else {
+                Toast.error('Invalid username or password');
+            }
+        });
+    },
+
+    bindEvents() {
+        document.getElementById('themeToggle').addEventListener('click', () => Theme.toggle());
+        document.getElementById('settingsDarkMode')?.addEventListener('change', function() { Theme.apply(this.checked ? 'dark' : 'light'); });
+        document.getElementById('langSelect').addEventListener('change', function() { Lang.set(this.value); });
+        document.getElementById('logoutBtn').addEventListener('click', () => Auth.logout());
+
+        document.querySelectorAll('.sidebar .nav-link[data-page]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = this.dataset.page;
+                App.renderPage(page);
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+            });
+        });
+
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        });
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        });
+
+        document.getElementById('notifBell').addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifDropdown');
+            dropdown.classList.toggle('open');
+            if (dropdown.classList.contains('open')) {
+                App.notifPage = 0;
+                App.updateNotifications();
+            }
+        });
+        document.addEventListener('click', () => {
+            document.getElementById('notifDropdown').classList.remove('open');
+        });
+        document.getElementById('notifMarkAllRead').addEventListener('click', function(e) {
+            e.stopPropagation();
+            App.markAllNotificationsRead();
+        });
+        document.getElementById('notifClearAll').addEventListener('click', function(e) {
+            e.stopPropagation();
+            App.clearAllNotifications();
+        });
+
+        document.querySelectorAll('#notifFilters .filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('#notifFilters .filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                App.notifFilter = this.dataset.filter;
+                App.notifPage = 0;
+                App.updateNotifications();
+            });
+        });
+
+        document.getElementById('notifSearch').addEventListener('input', function() {
+            App.notifSearch = this.value.toLowerCase();
+            App.notifPage = 0;
+            App.updateNotifications();
+        });
+
+        document.getElementById('loadMoreBtn').addEventListener('click', function() {
+            App.notifPage++;
+            App.updateNotifications(true);
+        });
+    },
+
+    renderPage(page) {
+        AppState.set({ currentPage: page });
+        document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelector(`.sidebar .nav-link[data-page="${page}"]`)?.classList.add('active');
+        document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active-page'));
+        document.getElementById(`page-${page}`)?.classList.add('active-page');
+
+        const icons = { dashboard: 'fa-chart-line', rooms: 'fa-door-open', customers: 'fa-users', bookings: 'fa-calendar-check', payments: 'fa-credit-card', reports: 'fa-file-alt', profile: 'fa-user-cog', settings: 'fa-sliders-h' };
+        const pageNames = { dashboard: 'Dashboard', rooms: 'Rooms', customers: 'Customers', bookings: 'Bookings', payments: 'Payments', reports: 'Reports', profile: 'Profile', settings: 'Settings' };
+        document.getElementById('pageTitle').innerHTML = `<i class="fas ${icons[page] || 'fa-chart-line'} me-2"></i>${pageNames[page] || page}`;
+
+        const renderMap = {
+            dashboard: () => this.renderDashboard(),
+            rooms: () => this.renderRooms(),
+            customers: () => this.renderCustomers(),
+            bookings: () => this.renderBookings(),
+            payments: () => this.renderPayments(),
+            reports: () => this.renderReports(),
+            profile: () => this.renderProfile(),
+            settings: () => this.renderSettings()
+        };
+        if (renderMap[page]) renderMap[page]();
+        this.updateNotifications();
+    },
+
+    updateNotifications(append = false) {
+        const notifs = AppState.get().notifications;
+        const unread = notifs.filter(n => !n.read);
+        const badge = document.getElementById('notifBadge');
+        const list = document.getElementById('notifList');
+        const loadMore = document.getElementById('notifLoadMore');
+
+        badge.style.display = unread.length > 0 ? 'flex' : 'none';
+        if (unread.length > 0) badge.textContent = unread.length;
+
+        let filtered = notifs;
+        if (this.notifFilter === 'unread') filtered = filtered.filter(n => !n.read);
+        else if (this.notifFilter === 'booking') filtered = filtered.filter(n => n.category === 'booking');
+        else if (this.notifFilter === 'payment') filtered = filtered.filter(n => n.category === 'payment');
+        else if (this.notifFilter === 'customer') filtered = filtered.filter(n => n.category === 'customer');
+        else if (this.notifFilter === 'system') filtered = filtered.filter(n => n.category === 'system');
+
+        if (this.notifSearch) filtered = filtered.filter(n => n.message.toLowerCase().includes(this.notifSearch));
+
+        const start = this.notifPage * this.notifLimit;
+        const end = start + this.notifLimit;
+        const pageItems = filtered.slice(start, end);
+
+        if (append) {
+            pageItems.forEach(n => list.appendChild(this.createNotifItem(n)));
+        } else {
+            list.innerHTML = '';
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="notif-empty"><i class="fas fa-bell-slash"></i><div>${Lang.t('no_notifications')}</div></div>`;
+            } else {
+                pageItems.forEach(n => list.appendChild(this.createNotifItem(n)));
+            }
+        }
+        loadMore.style.display = end < filtered.length ? 'block' : 'none';
+    },
+
+    createNotifItem(notif) {
+        const div = document.createElement('div');
+        div.className = `notif-item ${notif.read ? '' : 'unread'}`;
+        div.dataset.id = notif.id;
+        const iconMap = { booking: 'fa-calendar-check', payment: 'fa-credit-card', customer: 'fa-user', system: 'fa-cog' };
+        const icon = iconMap[notif.category] || 'fa-bell';
+        div.innerHTML = `
+            <i class="fas ${icon}" style="color:var(--text-muted);opacity:0.4;margin-top:4px;"></i>
+            <div class="content"><div>${notif.message}</div><div class="time">${getRelativeTime(notif.time)}</div></div>
+            <div class="actions">
+                ${!notif.read ? `<button class="read-btn" data-id="${notif.id}"><i class="fas fa-check"></i></button>` : ''}
+                <button class="delete-btn" data-id="${notif.id}"><i class="fas fa-times"></i></button>
+            </div>
+        `;
+        div.querySelector('.read-btn')?.addEventListener('click', function(e) { e.stopPropagation(); App.markNotificationRead(this.dataset.id); });
+        div.querySelector('.delete-btn').addEventListener('click', function(e) { e.stopPropagation(); App.deleteNotification(this.dataset.id); });
+        div.addEventListener('click', function() { const id = this.dataset.id; if (id) App.markNotificationRead(id); });
+        return div;
+    },
+
+    markNotificationRead(id) {
+        const state = AppState.get();
+        const notif = state.notifications.find(n => n.id === id);
+        if (notif) { notif.read = true; AppState.set({ notifications: state.notifications }); this.updateNotifications(); }
+    },
+
+    markAllNotificationsRead() {
+        const state = AppState.get();
+        state.notifications.forEach(n => n.read = true);
+        AppState.set({ notifications: state.notifications });
+        this.updateNotifications();
+        Toast.success('All notifications marked as read');
+    },
+
+    deleteNotification(id) {
+        const state = AppState.get();
+        state.notifications = state.notifications.filter(n => n.id !== id);
+        AppState.set({ notifications: state.notifications });
+        this.updateNotifications();
+    },
+
+    clearAllNotifications() {
+        AppState.set({ notifications: [] });
+        this.updateNotifications();
+        Toast.success('All notifications cleared');
+    },
+
+    addNotification(message, type = 'info', category = 'system') {
+        const notif = AppState.addNotification(message, type, category);
+        this.updateNotifications();
+        const settings = JSON.parse(localStorage.getItem('hms_settings')) || {};
+        if (settings.notifications?.browser && 'Notification' in window && Notification.permission === 'granted') {
+            new Notification('HMS Notification', { body: message, icon: '🏨' });
+        }
+        return notif;
+    },
+
+    renderDashboard() {
+        const state = AppState.get();
+        const total = state.rooms.length;
+        const available = state.rooms.filter(r => r.status === 'Available').length;
+        const booked = state.rooms.filter(r => r.status === 'Booked' || r.status === 'Occupied').length;
+        const totalRevenue = state.payments.reduce((sum, p) => sum + (p.status === 'Paid' ? p.amount : 0), 0);
+        const todayRevenue = state.payments.filter(p => p.status === 'Paid' && p.date === new Date().toISOString().split('T')[0]).reduce((sum, p) => sum + p.amount, 0);
+        const occupancyRate = total > 0 ? Math.round((booked / total) * 100) : 0;
+        const activeBookings = state.bookings.filter(b => b.status === 'Checked-in').length;
+
+        document.getElementById('page-dashboard').innerHTML = `
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><i class="fas fa-door-open stat-icon"></i><h3 class="fw-bold">${total}</h3><small class="text-muted">${Lang.t('total_rooms')}</small></div></div>
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><i class="fas fa-check-circle stat-icon green"></i><h3 class="fw-bold">${available}</h3><small class="text-muted">${Lang.t('available')}</small></div></div>
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><i class="fas fa-bookmark stat-icon yellow"></i><h3 class="fw-bold">${booked}</h3><small class="text-muted">${Lang.t('booked')}</small></div></div>
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><i class="fas fa-user-friends stat-icon"></i><h3 class="fw-bold">${state.customers.length}</h3><small class="text-muted">${Lang.t('customers')}</small></div></div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><i class="fas fa-dollar-sign stat-icon green"></i><h3 class="fw-bold">${formatCurrency(totalRevenue)}</h3><small class="text-muted">${Lang.t('total_revenue')}</small></div></div>
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><i class="fas fa-calendar-day stat-icon blue"></i><h3 class="fw-bold">${formatCurrency(todayRevenue)}</h3><small class="text-muted">${Lang.t('today_revenue')}</small></div></div>
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><i class="fas fa-percent stat-icon yellow"></i><h3 class="fw-bold">${occupancyRate}%</h3><small class="text-muted">${Lang.t('occupancy_rate')}</small></div></div>
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><i class="fas fa-calendar-check stat-icon purple"></i><h3 class="fw-bold">${activeBookings}</h3><small class="text-muted">${Lang.t('active_bookings')}</small></div></div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-7"><div class="glass-card"><canvas id="revenueChart" height="160"></canvas></div></div>
+                <div class="col-md-5"><div class="glass-card"><canvas id="occupancyChart" height="160"></canvas></div></div>
+            </div>
+            <div class="glass-card">
+                <h5 class="fw-light mb-3"><i class="fas fa-clock me-2"></i>${Lang.t('recent_bookings')}</h5>
+                <div id="recentBookingsTable" class="table-responsive"></div>
+            </div>
+        `;
+
+        let html = `<table class="table"><thead><tr><th>${Lang.t('customer')}</th><th>${Lang.t('room')}</th><th>${Lang.t('status')}</th></tr></thead><tbody>`;
+        if (state.bookings.length === 0) {
+            html += `<tr><td colspan="3" class="text-center text-muted">${Lang.t('no_recent_activity')}</td></tr>`;
+        } else {
+            state.bookings.slice(-5).reverse().forEach(b => {
+                const c = state.customers.find(c => c.id === b.customerId);
+                const r = state.rooms.find(r => r.id === b.roomId);
+                const statusMap = { 'Checked-in': 'Active', 'Checked-out': 'Completed', 'Pending': 'Pending', 'Cancelled': 'Cancelled' };
+                const statusClass = getStatusKey(b.status);
+                html += `<tr><td>${c ? c.name : 'N/A'}</td><td>${r ? r.number : 'N/A'}</td><td><span class="badge-status ${statusClass}">${statusMap[b.status] || b.status}</span></td></tr>`;
+            });
+        }
+        html += `</tbody></table>`;
+        document.getElementById('recentBookingsTable').innerHTML = html;
+
+        const ctx1 = document.getElementById('revenueChart')?.getContext('2d');
+        if (ctx1) {
+            if (this.charts.revenue) this.charts.revenue.destroy();
+            this.charts.revenue = new Chart(ctx1, {
+                type: 'bar',
+                data: { labels: ['Jan','Feb','Mar','Apr','May','Jun'], datasets: [{ label: 'Revenue', data: [1200,1900,800,2100,1600,2400], backgroundColor: 'rgba(129,140,248,0.4)' }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+        const ctx2 = document.getElementById('occupancyChart')?.getContext('2d');
+        if (ctx2) {
+            if (this.charts.occupancy) this.charts.occupancy.destroy();
+            this.charts.occupancy = new Chart(ctx2, {
+                type: 'doughnut',
+                data: { labels: ['Available','Booked'], datasets: [{ data: [available, booked], backgroundColor: ['#10B981','#F59E0B'] }] }
+            });
+        }
+    },
+
+    renderRooms() {
+        const state = AppState.get();
+        const search = document.getElementById('roomSearch')?.value?.toLowerCase() || '';
+        let filtered = state.rooms;
+        if (search) filtered = filtered.filter(r => r.number?.toLowerCase().includes(search) || r.type?.toLowerCase().includes(search));
+
+        const roomFilter = document.querySelector('.room-filter-btn.active')?.dataset.filter || 'all';
+        if (roomFilter === 'available') filtered = filtered.filter(r => r.status === 'Available');
+        else if (roomFilter === 'booked') filtered = filtered.filter(r => r.status === 'Booked' || r.status === 'Occupied');
+        else if (roomFilter === 'vip') filtered = filtered.filter(r => r.type === 'VIP');
+        else if (roomFilter === 'maintenance') filtered = filtered.filter(r => r.status === 'Maintenance');
+
+        const { field, direction } = this.currentSort;
+        filtered.sort((a, b) => {
+            let valA = a[field] || '', valB = b[field] || '';
+            if (field === 'number') { valA = parseInt(valA) || 0; valB = parseInt(valB) || 0; }
+            if (typeof valA === 'string') { valA = valA.toLowerCase(); valB = valB.toLowerCase(); }
+            if (valA < valB) return direction === 'asc' ? -1 : 1;
+            if (valA > valB) return direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        document.getElementById('page-rooms').innerHTML = `
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <h2 class="fw-light mb-0"><i class="fas fa-door-open me-2"></i>${Lang.t('nav_rooms')}</h2>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <button class="btn-glass btn-glass-primary" id="addRoomBtn"><i class="fas fa-plus"></i> ${Lang.t('add_room')}</button>
+                    <div class="d-flex gap-1 align-items-center flex-wrap">
+                        <input id="roomSearch" class="form-control" placeholder="${Lang.t('search') || 'Search...'}" style="width:160px;min-width:120px;">
+                        <button class="sort-btn" data-sort="number"><i class="fas fa-sort-numeric-down"></i></button>
+                        <button class="sort-btn" data-sort="type"><i class="fas fa-sort-alpha-down"></i></button>
+                        <button class="sort-btn" data-sort="price"><i class="fas fa-sort-amount-down"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="filter-btn room-filter-btn active" data-filter="all"><i class="fas fa-list"></i> ${Lang.t('all')}</button>
+                <button class="filter-btn room-filter-btn" data-filter="available"><i class="fas fa-check-circle" style="color:#10B981;"></i> ${Lang.t('available')}</button>
+                <button class="filter-btn room-filter-btn" data-filter="booked"><i class="fas fa-bookmark" style="color:#F59E0B;"></i> ${Lang.t('booked')}</button>
+                <button class="filter-btn room-filter-btn" data-filter="vip"><i class="fas fa-crown" style="color:#F59E0B;"></i> VIP</button>
+                <button class="filter-btn room-filter-btn" data-filter="maintenance"><i class="fas fa-tools" style="color:#EF4444;"></i> ${Lang.t('maintenance')}</button>
+            </div>
+            <div id="roomCards" class="row g-3"></div>
+        `;
+
+        document.querySelectorAll('.room-filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.room-filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                App.renderRooms();
+            });
+        });
+
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const field = this.dataset.sort;
+                if (App.currentSort.field === field) App.currentSort.direction = App.currentSort.direction === 'asc' ? 'desc' : 'asc';
+                else { App.currentSort.field = field; App.currentSort.direction = 'asc'; }
+                App.renderRooms();
+            });
+        });
+
+        document.getElementById('roomSearch')?.addEventListener('input', () => this.renderRooms());
+        document.getElementById('addRoomBtn')?.addEventListener('click', () => this.openRoomModal());
+
+        const cards = document.getElementById('roomCards');
+        const currency = AppState.get().currency || 'USD';
+        const symbols = { USD: '$', EUR: '€', UZS: 'so\'m' };
+        const symbol = symbols[currency] || '$';
+
+        if (filtered.length === 0 && state.rooms.length === 0) {
+            cards.innerHTML = `
+                <div class="col-12">
+                    <div class="glass-card text-center p-5">
+                        <div class="empty-state">
+                            <div class="icon"><i class="fas fa-door-open"></i></div>
+                            <h5>${Lang.t('empty_rooms')}</h5>
+                            <p>${Lang.t('empty_rooms_desc')}</p>
+                            <button class="btn-glass btn-glass-primary" id="addRoomBtnEmpty"><i class="fas fa-plus"></i> ${Lang.t('add_room')}</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('addRoomBtnEmpty')?.addEventListener('click', () => this.openRoomModal());
+        } else if (filtered.length === 0 && state.rooms.length > 0) {
+            cards.innerHTML = `
+                <div class="col-12">
+                    <div class="glass-card text-center p-5">
+                        <div class="empty-state">
+                            <div class="icon"><i class="fas fa-search"></i></div>
+                            <h5>${Lang.t('no_data')}</h5>
+                            <p class="text-muted">${Lang.t('no_recent_activity')}</p>
+                            <button class="btn-glass" onclick="document.querySelector('.room-filter-btn.active')?.click(); document.getElementById('roomSearch').value=''; App.renderRooms();">
+                                <i class="fas fa-undo"></i> Reset filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            cards.innerHTML = filtered.map(r => `
+                <div class="col-md-4 col-sm-6">
+                    <div class="glass-card room-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="fw-bold mb-0">#${r.number}</h5>
+                            <span class="badge-status ${getStatusKey(r.status)}">${r.status}</span>
+                        </div>
+                        <p class="mb-2 text-muted">${r.type} · ${symbol}${r.price}</p>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <button class="btn-glass btn-glass-sm editRoom" data-id="${r.id}"><i class="fas fa-edit"></i> ${Lang.t('edit')}</button>
+                            <button class="btn-glass btn-glass-sm deleteRoom" data-id="${r.id}"><i class="fas fa-trash"></i> ${Lang.t('delete')}</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.querySelectorAll('.editRoom').forEach(btn => btn.addEventListener('click', () => this.openRoomModal(btn.dataset.id)));
+        document.querySelectorAll('.deleteRoom').forEach(btn => btn.addEventListener('click', () => this.deleteRoom(btn.dataset.id)));
+    },
+
+    openRoomModal(id = null) {
+        const state = AppState.get();
+        const room = id ? state.rooms.find(r => r.id === id) : null;
+        const oldModal = document.getElementById('roomModal');
+        if (oldModal) oldModal.remove();
+
+        const modalHtml = `
+            <div class="modal fade" id="roomModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content glass">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${room ? Lang.t('edit_room') || 'Edit Room' : Lang.t('add_room')}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="roomForm" novalidate>
+                                <input type="hidden" id="roomId" value="${room?.id || ''}">
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('number')}</label>
+                                    <input id="roomNumber" class="form-control" value="${room?.number || ''}" placeholder="${Lang.t('enter_room_number')}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('type')}</label>
+                                    <select id="roomType" class="form-select">
+                                        <option value="Standard" ${room?.type === 'Standard' ? 'selected' : ''}>Standard</option>
+                                        <option value="Deluxe" ${room?.type === 'Deluxe' ? 'selected' : ''}>Deluxe</option>
+                                        <option value="Luxury" ${room?.type === 'Luxury' ? 'selected' : ''}>Luxury</option>
+                                        <option value="VIP" ${room?.type === 'VIP' ? 'selected' : ''}>VIP</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('price')}</label>
+                                    <input id="roomPrice" type="number" class="form-control" value="${room?.price || ''}" placeholder="${Lang.t('enter_price')}">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('status')}</label>
+                                    <select id="roomStatus" class="form-select">
+                                        <option value="Available" ${room?.status === 'Available' ? 'selected' : ''}>${Lang.t('available')}</option>
+                                        <option value="Booked" ${room?.status === 'Booked' ? 'selected' : ''}>${Lang.t('booked')}</option>
+                                        <option value="Occupied" ${room?.status === 'Occupied' ? 'selected' : ''}>Occupied</option>
+                                        <option value="Maintenance" ${room?.status === 'Maintenance' ? 'selected' : ''}>${Lang.t('maintenance')}</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-glass" data-bs-dismiss="modal">${Lang.t('cancel')}</button>
+                            <button class="btn-glass btn-glass-primary" id="saveRoomBtn">${Lang.t('save')}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modal-container').insertAdjacentHTML('beforeend', modalHtml);
+        const modal = new bootstrap.Modal(document.getElementById('roomModal'), { backdrop: 'static', keyboard: true });
+        modal.show();
+
+        document.getElementById('saveRoomBtn').addEventListener('click', () => {
+            const id = document.getElementById('roomId').value;
+            const number = document.getElementById('roomNumber').value.trim();
+            const type = document.getElementById('roomType').value;
+            const price = parseFloat(document.getElementById('roomPrice').value);
+            const status = document.getElementById('roomStatus').value;
+
+            if (!number || !price) { Toast.warning(Lang.t('required_field')); return; }
+            const state = AppState.get();
+            const existingRoom = state.rooms.find(r => r.number === number && r.id !== id);
+            if (existingRoom) { Toast.warning(Lang.t('duplicate_room')); return; }
+
+            const roomData = { number, type, price, status };
+            if (id) {
+                const idx = state.rooms.findIndex(r => r.id === id);
+                if (idx > -1) { state.rooms[idx] = { ...state.rooms[idx], ...roomData }; Toast.success(Lang.t('room_updated')); this.addNotification(`Room #${number} updated`, 'success', 'system'); }
+            } else {
+                roomData.id = AppState.genId();
+                state.rooms.push(roomData);
+                Toast.success(Lang.t('room_added'));
+                this.addNotification(`Room #${number} added`, 'success', 'system');
+            }
+            AppState.set(state);
+            modal.hide();
+            this.renderRooms();
+            this.renderDashboard();
+        });
+
+        document.getElementById('roomModal').addEventListener('hidden.bs.modal', () => {
+            document.getElementById('roomModal').remove();
+        });
+    },
+
+    deleteRoom(id) {
+        if (!confirm('Delete this room?')) return;
+        const state = AppState.get();
+        const room = state.rooms.find(r => r.id === id);
+        state.rooms = state.rooms.filter(r => r.id !== id);
+        AppState.set(state);
+        Toast.success(Lang.t('room_deleted'));
+        this.addNotification(`Room #${room?.number} deleted`, 'info', 'system');
+        this.renderRooms();
+        this.renderDashboard();
+    },
+
+    renderCustomers() {
+        const state = AppState.get();
+        const customerFilter = document.querySelector('.customer-filter-btn.active')?.dataset.filter || 'all';
+        let filtered = state.customers;
+        if (customerFilter === 'checked_in') {
+            const bookedIds = state.bookings.filter(b => b.status === 'Checked-in').map(b => b.customerId);
+            filtered = filtered.filter(c => bookedIds.includes(c.id));
+        } else if (customerFilter === 'checked_out') {
+            const bookedIds = state.bookings.filter(b => b.status === 'Checked-out').map(b => b.customerId);
+            filtered = filtered.filter(c => bookedIds.includes(c.id));
+        } else if (customerFilter === 'no_booking') {
+            const bookedIds = state.bookings.map(b => b.customerId);
+            filtered = filtered.filter(c => !bookedIds.includes(c.id));
+        } else if (customerFilter === 'active_booking') {
+            const bookedIds = state.bookings.filter(b => b.status === 'Checked-in' || b.status === 'Pending').map(b => b.customerId);
+            filtered = filtered.filter(c => bookedIds.includes(c.id));
+        }
+
+        document.getElementById('page-customers').innerHTML = `
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <h2 class="fw-light mb-0"><i class="fas fa-users me-2"></i>${Lang.t('nav_customers')}</h2>
+                <button class="btn-glass btn-glass-primary" id="addCustomerBtn"><i class="fas fa-plus"></i> ${Lang.t('add_customer')}</button>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="filter-btn customer-filter-btn active" data-filter="all"><i class="fas fa-list"></i> ${Lang.t('all')}</button>
+                <button class="filter-btn customer-filter-btn" data-filter="checked_in"><i class="fas fa-sign-in-alt" style="color:#10B981;"></i> ${Lang.t('checked_in')}</button>
+                <button class="filter-btn customer-filter-btn" data-filter="checked_out"><i class="fas fa-sign-out-alt" style="color:#8B8E98;"></i> ${Lang.t('checked_out')}</button>
+                <button class="filter-btn customer-filter-btn" data-filter="no_booking"><i class="fas fa-user-slash" style="color:#F59E0B;"></i> ${Lang.t('no_booking')}</button>
+                <button class="filter-btn customer-filter-btn" data-filter="active_booking"><i class="fas fa-calendar-check" style="color:#4F46E5;"></i> ${Lang.t('active_booking')}</button>
+            </div>
+            <div id="customerTableContainer" class="table-responsive glass-card">
+                <table class="table table-to-cards">
+                    <thead><tr><th>${Lang.t('name')}</th><th>${Lang.t('phone')}</th><th>${Lang.t('room')}</th><th>${Lang.t('status')}</th><th>${Lang.t('actions')}</th></tr></thead>
+                    <tbody>
+                        ${filtered.length === 0 ? `<tr><td colspan="5" class="text-center text-muted">${Lang.t('no_data')}</td></tr>` :
+                        filtered.map(c => {
+                            const booking = state.bookings.find(b => b.customerId === c.id && (b.status === 'Checked-in' || b.status === 'Pending'));
+                            const room = booking ? state.rooms.find(r => r.id === booking.roomId) : null;
+                            const statusMap = { 'Checked-in': 'Active', 'Pending': 'Pending', 'Checked-out': 'Completed' };
+                            const status = booking ? booking.status : 'No booking';
+                            return `<tr>
+                                <td data-label="${Lang.t('name')}">${c.name}</td>
+                                <td data-label="${Lang.t('phone')}">${c.phone}</td>
+                                <td data-label="${Lang.t('room')}">${room ? `#${room.number}` : 'N/A'}</td>
+                                <td data-label="${Lang.t('status')}"><span class="badge-status ${getStatusKey(status)}">${statusMap[status] || status}</span></td>
+                                <td data-label="${Lang.t('actions')}">
+                                    <button class="btn-glass btn-glass-sm editCust" data-id="${c.id}"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-glass btn-glass-sm deleteCust" data-id="${c.id}"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        document.querySelectorAll('.customer-filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.customer-filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                App.renderCustomers();
+            });
+        });
+
+        document.getElementById('addCustomerBtn')?.addEventListener('click', () => this.openCustomerModal());
+        document.querySelectorAll('.editCust').forEach(btn => btn.addEventListener('click', () => this.openCustomerModal(btn.dataset.id)));
+        document.querySelectorAll('.deleteCust').forEach(btn => btn.addEventListener('click', () => this.deleteCustomer(btn.dataset.id)));
+    },
+
+    openCustomerModal(id = null) {
+        const state = AppState.get();
+        const customer = id ? state.customers.find(c => c.id === id) : null;
+        const oldModal = document.getElementById('customerModal');
+        if (oldModal) oldModal.remove();
+
+        const modalHtml = `
+            <div class="modal fade" id="customerModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content glass">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${customer ? Lang.t('edit_customer') || 'Edit Customer' : Lang.t('add_customer')}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="customerForm" novalidate>
+                                <input type="hidden" id="custId" value="${customer?.id || ''}">
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('name')}</label>
+                                    <input id="custName" class="form-control" value="${customer?.name || ''}" placeholder="${Lang.t('enter_name')}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('email')}</label>
+                                    <input id="custEmail" type="email" class="form-control" value="${customer?.email || ''}" placeholder="${Lang.t('enter_email')}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('phone')}</label>
+                                    <input id="custPhone" class="form-control" value="${customer?.phone || '+998'}" placeholder="${Lang.t('enter_phone')}" required>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-glass" data-bs-dismiss="modal">${Lang.t('cancel')}</button>
+                            <button class="btn-glass btn-glass-primary" id="saveCustomerBtn">${Lang.t('save')}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modal-container').insertAdjacentHTML('beforeend', modalHtml);
+        const modal = new bootstrap.Modal(document.getElementById('customerModal'), { backdrop: 'static', keyboard: true });
+        modal.show();
+
+        const phoneInput = document.getElementById('custPhone');
+        phoneInput.addEventListener('focus', function() { if (this.value === '') this.value = '+998'; });
+        phoneInput.addEventListener('blur', function() { if (this.value === '+998') this.value = ''; });
+
+        document.getElementById('saveCustomerBtn').addEventListener('click', () => {
+            const id = document.getElementById('custId').value;
+            const name = document.getElementById('custName').value.trim();
+            const email = document.getElementById('custEmail').value.trim();
+            let phone = document.getElementById('custPhone').value.trim();
+
+            if (!name || !email) { Toast.warning(Lang.t('required_field')); return; }
+            if (!phone.startsWith('+998')) phone = '+998' + phone.replace(/[^0-9]/g, '');
+            if (phone.length < 13) { Toast.warning(Lang.t('phone_format')); return; }
+
+            const state = AppState.get();
+            const custData = { name, email, phone };
+            if (id) {
+                const idx = state.customers.findIndex(c => c.id === id);
+                if (idx > -1) { state.customers[idx] = { ...state.customers[idx], ...custData }; Toast.success(Lang.t('customer_updated')); this.addNotification(`Customer ${name} updated`, 'success', 'customer'); }
+            } else {
+                custData.id = AppState.genId();
+                state.customers.push(custData);
+                Toast.success(Lang.t('customer_added'));
+                this.addNotification(`Customer ${name} added`, 'success', 'customer');
+            }
+            AppState.set(state);
+            modal.hide();
+            this.renderCustomers();
+            this.renderDashboard();
+        });
+
+        document.getElementById('customerModal').addEventListener('hidden.bs.modal', () => {
+            document.getElementById('customerModal').remove();
+        });
+    },
+
+    deleteCustomer(id) {
+        if (!confirm('Delete this customer?')) return;
+        const state = AppState.get();
+        state.customers = state.customers.filter(c => c.id !== id);
+        AppState.set(state);
+        Toast.success(Lang.t('customer_deleted'));
+        this.addNotification('Customer deleted', 'info', 'customer');
+        this.renderCustomers();
+        this.renderDashboard();
+    },
+
+    renderBookings() {
+        const state = AppState.get();
+        const today = new Date().toISOString().split('T')[0];
+        state.bookings.forEach(b => {
+            if (b.checkout < today && (b.status === 'Checked-in' || b.status === 'Pending')) {
+                b.status = 'Checked-out';
+                const room = state.rooms.find(r => r.id === b.roomId);
+                if (room && room.status !== 'Maintenance') room.status = 'Available';
+            }
+        });
+        AppState.set(state);
+
+        const bookingFilter = document.querySelector('.booking-filter-btn.active')?.dataset.filter || 'all';
+        let filtered = state.bookings;
+        if (bookingFilter === 'active') filtered = filtered.filter(b => b.status === 'Checked-in');
+        else if (bookingFilter === 'upcoming') filtered = filtered.filter(b => b.status === 'Pending');
+        else if (bookingFilter === 'completed') filtered = filtered.filter(b => b.status === 'Checked-out');
+        else if (bookingFilter === 'cancelled') filtered = filtered.filter(b => b.status === 'Cancelled');
+
+        document.getElementById('page-bookings').innerHTML = `
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <h2 class="fw-light mb-0"><i class="fas fa-calendar-check me-2"></i>${Lang.t('nav_bookings')}</h2>
+                <button class="btn-glass btn-glass-primary" id="addBookingBtn"><i class="fas fa-plus"></i> ${Lang.t('create_booking')}</button>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="filter-btn booking-filter-btn active" data-filter="all"><i class="fas fa-list"></i> ${Lang.t('all')}</button>
+                <button class="filter-btn booking-filter-btn" data-filter="active"><i class="fas fa-play" style="color:#10B981;"></i> ${Lang.t('active')}</button>
+                <button class="filter-btn booking-filter-btn" data-filter="upcoming"><i class="fas fa-clock" style="color:#4F46E5;"></i> ${Lang.t('upcoming')}</button>
+                <button class="filter-btn booking-filter-btn" data-filter="completed"><i class="fas fa-check" style="color:#8B8E98;"></i> ${Lang.t('checked_out')}</button>
+                <button class="filter-btn booking-filter-btn" data-filter="cancelled"><i class="fas fa-times" style="color:#EF4444;"></i> ${Lang.t('cancel')}</button>
+            </div>
+            <div id="bookingTableContainer" class="table-responsive glass-card">
+                <table class="table table-to-cards">
+                    <thead><tr><th>${Lang.t('customer')}</th><th>${Lang.t('room')}</th><th>${Lang.t('checkin')}</th><th>${Lang.t('checkout')}</th><th>${Lang.t('status')}</th><th>${Lang.t('actions')}</th></tr></thead>
+                    <tbody>
+                        ${filtered.length === 0 ? `<tr><td colspan="6" class="text-center text-muted">${Lang.t('no_data')}</td></tr>` :
+                        filtered.map(b => {
+                            const c = state.customers.find(c => c.id === b.customerId);
+                            const r = state.rooms.find(r => r.id === b.roomId);
+                            const statusMap = { 'Checked-in': 'Active', 'Checked-out': 'Completed', 'Pending': 'Pending', 'Cancelled': 'Cancelled' };
+                            return `<tr>
+                                <td data-label="${Lang.t('customer')}">${c ? c.name : 'N/A'}</td>
+                                <td data-label="${Lang.t('room')}">${r ? r.number : 'N/A'}</td>
+                                <td data-label="${Lang.t('checkin')}">${b.checkin}</td>
+                                <td data-label="${Lang.t('checkout')}">${b.checkout}</td>
+                                <td data-label="${Lang.t('status')}"><span class="badge-status ${getStatusKey(b.status)}">${statusMap[b.status] || b.status}</span></td>
+                                <td data-label="${Lang.t('actions')}">
+                                    <button class="btn-glass btn-glass-sm editBook" data-id="${b.id}"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-glass btn-glass-sm deleteBook" data-id="${b.id}"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        document.querySelectorAll('.booking-filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.booking-filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                App.renderBookings();
+            });
+        });
+
+        document.getElementById('addBookingBtn')?.addEventListener('click', () => this.openBookingModal());
+        document.querySelectorAll('.editBook').forEach(btn => btn.addEventListener('click', () => this.openBookingModal(btn.dataset.id)));
+        document.querySelectorAll('.deleteBook').forEach(btn => btn.addEventListener('click', () => this.deleteBooking(btn.dataset.id)));
+    },
+
+    openBookingModal(id = null) {
+        const state = AppState.get();
+        const booking = id ? state.bookings.find(b => b.id === id) : null;
+        const availableRooms = state.rooms.filter(r => r.status === 'Available');
+        const oldModal = document.getElementById('bookingModal');
+        if (oldModal) oldModal.remove();
+
+        const modalHtml = `
+            <div class="modal fade" id="bookingModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content glass">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${booking ? Lang.t('edit_booking') || 'Edit Booking' : Lang.t('create_booking')}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="bookingForm" novalidate>
+                                <input type="hidden" id="bookId" value="${booking?.id || ''}">
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('customer')}</label>
+                                    <select id="bookCustomer" class="form-select" required>
+                                        <option value="">${Lang.t('select_customer') || 'Select customer...'}</option>
+                                        ${state.customers.map(c => `<option value="${c.id}" ${booking?.customerId === c.id ? 'selected' : ''}>${c.name}</option>`).join('')}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('room')}</label>
+                                    <select id="bookRoom" class="form-select" required>
+                                        <option value="">${Lang.t('select_room') || 'Select room...'}</option>
+                                        ${availableRooms.map(r => `<option value="${r.id}" ${booking?.roomId === r.id ? 'selected' : ''}>#${r.number} (${r.type}) - ${r.status}</option>`).join('')}
+                                        ${availableRooms.length === 0 ? '<option value="" disabled>No available rooms</option>' : ''}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('checkin')}</label>
+                                    <input id="bookCheckin" type="date" class="form-control" value="${booking?.checkin || ''}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('checkout')}</label>
+                                    <input id="bookCheckout" type="date" class="form-control" value="${booking?.checkout || ''}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('status')}</label>
+                                    <select id="bookStatus" class="form-select">
+                                        <option value="Pending" ${booking?.status === 'Pending' ? 'selected' : ''}>${Lang.t('pending') || 'Pending'}</option>
+                                        <option value="Checked-in" ${booking?.status === 'Checked-in' ? 'selected' : ''}>${Lang.t('checked_in')}</option>
+                                        <option value="Checked-out" ${booking?.status === 'Checked-out' ? 'selected' : ''}>${Lang.t('checked_out')}</option>
+                                        <option value="Cancelled" ${booking?.status === 'Cancelled' ? 'selected' : ''}>${Lang.t('cancel')}</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-glass" data-bs-dismiss="modal">${Lang.t('cancel')}</button>
+                            <button class="btn-glass btn-glass-primary" id="saveBookingBtn">${Lang.t('save')}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modal-container').insertAdjacentHTML('beforeend', modalHtml);
+        const modal = new bootstrap.Modal(document.getElementById('bookingModal'), { backdrop: 'static', keyboard: true });
+        modal.show();
+
+        document.getElementById('saveBookingBtn').addEventListener('click', () => {
+            const id = document.getElementById('bookId').value;
+            const customerId = document.getElementById('bookCustomer').value;
+            const roomId = document.getElementById('bookRoom').value;
+            const checkin = document.getElementById('bookCheckin').value;
+            const checkout = document.getElementById('bookCheckout').value;
+            const status = document.getElementById('bookStatus').value;
+
+            if (!customerId || !roomId || !checkin || !checkout) { Toast.warning(Lang.t('required_field')); return; }
+            if (checkout <= checkin) { Toast.warning('Check-out must be after check-in'); return; }
+
+            const state = AppState.get();
+            const existingBooking = state.bookings.find(b => b.roomId === roomId && (b.status === 'Checked-in' || b.status === 'Pending') && b.id !== id);
+            if (existingBooking) { Toast.warning('This room is already booked'); return; }
+
+            const bookingData = { customerId, roomId, checkin, checkout, status };
+            if (id) {
+                const idx = state.bookings.findIndex(b => b.id === id);
+                if (idx > -1) {
+                    const old = state.bookings[idx];
+                    if (old.status === 'Checked-in' && status !== 'Checked-in') {
+                        const room = state.rooms.find(r => r.id === old.roomId);
+                        if (room) room.status = 'Available';
+                    }
+                    state.bookings[idx] = { ...state.bookings[idx], ...bookingData };
+                    if (status === 'Checked-in') {
+                        const room = state.rooms.find(r => r.id === roomId);
+                        if (room) room.status = 'Booked';
+                    }
+                    Toast.success(Lang.t('booking_updated'));
+                    this.addNotification('Booking updated', 'success', 'booking');
+                }
+            } else {
+                bookingData.id = AppState.genId();
+                bookingData.date = new Date().toISOString().split('T')[0];
+                state.bookings.push(bookingData);
+                if (status === 'Checked-in') {
+                    const room = state.rooms.find(r => r.id === roomId);
+                    if (room) room.status = 'Booked';
+                }
+                Toast.success(Lang.t('booking_created'));
+                this.addNotification('Booking created', 'success', 'booking');
+            }
+            AppState.set(state);
+            modal.hide();
+            this.renderBookings();
+            this.renderDashboard();
+        });
+
+        document.getElementById('bookingModal').addEventListener('hidden.bs.modal', () => {
+            document.getElementById('bookingModal').remove();
+        });
+    },
+
+    deleteBooking(id) {
+        if (!confirm('Delete this booking?')) return;
+        const state = AppState.get();
+        const booking = state.bookings.find(b => b.id === id);
+        if (booking) {
+            const room = state.rooms.find(r => r.id === booking.roomId);
+            if (room && (booking.status === 'Checked-in' || booking.status === 'Pending')) room.status = 'Available';
+        }
+        state.bookings = state.bookings.filter(b => b.id !== id);
+        AppState.set(state);
+        Toast.success(Lang.t('booking_deleted'));
+        this.addNotification('Booking deleted', 'info', 'booking');
+        this.renderBookings();
+        this.renderDashboard();
+    },
+
+    renderPayments() {
+        const state = AppState.get();
+        const totalRevenue = state.payments.reduce((s, p) => s + (p.status === 'Paid' ? p.amount : 0), 0);
+        const todayRevenue = state.payments.filter(p => p.status === 'Paid' && p.date === new Date().toISOString().split('T')[0]).reduce((s, p) => s + p.amount, 0);
+        
+        const outstanding = state.bookings.filter(b => 
+            b.status === 'Checked-out' && 
+            !state.payments.find(p => p.bookingId === b.id && p.status === 'Paid')
+        );
+
+        const paymentFilter = document.querySelector('.payment-filter-btn.active')?.dataset.filter || 'all';
+        let filtered = state.payments;
+        if (paymentFilter === 'paid') filtered = filtered.filter(p => p.status === 'Paid');
+        else if (paymentFilter === 'unpaid') filtered = filtered.filter(p => p.status === 'Pending' || p.status === 'Refunded');
+        else if (paymentFilter === 'today') filtered = filtered.filter(p => p.date === new Date().toISOString().split('T')[0]);
+
+        document.getElementById('page-payments').innerHTML = `
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <h2 class="fw-light mb-0"><i class="fas fa-credit-card me-2"></i>${Lang.t('nav_payments')}</h2>
+                <button class="btn-glass btn-glass-primary" id="addPaymentBtn"><i class="fas fa-plus"></i> ${Lang.t('add_payment')}</button>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="filter-btn payment-filter-btn active" data-filter="all"><i class="fas fa-list"></i> ${Lang.t('all')}</button>
+                <button class="filter-btn payment-filter-btn" data-filter="paid"><i class="fas fa-check" style="color:#10B981;"></i> ${Lang.t('paid_payments')}</button>
+                <button class="filter-btn payment-filter-btn" data-filter="unpaid"><i class="fas fa-exclamation" style="color:#F59E0B;"></i> ${Lang.t('unpaid')}</button>
+                <button class="filter-btn payment-filter-btn" data-filter="today"><i class="fas fa-calendar-day" style="color:#4F46E5;"></i> ${Lang.t('today_filter')}</button>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-4 col-6"><div class="glass-card text-center"><h6 class="text-muted">${Lang.t('total_revenue')}</h6><h4 class="fw-bold">${formatCurrency(totalRevenue)}</h4></div></div>
+                <div class="col-md-4 col-6"><div class="glass-card text-center"><h6 class="text-muted">${Lang.t('today_revenue')}</h6><h4 class="fw-bold">${formatCurrency(todayRevenue)}</h4></div></div>
+                <div class="col-md-4 col-6"><div class="glass-card text-center"><h6 class="text-muted">${Lang.t('paid_payments')}</h6><h4 class="fw-bold">${state.payments.filter(p => p.status === 'Paid').length}</h4></div></div>
+            </div>
+            ${outstanding.length > 0 ? `
+                <div class="glass-card mb-3" style="border-left:5px solid #EF4444; background: rgba(239, 68, 68, 0.04);">
+                    <h6 class="text-muted"><i class="fas fa-exclamation-triangle" style="color:#EF4444;"></i> Outstanding Payments (${outstanding.length})</h6>
+                    ${outstanding.map(b => {
+                        const c = state.customers.find(c => c.id === b.customerId);
+                        const r = state.rooms.find(r => r.id === b.roomId);
+                        return `<div class="outstanding-item d-flex justify-content-between align-items-center">
+                            <span>${c?.name || 'N/A'} - Room ${r?.number || 'N/A'}</span>
+                            <span class="due-amount">${formatCurrency(r?.price || 0)} due</span>
+                        </div>`;
+                    }).join('')}
+                </div>
+            ` : ''}
+            <div id="paymentTableContainer" class="table-responsive glass-card">
+                <table class="table table-to-cards">
+                    <thead><tr><th>${Lang.t('booking')}</th><th>${Lang.t('customer')}</th><th>${Lang.t('room')}</th><th>${Lang.t('amount')}</th><th>${Lang.t('method')}</th><th>${Lang.t('status')}</th><th>${Lang.t('actions')}</th></tr></thead>
+                    <tbody>
+                        ${filtered.length === 0 ? `<tr><td colspan="7" class="text-center text-muted">${Lang.t('no_data')}</td></tr>` :
+                        filtered.map((p, i) => {
+                            const b = state.bookings.find(b => b.id === p.bookingId);
+                            const r = b ? state.rooms.find(r => r.id === b.roomId) : null;
+                            const c = b ? state.customers.find(c => c.id === b.customerId) : null;
+                            const payId = `PAY-${String(i + 1).padStart(3, '0')}`;
+                            return `<tr>
+                                <td data-label="${Lang.t('booking')}">${payId}</td>
+                                <td data-label="${Lang.t('customer')}">${c ? c.name : 'N/A'}</td>
+                                <td data-label="${Lang.t('room')}">${r ? `#${r.number}` : 'N/A'}</td>
+                                <td data-label="${Lang.t('amount')}">${formatCurrency(p.amount)}</td>
+                                <td data-label="${Lang.t('method')}">${p.method}</td>
+                                <td data-label="${Lang.t('status')}"><span class="badge-status ${getStatusKey(p.status)}">${p.status}</span></td>
+                                <td data-label="${Lang.t('actions')}">
+                                    <button class="btn-glass btn-glass-sm editPay" data-id="${p.id}"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-glass btn-glass-sm deletePay" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-3 glass-card"><h5 class="fw-light">${Lang.t('revenue_summary')}</h5><canvas id="paymentChart" height="100"></canvas></div>
+        `;
+
+        document.querySelectorAll('.payment-filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.payment-filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                App.renderPayments();
+            });
+        });
+
+        document.getElementById('addPaymentBtn')?.addEventListener('click', () => this.openPaymentModal());
+        document.querySelectorAll('.editPay').forEach(btn => btn.addEventListener('click', () => this.openPaymentModal(btn.dataset.id)));
+        document.querySelectorAll('.deletePay').forEach(btn => btn.addEventListener('click', () => this.deletePayment(btn.dataset.id)));
+
+        const ctx = document.getElementById('paymentChart')?.getContext('2d');
+        if (ctx) {
+            if (this.charts.payment) this.charts.payment.destroy();
+            this.charts.payment = new Chart(ctx, {
+                type: 'line',
+                data: { labels: state.payments.map((_,i) => `PAY-${String(i+1).padStart(3,'0')}`), datasets: [{ label: 'Payments', data: state.payments.map(p=>p.amount), borderColor: '#4F46E5', fill: false }] }
+            });
+        }
+    },
+
+    openPaymentModal(id = null) {
+        const state = AppState.get();
+        const payment = id ? state.payments.find(p => p.id === id) : null;
+        const activeBookings = state.bookings.filter(b => b.status === 'Checked-in' || b.status === 'Pending');
+        const oldModal = document.getElementById('paymentModal');
+        if (oldModal) oldModal.remove();
+
+        const modalHtml = `
+            <div class="modal fade" id="paymentModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content glass">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${payment ? Lang.t('edit_payment') || 'Edit Payment' : Lang.t('add_payment')}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="paymentForm" novalidate>
+                                <input type="hidden" id="payId" value="${payment?.id || ''}">
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('booking')}</label>
+                                    <select id="payBooking" class="form-select" required>
+                                        <option value="">${Lang.t('select_booking') || 'Select booking...'}</option>
+                                        ${activeBookings.map(b => {
+                                            const r = state.rooms.find(room => room.id === b.roomId);
+                                            const c = state.customers.find(cust => cust.id === b.customerId);
+                                            return `<option value="${b.id}" ${payment?.bookingId === b.id ? 'selected' : ''}>
+                                                #${r?.number || 'N/A'} - ${c?.name || 'N/A'} (${b.status})
+                                            </option>`;
+                                        }).join('')}
+                                        ${activeBookings.length === 0 ? '<option value="" disabled>No active bookings available</option>' : ''}
+                                    </select>
+                                    ${activeBookings.length === 0 ? '<small class="text-muted">Create a booking first with Checked-in or Pending status</small>' : ''}
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('amount')}</label>
+                                    <input id="payAmount" type="number" class="form-control" value="${payment?.amount || ''}" placeholder="${Lang.t('enter_amount')}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('method')}</label>
+                                    <select id="payMethod" class="form-select">
+                                        <option value="Cash" ${payment?.method === 'Cash' ? 'selected' : ''}>Cash</option>
+                                        <option value="Card" ${payment?.method === 'Card' ? 'selected' : ''}>Card</option>
+                                        <option value="Online" ${payment?.method === 'Online' ? 'selected' : ''}>Online</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">${Lang.t('status')}</label>
+                                    <select id="payStatus" class="form-select">
+                                        <option value="Paid" ${payment?.status === 'Paid' ? 'selected' : ''}>${Lang.t('paid') || 'Paid'}</option>
+                                        <option value="Pending" ${payment?.status === 'Pending' ? 'selected' : ''}>${Lang.t('pending') || 'Pending'}</option>
+                                        <option value="Refunded" ${payment?.status === 'Refunded' ? 'selected' : ''}>Refunded</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-glass" data-bs-dismiss="modal">${Lang.t('cancel')}</button>
+                            <button class="btn-glass btn-glass-primary" id="savePaymentBtn">${Lang.t('save')}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modal-container').insertAdjacentHTML('beforeend', modalHtml);
+        const modal = new bootstrap.Modal(document.getElementById('paymentModal'), { backdrop: 'static', keyboard: true });
+        modal.show();
+
+        document.getElementById('payBooking').addEventListener('change', function() {
+            const bookingId = this.value;
+            if (bookingId) {
+                const booking = state.bookings.find(b => b.id === bookingId);
+                if (booking) {
+                    const room = state.rooms.find(r => r.id === booking.roomId);
+                    if (room) {
+                        const nights = Math.ceil((new Date(booking.checkout) - new Date(booking.checkin)) / (1000 * 60 * 60 * 24));
+                        const total = room.price * (nights || 1);
+                        if (!document.getElementById('payId').value) {
+                            document.getElementById('payAmount').value = total;
+                        }
+                    }
+                }
+            }
+        });
+
+        document.getElementById('savePaymentBtn').addEventListener('click', () => {
+            const id = document.getElementById('payId').value;
+            const bookingId = document.getElementById('payBooking').value;
+            const amount = parseFloat(document.getElementById('payAmount').value);
+            const method = document.getElementById('payMethod').value;
+            const status = document.getElementById('payStatus').value;
+
+            if (!bookingId || !amount) { Toast.warning(Lang.t('required_field')); return; }
+
+            const state = AppState.get();
+            const paymentData = { bookingId, amount, method, status, date: new Date().toISOString().split('T')[0] };
+            if (id) {
+                const idx = state.payments.findIndex(p => p.id === id);
+                if (idx > -1) { state.payments[idx] = { ...state.payments[idx], ...paymentData }; Toast.success(Lang.t('payment_updated')); this.addNotification('Payment updated', 'success', 'payment'); }
+            } else {
+                paymentData.id = AppState.genId();
+                state.payments.push(paymentData);
+                Toast.success(Lang.t('payment_added'));
+                this.addNotification('Payment added', 'success', 'payment');
+            }
+            AppState.set(state);
+            modal.hide();
+            this.renderPayments();
+            this.renderDashboard();
+        });
+
+        document.getElementById('paymentModal').addEventListener('hidden.bs.modal', () => {
+            document.getElementById('paymentModal').remove();
+        });
+    },
+
+    deletePayment(id) {
+        if (!confirm('Delete this payment?')) return;
+        const state = AppState.get();
+        state.payments = state.payments.filter(p => p.id !== id);
+        AppState.set(state);
+        Toast.success(Lang.t('payment_deleted'));
+        this.addNotification('Payment deleted', 'info', 'payment');
+        this.renderPayments();
+        this.renderDashboard();
+    },
+
+    renderReports() {
+        const state = AppState.get();
+        const reportFilter = document.querySelector('.report-filter-btn.active')?.dataset.filter || 'today';
+        let filteredPayments = state.payments;
+        if (reportFilter === 'today') filteredPayments = filteredPayments.filter(p => p.date === new Date().toISOString().split('T')[0]);
+        else if (reportFilter === 'week') {
+            const weekStart = new Date();
+            weekStart.setDate(weekStart.getDate() - 7);
+            filteredPayments = filteredPayments.filter(p => new Date(p.date) >= weekStart);
+        } else if (reportFilter === 'month') {
+            const monthStart = new Date();
+            monthStart.setMonth(monthStart.getMonth() - 1);
+            filteredPayments = filteredPayments.filter(p => new Date(p.date) >= monthStart);
+        } else if (reportFilter === 'year') {
+            const yearStart = new Date();
+            yearStart.setFullYear(yearStart.getFullYear() - 1);
+            filteredPayments = filteredPayments.filter(p => new Date(p.date) >= yearStart);
+        }
+        const totalRevenue = filteredPayments.reduce((s, p) => s + (p.status === 'Paid' ? p.amount : 0), 0);
+
+        document.getElementById('page-reports').innerHTML = `
+            <h2 class="fw-light"><i class="fas fa-file-alt me-2"></i>${Lang.t('nav_reports')}</h2>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="filter-btn report-filter-btn active" data-filter="today"><i class="fas fa-calendar-day"></i> ${Lang.t('today_filter')}</button>
+                <button class="filter-btn report-filter-btn" data-filter="week"><i class="fas fa-calendar-week"></i> ${Lang.t('this_week')}</button>
+                <button class="filter-btn report-filter-btn" data-filter="month"><i class="fas fa-calendar-alt"></i> ${Lang.t('this_month')}</button>
+                <button class="filter-btn report-filter-btn" data-filter="year"><i class="fas fa-calendar"></i> ${Lang.t('year') || 'This Year'}</button>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><h6 class="text-muted">${Lang.t('total_revenue')}</h6><h4 class="fw-bold">${formatCurrency(totalRevenue)}</h4></div></div>
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><h6 class="text-muted">${Lang.t('paid_payments')}</h6><h4 class="fw-bold">${filteredPayments.filter(p => p.status === 'Paid').length}</h4></div></div>
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><h6 class="text-muted">${Lang.t('occupancy_rate')}</h6><h4 class="fw-bold">${state.rooms.length > 0 ? Math.round((state.rooms.filter(r => r.status === 'Booked' || r.status === 'Occupied').length / state.rooms.length) * 100) : 0}%</h4></div></div>
+                <div class="col-6 col-md-3"><div class="glass-card text-center"><h6 class="text-muted">${Lang.t('nav_bookings')}</h6><h4 class="fw-bold">${state.bookings.length}</h4></div></div>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6"><div class="glass-card"><canvas id="reportChart1" height="150"></canvas></div></div>
+                <div class="col-md-6"><div class="glass-card"><canvas id="reportChart2" height="150"></canvas></div></div>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                <button class="btn-glass btn-glass-primary" id="exportPdfBtn"><i class="fas fa-file-pdf"></i> ${Lang.t('pdf_export')}</button>
+                <button class="btn-glass btn-glass-primary" id="exportExcelBtn"><i class="fas fa-file-excel"></i> ${Lang.t('excel_export')}</button>
+                <button class="btn-glass btn-glass-primary" id="printReportBtn"><i class="fas fa-print"></i> ${Lang.t('print')}</button>
+            </div>
+        `;
+
+        document.querySelectorAll('.report-filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.report-filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                App.renderReports();
+            });
+        });
+
+        const ctx1 = document.getElementById('reportChart1')?.getContext('2d');
+        if (ctx1) {
+            if (this.charts.report1) this.charts.report1.destroy();
+            this.charts.report1 = new Chart(ctx1, {
+                type: 'bar',
+                data: { labels: ['Rooms','Customers','Bookings','Payments'], datasets: [{ label: 'Counts', data: [state.rooms.length, state.customers.length, state.bookings.length, state.payments.length], backgroundColor: 'rgba(129,140,248,0.4)' }] }
+            });
+        }
+        const ctx2 = document.getElementById('reportChart2')?.getContext('2d');
+        if (ctx2) {
+            if (this.charts.report2) this.charts.report2.destroy();
+            this.charts.report2 = new Chart(ctx2, {
+                type: 'pie',
+                data: { labels: ['Available','Booked','Maintenance'], datasets: [{ data: [
+                    state.rooms.filter(r=>r.status==='Available').length,
+                    state.rooms.filter(r=>r.status==='Booked' || r.status==='Occupied').length,
+                    state.rooms.filter(r=>r.status==='Maintenance').length
+                ], backgroundColor: ['#10B981','#F59E0B','#EF4444'] }] }
+            });
+        }
+
+        document.getElementById('exportPdfBtn')?.addEventListener('click', () => this.exportPDF());
+        document.getElementById('exportExcelBtn')?.addEventListener('click', () => this.exportExcel());
+        document.getElementById('printReportBtn')?.addEventListener('click', () => window.print());
+    },
+
+    async exportPDF() {
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const settings = JSON.parse(localStorage.getItem('hms_settings')) || {};
+            const hotelName = settings.hotelName || 'Grand Hotel';
+            
+            doc.setFontSize(24);
+            doc.text(hotelName, 20, 25);
+            doc.setFontSize(18);
+            doc.text('Executive Summary', 20, 40);
+            doc.setFontSize(10);
+            doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 50);
+            
+            const state = AppState.get();
+            doc.setFontSize(12);
+            let y = 75;
+            const data = [
+                ['Total Rooms', state.rooms.length],
+                ['Customers', state.customers.length],
+                ['Bookings', state.bookings.length],
+                ['Total Revenue', formatCurrency(state.payments.reduce((s, p) => s + (p.status === 'Paid' ? p.amount : 0), 0))],
+                ['Occupancy Rate', `${state.rooms.length > 0 ? Math.round((state.rooms.filter(r => r.status === 'Booked' || r.status === 'Occupied').length / state.rooms.length) * 100) : 0}%`]
+            ];
+            data.forEach(([label, value]) => { doc.text(`${label}: ${value}`, 25, y); y += 10; });
+            doc.save('hotel_report.pdf');
+            Toast.success(Lang.t('pdf_export') + ' ' + Lang.t('success'));
+        } catch (e) { Toast.error('PDF export failed'); }
+    },
+
+    async exportExcel() {
+        try {
+            const state = AppState.get();
+            const rows = [
+                ['Hotel Management Report'],
+                [`Generated: ${new Date().toLocaleString()}`],
+                [],
+                ['Metric', 'Value'],
+                ['Total Rooms', state.rooms.length],
+                ['Customers', state.customers.length],
+                ['Bookings', state.bookings.length],
+                ['Total Revenue', formatCurrency(state.payments.reduce((s, p) => s + (p.status === 'Paid' ? p.amount : 0), 0))],
+                ['Paid Payments', state.payments.filter(p => p.status === 'Paid').length]
+            ];
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(rows);
+            XLSX.utils.book_append_sheet(wb, ws, 'Report');
+            XLSX.writeFile(wb, 'hotel_report.xlsx');
+            Toast.success(Lang.t('excel_export') + ' ' + Lang.t('success'));
+        } catch (e) { Toast.error('Excel export failed'); }
+    },
+
+    renderProfile() {
+        const profile = JSON.parse(localStorage.getItem('hms_profile')) || { name: 'Admin User', email: 'admin@hotel.com', avatar: '' };
+        document.getElementById('page-profile').innerHTML = `
+            <h2 class="fw-light"><i class="fas fa-user-cog me-2"></i>${Lang.t('nav_profile')}</h2>
+            <div class="glass-card">
+                <form id="profileForm">
+                    <div class="text-center mb-4">
+                        <div class="avatar-upload" id="avatarContainer">
+                            ${profile.avatar ? `<img src="${profile.avatar}" alt="Avatar">` : '<i class="fas fa-user"></i>'}
+                            <input type="file" id="avatarInput" accept="image/*">
+                        </div>
+                        <button type="button" class="btn-glass btn-glass-sm mt-2" id="removeAvatarBtn" style="${profile.avatar ? '' : 'display:none;'}">${Lang.t('remove_avatar') || 'Remove Avatar'}</button>
+                    </div>
+                    <div class="mb-3"><label class="form-label">${Lang.t('name')}</label><input id="profileName" class="form-control" value="${profile.name || ''}" placeholder="${Lang.t('enter_name')}"></div>
+                    <div class="mb-3"><label class="form-label">${Lang.t('email')}</label><input id="profileEmail" type="email" class="form-control" value="${profile.email || ''}" placeholder="${Lang.t('enter_email')}"></div>
+                    <div class="mb-3"><label class="form-label">${Lang.t('new_password')}</label><input id="profilePassword" type="password" class="form-control" placeholder="${Lang.t('enter_password')}"></div>
+                    <button class="btn-glass btn-glass-primary" type="submit">${Lang.t('update_profile')}</button>
+                </form>
+            </div>
+        `;
+
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const container = document.getElementById('avatarContainer');
+                    container.innerHTML = `<img src="${ev.target.result}" alt="Avatar"><input type="file" id="avatarInput" accept="image/*">`;
+                    document.getElementById('avatarInput').addEventListener('change', arguments.callee);
+                    const profile = JSON.parse(localStorage.getItem('hms_profile')) || {};
+                    profile.avatar = ev.target.result;
+                    localStorage.setItem('hms_profile', JSON.stringify(profile));
+                    document.getElementById('removeAvatarBtn').style.display = 'inline-block';
+                    Toast.success('Avatar updated');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('removeAvatarBtn').addEventListener('click', function() {
+            const container = document.getElementById('avatarContainer');
+            container.innerHTML = `<i class="fas fa-user"></i><input type="file" id="avatarInput" accept="image/*">`;
+            document.getElementById('avatarInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        const container = document.getElementById('avatarContainer');
+                        container.innerHTML = `<img src="${ev.target.result}" alt="Avatar"><input type="file" id="avatarInput" accept="image/*">`;
+                        document.getElementById('avatarInput').addEventListener('change', arguments.callee);
+                        const profile = JSON.parse(localStorage.getItem('hms_profile')) || {};
+                        profile.avatar = ev.target.result;
+                        localStorage.setItem('hms_profile', JSON.stringify(profile));
+                        document.getElementById('removeAvatarBtn').style.display = 'inline-block';
+                        Toast.success('Avatar updated');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            const profile = JSON.parse(localStorage.getItem('hms_profile')) || {};
+            delete profile.avatar;
+            localStorage.setItem('hms_profile', JSON.stringify(profile));
+            this.style.display = 'none';
+            Toast.success('Avatar removed');
+        });
+
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('profileName').value.trim();
+            const email = document.getElementById('profileEmail').value.trim();
+            const password = document.getElementById('profilePassword').value;
+            if (!name || !email) { Toast.warning(Lang.t('required_field')); return; }
+            const profile = JSON.parse(localStorage.getItem('hms_profile')) || {};
+            profile.name = name;
+            profile.email = email;
+            if (password) profile.password = password;
+            localStorage.setItem('hms_profile', JSON.stringify(profile));
+            Toast.success(Lang.t('profile_updated') || 'Profile updated');
+            document.getElementById('profilePassword').value = '';
+            App.addNotification('Profile updated successfully', 'success', 'system');
+        });
+    },
+
+    renderSettings() {
+        const settings = JSON.parse(localStorage.getItem('hms_settings')) || { 
+            notifications: { bookings: true, payments: true, customers: true, browser: false },
+            currency: 'USD',
+            hotelName: 'Grand Hotel',
+            hotelAddress: '123 Main Street',
+            hotelPhone: '+998 90 123 45 67'
+        };
+        document.getElementById('page-settings').innerHTML = `
+            <h2 class="fw-light"><i class="fas fa-sliders-h me-2"></i>${Lang.t('nav_settings')}</h2>
+            <div class="glass-card">
+                <h5>${Lang.t('appearance') || 'Appearance'}</h5>
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="settingsDarkMode">
+                    <label class="form-check-label">${Lang.t('dark_mode')}</label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">${Lang.t('language')}</label>
+                    <select id="settingsLanguage" class="form-select">
+                        <option value="uz">🇺🇿 O'zbek</option>
+                        <option value="en">🇬🇧 English</option>
+                        <option value="ru">🇷🇺 Русский</option>
+                    </select>
+                </div>
+                <hr/>
+                <h5>${Lang.t('hotel_info') || 'Hotel Information'}</h5>
+                <div class="mb-3"><label class="form-label">${Lang.t('hotel_name')}</label><input id="hotelName" class="form-control" value="${settings.hotelName || 'Grand Hotel'}" placeholder="${Lang.t('enter_hotel_name') || 'Enter hotel name...'}"></div>
+                <div class="mb-3"><label class="form-label">${Lang.t('hotel_address')}</label><input id="hotelAddress" class="form-control" value="${settings.hotelAddress || '123 Main Street'}"></div>
+                <div class="mb-3"><label class="form-label">${Lang.t('hotel_phone')}</label><input id="hotelPhone" class="form-control" value="${settings.hotelPhone || '+998 90 123 45 67'}" maxlength="13"></div>
+                <div class="mb-3"><label class="form-label">${Lang.t('currency') || 'Currency'}</label><select id="hotelCurrency" class="form-select">
+                    <option value="USD" ${settings.currency === 'USD' ? 'selected' : ''}>USD ($)</option>
+                    <option value="EUR" ${settings.currency === 'EUR' ? 'selected' : ''}>EUR (€)</option>
+                    <option value="UZS" ${settings.currency === 'UZS' ? 'selected' : ''}>UZS (so'm)</option>
+                </select></div>
+                <hr/>
+                <h5>${Lang.t('notifications')}</h5>
+                <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="notifBookings" ${settings.notifications?.bookings ? 'checked' : ''}><label>${Lang.t('booking_notifications') || 'Booking notifications'}</label></div>
+                <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="notifPayments" ${settings.notifications?.payments ? 'checked' : ''}><label>${Lang.t('payment_notifications') || 'Payment notifications'}</label></div>
+                <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="notifCustomers" ${settings.notifications?.customers ? 'checked' : ''}><label>${Lang.t('customer_notifications') || 'Customer notifications'}</label></div>
+                <div class="form-check form-switch mb-2"><input class="form-check-input" type="checkbox" id="notifBrowser" ${settings.notifications?.browser ? 'checked' : ''}><label>${Lang.t('browser_notifications') || 'Browser notifications'}</label></div>
+                <hr/>
+                <button class="btn-glass btn-glass-primary mt-3" id="saveSettingsBtn">${Lang.t('save_settings')}</button>
+            </div>
+        `;
+
+        const phoneInput = document.getElementById('hotelPhone');
+        phoneInput.addEventListener('input', function() {
+            let val = this.value.replace(/[^0-9]/g, '');
+            if (val.startsWith('998')) val = '+' + val;
+            else if (val.length > 0 && !val.startsWith('+')) val = '+998' + val;
+            if (val.length > 13) val = val.slice(0, 13);
+            this.value = val;
+        });
+
+        document.getElementById('settingsDarkMode').checked = Theme.current === 'dark';
+        document.getElementById('settingsDarkMode').addEventListener('change', function() { Theme.apply(this.checked ? 'dark' : 'light'); });
+        document.getElementById('settingsLanguage').value = Lang.current;
+        document.getElementById('settingsLanguage').addEventListener('change', function() { Lang.set(this.value); });
+
+        document.getElementById('saveSettingsBtn').addEventListener('click', function() {
+            const settings = {
+                hotelName: document.getElementById('hotelName').value,
+                hotelAddress: document.getElementById('hotelAddress').value,
+                hotelPhone: document.getElementById('hotelPhone').value,
+                currency: document.getElementById('hotelCurrency').value,
+                notifications: {
+                    bookings: document.getElementById('notifBookings').checked,
+                    payments: document.getElementById('notifPayments').checked,
+                    customers: document.getElementById('notifCustomers').checked,
+                    browser: document.getElementById('notifBrowser').checked
+                }
+            };
+            localStorage.setItem('hms_settings', JSON.stringify(settings));
+            AppState.set({ currency: settings.currency });
+            Toast.success(Lang.t('settings_saved') || 'Settings saved');
+            App.addNotification('Settings updated successfully', 'success', 'system');
+            App.renderPage(AppState.get().currentPage);
+        });
+    },
+
+    seedData() {
+        const state = AppState.get();
+        if (state.rooms.length === 0) {
+            const rooms = [
+                { id: AppState.genId(), number: '101', type: 'Deluxe', price: 120, status: 'Available' },
+                { id: AppState.genId(), number: '102', type: 'Suite', price: 200, status: 'Booked' },
+                { id: AppState.genId(), number: '103', type: 'Standard', price: 80, status: 'Available' },
+                { id: AppState.genId(), number: '104', type: 'VIP', price: 350, status: 'Available' }
+            ];
+            const customers = [
+                { id: AppState.genId(), name: 'John Doe', email: 'john@mail.com', phone: '+998901234567' },
+                { id: AppState.genId(), name: 'Jane Smith', email: 'jane@mail.com', phone: '+998901234568' },
+                { id: AppState.genId(), name: 'Muxtorjon Sobirov', email: 'muxtor@mail.com', phone: '+998901234569' }
+            ];
+            const bookings = [
+                { id: AppState.genId(), customerId: customers[0].id, roomId: rooms[1].id, checkin: '2025-05-01', checkout: '2025-05-05', status: 'Checked-in', date: '2025-05-01' },
+                { id: AppState.genId(), customerId: customers[2].id, roomId: rooms[3].id, checkin: '2025-05-01', checkout: '2025-05-03', status: 'Checked-out', date: '2025-05-01' }
+            ];
+            const payments = [
+                { id: AppState.genId(), bookingId: bookings[0].id, amount: 800, method: 'Card', status: 'Paid', date: '2025-05-01' }
+            ];
+            AppState.set({ rooms, customers, bookings, payments });
+            AppState.addNotification('Welcome to HMS! Start managing your hotel.', 'info', 'system');
+        }
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => App.init());
+</script>
+</body>
+</html>
